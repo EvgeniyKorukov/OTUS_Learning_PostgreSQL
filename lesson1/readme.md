@@ -1,25 +1,42 @@
-### Реляционные базы, история и место в современном мире
+### **Реляционные базы, история и место в современном мире** ##
 
+#### *Цели занятия:*
+* научиться отличать SQL и NoSQL;
+* научиться представлять сложность выбора той или иной технологии СУБД;
+* чуть лучше понимать, чем мы будем заниматься на этом курсе.
 
-## Цели занятия:
-# * научиться отличать SQL и NoSQL;
-# * научиться представлять сложность выбора той или иной технологии СУБД;
-# * чуть лучше понимать, чем мы будем заниматься на этом курсе.
+#### *Краткое содержание:*
+* где мы были и где сейчас;
+* выбор и PostgreSQL;
+* случай из жизни;
+* программа курса.
 
+#### *Результаты:*
+* осознанно развивать востребованные навыки с точки зрения разных технологий СУБД и облачных сервисов.
 
-## Краткое содержание:
-# * где мы были и где сейчас;
-# * выбор и PostgreSQL;
-# * случай из жизни;
-# * программа курса.
+#### *Преподаватель:*
+  * Евгений Аристов
 
-## Результаты:
-# * осознанно развивать востребованные навыки с точки зрения разных технологий СУБД и облачных сервисов.
+#### *Компетенции:*
+* владение базовыми навыками работы в SQL
+    * история развития реляционных баз данных
 
-## Преподаватель
-# Евгений Аристов
+#### *Дата и время:*
+* 30 марта, четверг в 20:00
+* Длительность занятия: 90 минут
 
-## Компетенции
-# * владение базовыми навыками работы в SQL
-# * история развития реляционных баз данных
+#### *Материалы:*
+* [Инструкция Личный кабинет студента](https://docs.google.com/presentation/d/17fs6RI_Aqc58eMbmvK6Ww-DYXL-U2O4lbG6LaHvkmjc/edit?usp=sharing)
+* [Как попасть на занятие в Zoom?](https://docs.google.com/presentation/d/1I43BcOz4BgNZcovmA3ypz7jB_583nb8ADXb5PmA2ELg/edit?usp=sharing)
+* [PostgreSQL 15: Часть 1 или Коммитфест 2021-07](https://habr.com/ru/company/postgrespro/blog/572782/)
+* [An Intro to Git and GitHub for Beginners (Tutorial)](https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners)
+* [SmartGit – Git Client for Windows, macOS, Linux](https://www.syntevo.com/smartgit/)
+* [Markdown за 5 минут](https://htmlacademy.ru/blog/articles/markdown)
+* [Гайд - как правильно сформулировать цель обучения](https://cdn.otus.ru/media/private/1e/c4/%D0%93%D0%B0%D0%B9%D0%B4___%D0%BA%D0%B0%D0%BA_%D0%BF%D1%80%D0%B0%D0%B2%D0%B8%D0%BB%D1%8C%D0%BD%D0%BE_%D1%81%D1%84%D0%BE%D1%80%D0%BC%D1%83%D0%BB%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D1%82%D1%8C_%D1%86%D0%B5%D0%BB%D1%8C_%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D1%8F-301039-1ec468.pdf?hash=ykAsV4Z_qh6b2nIG8JKPXg&expires=1680480338)
+* [Don't Do This - PostgreSQL wiki](https://wiki.postgresql.org/wiki/Don't_Do_This)
+* [Lesser Known PostgreSQL Features](https://hakibenita.com/postgresql-unknown-features?ref=refind)
+* [Как добавить изображение в Markdown](https://denshub.com/ru/hugo-post-insert-image/)
+* [Yandex_Cloud.md](https://cdn.otus.ru/media/public/97/db/Yandex_Cloud-25239-97db16.md)
+* [01 PG История](https://cdn.otus.ru/media/public/be/67/01_PG_%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F-25239-be6708.pdf)
+
 
