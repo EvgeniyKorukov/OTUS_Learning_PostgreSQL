@@ -1,4 +1,4 @@
-### **Реляционные базы, история и место в современном мире** ##
+## **Реляционные базы, история и место в современном мире** ##
 
 #### *Цели занятия:*
 * научиться отличать SQL и NoSQL;
@@ -39,4 +39,8 @@
 * [Yandex_Cloud.md](https://cdn.otus.ru/media/public/97/db/Yandex_Cloud-25239-97db16.md)
 * [01 PG История](https://cdn.otus.ru/media/public/be/67/01_PG_%D0%98%D1%81%D1%82%D0%BE%D1%80%D0%B8%D1%8F-25239-be6708.pdf)
 
+
+<kbd>
+  <img src="coalla.jpg" />
+</kbd>
 
