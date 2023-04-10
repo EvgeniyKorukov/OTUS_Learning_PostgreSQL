@@ -1,49 +1,68 @@
 #### *Отчет о выполнении домашнего задания:*
 
+
 > создать ВМ с Ubuntu 20.04/22.04 или развернуть докер любым удобным способом
-1. **_Установлен Ubuntu server 22.04.2 на виртуальной машине в VirtualBox_**  
+* **_Установлен Ubuntu server 22.04.2 на виртуальной машине в VirtualBox_**  
+
+> поставить на нем Docker Engine
+* **_Установлен Docker Engine_**  
+    * curl -fsSL https://get.docker.com -o get-docker.sh && sudo sh get-docker.sh && rm get-docker.sh && sudo usermod -aG docker $USER
+
+> сделать каталог /var/lib/postgres
+* **_Создаем каталог_**  
+	* sudo mkdir -p /var/lib/postgres
+
+> развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
+* **_Разворачиваем контейнер с PostgreSQL 15_**  
+   * sudo docker network create pg-net
+   * sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v /var/lib/postgres:/var/lib/postgresql/data postgres:15
 
 
-* поставить на нем Docker Engine
-* сделать каталог /var/lib/postgres
-* развернуть контейнер с PostgreSQL 15 смонтировав в него /var/lib/postgresql
-* развернуть контейнер с клиентом postgres
-* подключится из контейнера с клиентом к контейнеру с сервером и сделать
-таблицу с парой строк
-* подключится к контейнеру с сервером с ноутбука/компьютера извне инстансов GCP/ЯО/места установки докера
-* удалить контейнер с сервером
-* создать его заново
-* подключится снова из контейнера с клиентом к контейнеру с сервером
-* проверить, что данные остались на месте
-* оставляйте в ЛК ДЗ комментарии что и как вы делали и как боролись с проблемами
+> развернуть контейнер с клиентом postgres 
+> подключится из контейнера с клиентом к контейнеру с сервером
+* **_Разворачиваем контейнер с клиентом и запускаем совместно с контейнером с СУБД_**  
+   * sudo docker run -it --rm --network pg-net --name pg-client postgres:15 psql -h pg-server -U postgres
 
-И так:
-1. **_Установлен Ubuntu server 22.04.2 на виртуальной машине в VirtualBox_**  
-1. **_Установлен Postgres 15_**  
-    * sudo apt update && sudo apt upgrade -y && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt-get -y install postgresql-15
-1. **_Запуск psql из под пользователя postgres_**  
-    * sudo -u postgres psql
-1. **_Выключение auto commit_**  
-    * \set AUTOCOMMIT OFF
-1. **_Посмотреть текущий уровень изоляции show transaction isolation level_**  
-    * read committed
-1. **_Чтобы начать транзакцию, с текущем уровнем изоляции, надо выполнить_**  
-    * begin;
-1. > Начать новую транзакцию в обоих сессиях с дефолтным (не меняя) уровнем изоляции, в первой сессии добавить новую запись insert into persons(first_name, second_name) values('sergey', 'sergeev'); сделать select * from persons во второй сессии. > видите ли вы новую запись и если да то почему?  
-    * Мы отключили AUTOCOMMIT и поэтому эта транзакция считается не зафиксированной, а работаем мы в read committed т.е. показываются все записи, которые уже зафиксированны (commit)
-1. > завершить первую транзакцию - commit; сделать select * from persons во второй сессии видите ли вы новую запись и если да то почему? 
-    * Новая запись появилась т.к. мы зафиксировали транзакцию (commit) т.к. работаем мы в read committed т.е. показываются все записи, которые уже зафиксированны (commit)
-1. **_Начать новые транзации в repeatable read_**  
-    * begin;
-    * set transaction isolation level repeatable read;
-    * или
-    * begin transaction isolation level repeatable read;
-1. > В первой сессии добавить новую запись insert into persons(first_name, second_name) values('sveta', 'svetova'); сделать select * from persons во второй сессии. видите ли вы новую запись и если да то почему?  
-    * Новую запись мы не видим т.к. мы работаем мы в repeatable read. Это говорит о том, что в СУБД создан снимок данных на начало транзакции и мы будем видеть только те данные, которые есть, и не будем видеть новые(зафиксированные) данные. 
-1. > Завершить первую транзакцию - commit; сделать select * from persons во второй сессии. видите ли вы новую запись и если да то почему?
-    * Новую запись мы не видим т.к. мы работаем мы в repeatable read. Это говорит о том, что в СУБД создан снимок данных на начало транзакции и мы будем видеть только те данные, которые есть, и не будем видеть новые(зафиксированные) данные. 
-1. > Завершить вторую транзакцию. сделать select * from persons во второй сессии. видите ли вы новую запись и если да то почему? 
-    * Мы видим новую запись т.к. после фиксации транзакции мы переходим в уровень изоляции по умолчанию т.е. в read committed
+
+> и сделать таблицу с парой строк
+* **_Делаем таблицу с данными_**  
+	* create table persons(id serial, first_name text, second_name text); 
+   * insert into persons(first_name, second_name) values('ivan', 'ivanov'); 
+   * insert into persons(first_name, second_name) values('petr', 'petrov'); 
+   * commit;
+
+> подключится к контейнеру с сервером с ноутбука/компьютера извне инстансов GCP/ЯО/места установки докера
+* **_Подключаемся к контейнеру с сервером с ноутбука_**  
+	* Нет клиентского ПО PostgreSQL 15, поэтому его надо установить
+		* sudo dnf install postgresql15
+	* Подключение к контейнеру с PostgreSQL 15 с ноутбука
+		* psql -p 5432 -U postgres -h 192.168.143.195 -d postgres -W
+	* Считаем количество данных в таблицу или выводим ее содержимое
+		* psql -p 5432 -U postgres -h 192.168.143.195 -d postgres -W -c "select count(*) from persons"
+		* psql -p 5432 -U postgres -h 192.168.143.195 -d postgres -W -c "select * from persons"
+	
+> удалить контейнер с сервером
+* **_Удаляем контейнер с сервером_**  
+	* Получаем список контейнеров, чтобы получить container id
+		* sudo docker ps -a
+	* Удаляем контейнер
+		* sudo docker rm 6c986aa54227 -f
+	
+> создать контейнер заново
+* **_создаем контейнер с PostgreSQL 15 заново_**  
+   * sudo docker run --name pg-server --network pg-net -e POSTGRES_PASSWORD=postgres -d -p 5432:5432 -v /var/lib/postgres:/var/lib/postgresql/data postgres:15
+
+> подключится снова из контейнера с клиентом к контейнеру с сервером
+* **_Подключаемся к контейнеру с клиентом и запускаем совместно с контейнером с СУБД_**  
+   * sudo docker run -it --rm --network pg-net --name pg-client postgres:15 psql -h pg-server -U postgres
+
+> проверить, что данные остались на месте
+* **_Проверяем данные, после персоздания контейнера с PostgreSQL 15_**  
+	* Считаем количество данных в таблицу или выводим ее содержимое
+		* select count(*) from persons;
+		* select * from persons;
+* **_Данные на месте и они никуда не пропали т.к. мы делали мапинг данных с контейнера на локальный сервер т.е. при удалении контейнера-данные с сервера не удаляются_**  
+
     
 <kbd>
   <img src="Docker-dark.jpg" />
