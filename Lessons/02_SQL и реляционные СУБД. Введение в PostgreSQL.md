@@ -38,7 +38,7 @@
 
 
 #### *Материалы:*
-* [Создание_инстанса_в_GCP](https://cdn.otus.ru/media/private/e5/67/%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B8%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%81%D0%B0_%D0%B2_GCP-25239-e56756.pdf?hash=fOP8UucOeQUqtkJqMxLjfQ&expires=1681021187)
+* [Создание_инстанса_в_GCP](https://cdn.otus.ru/media/private/e5/67/%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5_%D0%B8%D0%BD%D1%81%D1%82%D0%B0%D0%BD%D1%81%D0%B0_%D0%B2_GCP-25239-e56756.pdf?hash=5NVI81C7P3tyfDZC8RqGtQ&expires=1682217440)
 * [#RuPostgres – о PostgreSQL на русском](https://www.youtube.com/channel/UC0SBGSNmBLrTZIkbN-lJHnw)
 * [SQL exercises](https://sql-ex.ru/)
 * [Software versioning - Wikipedia](https://en.wikipedia.org/wiki/Software_versioning)
