@@ -2,12 +2,11 @@
 
 
 > создайте виртуальную машину c Ubuntu 20.04/22.04 LTS в GCE/ЯО/Virtual Box/докере
-* **_Title_**  
-    * Text1
+* **_Установлен Ubuntu server 22.04.2 на виртуальной машине в VirtualBox_**
 	
 > поставьте на нее PostgreSQL 15 через sudo apt
-* **_Title_**  
-    * Text1
+* **_Установлен Postgres 15_**  
+    * sudo apt update && sudo apt upgrade -y && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt-get -y install postgresql-15
 	
 > проверьте что кластер запущен через sudo -u postgres pg_lsclusters
 * **_Title_**  
