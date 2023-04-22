@@ -1,5 +1,5 @@
 ## **PostgreSQL для администраторов баз данных и разработчиков**
 
 <kbd>
-  <img src="pinguin.jpeg" />
+  <img src="Images/pinguin.jpeg" />
 </kbd>
