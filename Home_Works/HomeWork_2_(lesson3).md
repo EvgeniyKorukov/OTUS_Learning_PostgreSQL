@@ -65,5 +65,5 @@
 
     
 <kbd>
-  <img src="../Docker-dark.jpg" />
+  <img src="/Images/Docker-dark.jpg" />
 </kbd>
