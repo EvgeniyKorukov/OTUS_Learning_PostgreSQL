@@ -35,5 +35,5 @@
     * Мы видим новую запись т.к. после фиксации транзакции мы переходим в уровень изоляции по умолчанию т.е. в read committed
     
 <kbd>
-  <img src="PostgreSQL.jpeg" />
+  <img src="../PostgreSQL.jpeg" />
 </kbd>
