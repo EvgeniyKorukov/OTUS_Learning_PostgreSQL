@@ -44,27 +44,35 @@
 
 	
 > проинициализируйте диск согласно инструкции и подмонтировать файловую систему, только не забывайте менять имя диска на актуальное, в вашем случае это скорее всего будет /dev/sdb - https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux
-* **_Title_**  
-    * Text1
-	
+* **_Операции с диском произвел по инструкции_**  
+    * Запись из /etc/fstab
+    * /dev/disk/by-uuid/f889ce9f-a583-451d-8b23-cf1a4a2fffdd /mnt/pg_data ext4 defaults 0 2
+    * Новый дисковый раздел будет распологаться тут /mnt/pg_data
+
+
 > перезагрузите инстанс и убедитесь, что диск остается примонтированным (если не так смотрим в сторону fstab)
-* **_Title_**  
-    * Text1
-	
+* **_Перезагрузил виртуальною машину и диск примонтирован нормально, после перезагрузки. Проверил, что кластер остановлен_**  
+    * sudo -u postgres pg_lsclusters
+    	* Ver Cluster Port Status Owner    Data directory              Log file
+    	* 15  main    5432 down   postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
+
+
 > сделайте пользователя postgres владельцем /mnt/data - chown -R postgres:postgres /mnt/data/
-* **_Title_**  
-    * Text1
-	
+* **_sudo chown -R postgres:postgres /mnt/pg_data/_**  
+    * ls -ll /mnt/pg_data/
+    	* drwx------ 2 postgres postgres 16384 Apr 22 23:54 lost+found
+
+
 > перенесите содержимое /var/lib/postgres/14 в /mnt/data - mv /var/lib/postgresql/15/mnt/data
-* **_Title_**  
-    * Text1
+* **_sudo mv /var/lib/postgresql/15/ /mnt/pg_data/_**  
+
 	
 > попытайтесь запустить кластер - sudo -u postgres pg_ctlcluster 15 main start
-* **_Title_**  
-    * Text1
+* **_sudo -u postgres pg_ctlcluster 15 main start_**  
+
 	
 > напишите получилось или нет и почему
-* **_Title_**  
+* **_Не получилось_**  
     * Text1
 	
 > задание: найти конфигурационный параметр в файлах раположенных в /etc/postgresql/15/main который надо поменять и поменяйте его
