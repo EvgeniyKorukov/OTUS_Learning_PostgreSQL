@@ -78,12 +78,12 @@
 > задание: найти конфигурационный параметр в файлах раположенных в /etc/postgresql/15/main который надо поменять и поменяйте его
 * **_Меняем параметр data_directory_**  
     * sudo vim /etc/postgresql/15/main/postgresql.conf
-    	* data_directory = '/mnt_pg_data/15/main'
+    	* data_directory = '/mnt/pg_data/15/main'
 	
 > напишите что и почему поменяли
 * **_Меняем параметр data_directory, чтобы кластер баз данных postgres знал новый путь с данными ($PGDATA)_**  
     * sudo vim /etc/postgresql/15/main/postgresql.conf
-    	* data_directory = '/mnt_pg_data/15/main'
+    	* data_directory = '/mnt/pg_data/15/main'
 	
 > попытайтесь запустить кластер - sudo -u postgres pg_ctlcluster 15 main start
 * **_sudo -u postgres pg_ctlcluster 15 main start_**  
@@ -102,6 +102,24 @@
     	*  c1 
 
 	
-> задание со звездочкой >: не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres, перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.
-* **_Title_**  
-    * Text1
+> задание со звездочкой >: 
+> не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres
+1. Просто создаем новую виртуальную машину на VirtualBox с Ubuntu (вторая)
+1. Устанавливаем Postgres 15 (вторая)
+    * sudo apt update && sudo apt upgrade -y && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt-get -y install postgresql-15
+1. Останавливаем существующий кластер postgres на старой VM(первой) и на новой VM(второй)
+    * sudo -u postgres pg_ctlcluster 15 main stop
+1. Удаляем каталог с данными на новой VM (второй)
+    * sudo rm -rf /var/lib/postgres/*
+> перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй
+1. Здесь все просто, надо остановить обе виртуальные машины, в варианте с VirtualBox, чтобы отключить диск от старой машины (первой) и подключить его на новую VM (второй). Кластеры СУБД мы ранее остановили на обоих VM. 
+>   и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.
+1. Подключаем диск по инструкции(https://www.digitalocean.com/community/tutorials/how-to-partition-and-format-storage-devices-in-linux), монтируем, прописываем в /etc/fstab и проверяем что он примонтирован
+1. Проверяем права, чтобы владельцем был postgres:postgres на новой VM(второй) 
+    * sudo chown -R postgres:postgres /mnt/pg_data/  
+1. Правим data_directory в /etc/postgresql/15/main/postgresql.conf  на новой VM(второй)
+    * sudo vim /etc/postgresql/15/main/postgresql.conf
+    	* data_directory = '/mnt/pg_data/15/main'
+1. Запускаем и все работает  на новой VM(второй)  
+   * sudo -u postgres pg_ctlcluster 15 main start
+1. В реальности, можно таким образом перносить СУБД с одного сервера на другой. Можно и через rsync, и через иснтрументы для резервного копирования, типа pg_probackup. 
