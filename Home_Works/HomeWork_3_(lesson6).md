@@ -73,7 +73,7 @@
 	
 > напишите получилось или нет и почему
 * **_Не получилось_**  
-    * Text1
+    * Error: /var/lib/postgresql/15/main is not accessible or does not exist
 	
 > задание: найти конфигурационный параметр в файлах раположенных в /etc/postgresql/15/main который надо поменять и поменяйте его
 * **_Title_**  
