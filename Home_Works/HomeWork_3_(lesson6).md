@@ -76,24 +76,31 @@
     * Error: /var/lib/postgresql/15/main is not accessible or does not exist
 	
 > задание: найти конфигурационный параметр в файлах раположенных в /etc/postgresql/15/main который надо поменять и поменяйте его
-* **_Title_**  
-    * Text1
+* **_Меняем параметр data_directory_**  
+    * sudo vim /etc/postgresql/15/main/postgresql.conf
+    	* data_directory = '/mnt_pg_data/15/main'
 	
 > напишите что и почему поменяли
-* **_Title_**  
-    * Text1
+* **_Меняем параметр data_directory, чтобы кластер баз данных postgres знал новый путь с данными ($PGDATA)_**  
+    * sudo vim /etc/postgresql/15/main/postgresql.conf
+    	* data_directory = '/mnt_pg_data/15/main'
 	
 > попытайтесь запустить кластер - sudo -u postgres pg_ctlcluster 15 main start
-* **_Title_**  
-    * Text1
+* **_sudo -u postgres pg_ctlcluster 15 main start_**  
+
 	
 > напишите получилось или нет и почему
-* **_Title_**  
-    * Text1
+* **_Получилось_**  
+    * sudo -u postgres pg_ctlcluster 15 main start
+    	* Ver Cluster Port Status Owner    Data directory       Log file
+    	* 15  main    5432 online postgres /mnt/pg_data/15/main /var/log/postgresql/postgresql-15-main.log
+
 	
 > зайдите через через psql и проверьте содержимое ранее созданной таблицы
-* **_Title_**  
-    * Text1
+* **_sudo -u postgres psql -U postgres_**  
+    * postgres=# select * from test;
+    	*  c1 
+
 	
 > задание со звездочкой >: не удаляя существующий инстанс ВМ сделайте новый, поставьте на его PostgreSQL, удалите файлы с данными из /var/lib/postgres, перемонтируйте внешний диск который сделали ранее от первой виртуальной машины ко второй и запустите PostgreSQL на второй машине так чтобы он работал с данными на внешнем диске, расскажите как вы это сделали и что в итоге получилось.
 * **_Title_**  
