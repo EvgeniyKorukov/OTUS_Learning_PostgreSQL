@@ -11,7 +11,7 @@
 
 
 > зайдите в созданный кластер под пользователем postgres
-* **_sudo -u postgres psql_**  
+* **_sudo -u postgres psql или sudo -u postgres psql -U postgres_**  
     * Информацию о текущем подключении можно посмотреть через команду \conninfo в psql
     * Информацию о текущем пользователе можно получить через:
       * select current_user;
@@ -26,7 +26,7 @@
 
 
 > зайдите в созданную базу данных под пользователем postgres
-* **_sudo -u postgres psql -d testdb_**  
+* **_sudo -u postgres psql -d testdb или sudo -u postgres psql -d testdb -U postgres_**  
     * Информацию о текущем подключении можно посмотреть через команду \conninfo в psql
     * Информацию о текущем пользователе можно получить через:
       * select current_user;
