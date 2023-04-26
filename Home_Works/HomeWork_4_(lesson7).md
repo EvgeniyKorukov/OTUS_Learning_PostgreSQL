@@ -95,7 +95,7 @@
 
 
 > зайдите под пользователем testread в базу данных testdb
-* **_sudo -u postgres psql -U testread -d testdb_**  
+* **_!????sudo -u postgres psql -U testread -d testdb_**  
     * Text
 
  
