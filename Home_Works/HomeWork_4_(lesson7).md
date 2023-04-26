@@ -12,10 +12,12 @@
 
 > зайдите в созданный кластер под пользователем postgres
 * **_sudo -u postgres psql или sudo -u postgres psql -U postgres_**  
+* **_или_**  
+* **_sudo -u postgres psql -U postgres_**  
     * Информацию о текущем подключении можно посмотреть через команду \conninfo в psql
     * Информацию о текущем пользователе можно получить через:
-      * select current_user;
-      * select user;
+      * Запрос select current_user;
+      * Запрос select user;
 
 
 > создайте новую базу данных testdb
@@ -26,13 +28,15 @@
 
 
 > зайдите в созданную базу данных под пользователем postgres
-* **_sudo -u postgres psql -d testdb или sudo -u postgres psql -d testdb -U postgres_**  
+* **_sudo -u postgres psql -d testdb_**  
+* **_или_**  
+* **_sudo -u postgres psql -d testdb -U postgres_**  
     * Информацию о текущем подключении можно посмотреть через команду \conninfo в psql
     * Информацию о текущем пользователе можно получить через:
-      * select current_user;
-      * select user;
+      * Запрос select current_user;
+      * Запрос select user;
     * Информацию о текущей БД можно получить через:
-      * select current_database();
+      * Запрос select current_database();
 
 
 > создайте новую схему testnm
@@ -50,7 +54,7 @@
 
 
 > вставьте строку со значением c1=1
-* **_ insert into t1(c1) values(1);_**  
+* **_insert into t1(c1) values(1);_**  
 
 
 > создайте новую роль readonly
@@ -64,34 +68,34 @@
 > дайте новой роли право на подключение к базе данных testdb
 * **_grant connect on database testdb to readonly;_**  
     * Список выданных прав для БД testdb можно посмотреть через: 
-      * \l+ testdb
+      * Команду \l+ testdb в psql
       * Запрос select * from pg_database where datname='testdb';
 
 
 > дайте новой роли право на использование схемы testnm
 * **_grant usage on schema testnm to readonly;_**  
     * Список выданных прав для схемы testnm можно посмотреть через: 
-      * \dn+ testnm
+      * Команду \dn+ testnm в psql
       * select * from pg_namespace where nspname='testnm';
 
 
 > дайте новой роли право на select для всех таблиц схемы testnm
 * **_grant select on all tables in schema testnm to readonly;_**  
-    * !?Text
+    * Явный смысл не понятен т.к. в схеме testnm еще нет ни одной таблицы. Видимо это для дальнейшей части эксперимента или для разбора с with admin option или with grant option
 
 
 > создайте пользователя testread с паролем test123
 * **_create user testread with password 'test123';_**  
     * Список пользователей можно посмотреть через: 
-      * \du
+      * Команду \du в psql
       * Запрос select * from pg_user;
 
 
 > дайте роль readonly пользователю testread
 * **_grant readonly to testread;_**  
     * Список выданных прав для пользователя testread можно посмотреть через: 
-      * \du+ testread
-      * !?select * from pg_user where usrname='testread';
+      * Команду \du+ testread в psql
+      * Запрос select roleid::regrole, member::regrole, grantor::regrole from pg_auth_members where member::regrole::text='testread';
 
 
 > зайдите под пользователем testread в базу данных testdb
