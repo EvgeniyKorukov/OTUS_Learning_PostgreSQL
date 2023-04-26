@@ -62,37 +62,53 @@
 
 
 > дайте новой роли право на подключение к базе данных testdb
-* **_ToDo_**  
-    * Text
-    * 
+* **_grant connect on database testdb to readonly;_**  
+    * Список выданных прав для БД testdb можно посмотреть через: 
+      * \l+ testdb
+      * Запрос select * from pg_database where datname='testdb';
+
+
 > дайте новой роли право на использование схемы testnm
-* **_ToDo_**  
-    * Text
-    * 
+* **_grant usage on schema testnm to readonly;_**  
+    * Список выданных прав для схемы testnm можно посмотреть через: 
+      * \dn+ testnm
+      * select * from pg_namespace where nspname='testnm';
+
+
 > дайте новой роли право на select для всех таблиц схемы testnm
-* **_ToDo_**  
-    * Text
-    * 
+* **_grant select on all tables in schema testnm to readonly;_**  
+    * !?Text
+
+
 > создайте пользователя testread с паролем test123
-* **_ToDo_**  
-    * Text
-    * 
+* **_create user testread with password 'test123';_**  
+    * Список пользователей можно посмотреть через: 
+      * \du
+      * Запрос select * from pg_user;
+
+
 > дайте роль readonly пользователю testread
-* **_ToDo_**  
-    * Text
-    * 
+* **_grant readonly to testread;_**  
+    * Список выданных прав для пользователя testread можно посмотреть через: 
+      * \du+ testread
+      * !?select * from pg_user where usrname='testread';
+
+
 > зайдите под пользователем testread в базу данных testdb
-* **_ToDo_**  
+* **_sudo -u postgres psql -U testread -d testdb_**  
     * Text
-    * 
+
+ 
 > сделайте select * from t1;
 * **_ToDo_**  
     * Text
-    * 
+
+
 > получилось? (могло если вы делали сами не по шпаргалке и не упустили один существенный момент про который позже)
 * **_ToDo_**  
     * Text
-    * 
+
+
 > напишите что именно произошло в тексте домашнего задания
 * **_ToDo_**  
     * Text
