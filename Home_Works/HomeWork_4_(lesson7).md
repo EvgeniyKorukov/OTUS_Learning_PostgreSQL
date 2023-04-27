@@ -99,100 +99,110 @@
 
 
 > зайдите под пользователем testread в базу данных testdb
-* **_!????sudo -u postgres psql -U testread -d testdb_**  
-    * Text
-
+* **_sudo -u postgres psql -d testdb -U testread -h 127.0.0.1_**  
+    * Если не указать имя хоста (-h 127.0.0.1) то попадаем на ошибку ниже в pg_hba.conf для peer. 
+      * Текст ошибки в логах postgres
+        * testread@testdb LOG:  provided user name (testread) and authenticated user name (postgres) do not match
+        * testread@testdb FATAL:  Peer authentication failed for user "testread"
+        * testread@testdb DETAIL:  Connection matched pg_hba.conf line 95: "local   all             all                                     peer"
+    * А у пользователя testread пароль хранится в scram-sha-256, поэтому наше рабочее правило в pg_hba.conf
+      * IPv4 local connections:
+      * host    all             all             127.0.0.1/32            scram-sha-256
+    * Очень надеюсь, что более-менее понятно объяснил :-) 
+ 
  
 > сделайте select * from t1;
-* **_ToDo_**  
-    * Text
+* **_Сделал_**
 
 
 > получилось? (могло если вы делали сами не по шпаргалке и не упустили один существенный момент про который позже)
-* **_ToDo_**  
-    * Text
+* **_Нет_**  
 
 
 > напишите что именно произошло в тексте домашнего задания
-* **_ToDo_**  
-    * Text
-    * 
+* **_Получили ошибку_**  
+    * ERROR:  permission denied for table t1
+
 > у вас есть идеи почему? ведь права то дали?
-* **_ToDo_**  
-    * Text
-    * 
+* **_Мы выдавали роли readonly права на выборку всех таблиц в схеме testnm, а таблица t1 находится в схеме public. В данном случае пользователь testread является частью роли(группы) readonly. Но у нас нет наследования прав_**  
+
+
 > посмотрите на список таблиц
-* **_ToDo_**  
-    * Text
-    * 
+* **_Таблица t1 находится в схеме public_**  
+
+
 > подсказка в шпаргалке под пунктом 20
-* **_ToDo_**  
-    * Text
-    * 
+* **_Не понимаю про какую подсказку идет речь. Но, можно создавать объекты с явным указание имени схемы. Или выдать пользователю testread (или группе readonly) права на выборку всех таблиц в схеме public_**  
+
+
 > а почему так получилось с таблицей (если делали сами и без шпаргалки то может у вас все нормально)
-* **_ToDo_**  
-    * Text
-    * 
+* **_Могли явно указать имя схемы при создании таблицы_**  
+
+
 > вернитесь в базу данных testdb под пользователем postgres
-* **_ToDo_**  
-    * Text
-    * 
+* **_sudo -u postgres psql -d testdb -U postgres_**  
+
+
 > удалите таблицу t1
-* **_ToDo_**  
-    * Text
-    * 
+* **_drop table t1;_**  
+
+
 > создайте ее заново но уже с явным указанием имени схемы testnm
-* **_ToDo_**  
-    * Text
-    * 
+* **_create table testnm.t1(c1 int);_**  
+
+
 > вставьте строку со значением c1=1
-* **_ToDo_**  
-    * Text
-    * 
+* **_insert into testnm.t1(c1) values(1);_**  
+
+
 > зайдите под пользователем testread в базу данных testdb
-* **_ToDo_**  
-    * Text
-    * 
+* **_sudo -u postgres psql -d testdb -U testread -h 127.0.0.1_**  
+
+
 > сделайте select * from testnm.t1;
-* **_ToDo_**  
-    * Text
-    * 
+* **_Сделал_**  
+
+
 > получилось?
-* **_ToDo_**  
-    * Text
-    * 
+* **_Нет, ошибка ниже_**  
+    * ERROR:  permission denied for table t1
+
+
 > есть идеи почему? если нет - смотрите шпаргалку
-* **_ToDo_**  
-    * Text
-    * 
+* **_Идеи есть и самая простая-выдать явные права на выборку таблицы testnm.t1 пользователю testread_**  
+    * grant select on testnm.t1 to testread;
+
+
 > как сделать так чтобы такое больше не повторялось? если нет идей - смотрите шпаргалку
-* **_ToDo_**  
-    * Text
-    * 
+* **_Выдать пользователю testread или роли(группе) readonly права на выборку всех таблиц в схеме testnm. Или же заняться вопросом наследования прав_**  
+    * grant select on all tables in schema testnm to testread;
+    * или
+    * grant select on all tables in schema testnm to readonly;
+
+
 > сделайте select * from testnm.t1;
-* **_ToDo_**  
-    * Text
-    * 
+* **_Сделал_**  
+
+
 > получилось?
-* **_ToDo_**  
-    * Text
-    * 
+* **_Да_**  
+
+
 > есть идеи почему? если нет - смотрите шпаргалку
-* **_ToDo_**  
-    * Text
-    * 
+* **_Да уже все описал выше)_**  
+
 > сделайте select * from testnm.t1;
-* **_ToDo_**  
-    * Text
-    * 
+* **_Сделал_**  
+
+
 > получилось?
-* **_ToDo_**  
-    * Text
-    * 
+* **_Да_**  
+
+
 > ура!
-* **_ToDo_**  
-    * Text
-    * 
+* **_Ктобы сомневался)_**  
+
+
 > теперь попробуйте выполнить команду create table t2(c1 integer); insert into t2 values (2);
 * **_ToDo_**  
     * Text
