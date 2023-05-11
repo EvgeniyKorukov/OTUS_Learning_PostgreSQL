@@ -111,8 +111,79 @@
 
 
 > Воспроизведите взаимоблокировку трех транзакций. Можно ли разобраться в ситуации постфактум, изучая журнал сообщений?
-  * **_Раз_** 
-    * Два
+  * **_Можно попробовать)_** 
+      ```sql
+      --Session 1, transaction 1
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 100.00 WHERE acc_no = 1;
+
+      --Session 2, transaction 1
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 200.00 WHERE acc_no = 2;
+
+      --Session 3, transaction 1
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 300.00 WHERE acc_no = 3;
+
+      --Session 1, transaction 2
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 100.00 WHERE acc_no = 3;
+
+      --Session 2, transaction 2
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 200.00 WHERE acc_no = 1;
+
+      --Session 3, transaction 2
+      BEGIN;
+      UPDATE accounts 
+      SET amount = amount + 300.00 WHERE acc_no = 2;
+
+      ```    
+      * Лог Postgres
+      ```
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks LOG:  process 4493 detected deadlock while waiting for ShareLock on transaction 31729 after 200.487 ms
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks DETAIL:  Process holding the lock: 4492. Wait queue: .
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks CONTEXT:  while updating tuple (0,2) in relation "accounts"
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks STATEMENT:  UPDATE accounts
+              SET amount = amount + 300.00 WHERE acc_no = 2;
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks ERROR:  deadlock detected
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks DETAIL:  Process 4493 waits for ShareLock on transaction 31729; blocked by process 4492.
+              Process 4492 waits for ShareLock on transaction 31728; blocked by process 4490.
+              Process 4490 waits for ShareLock on transaction 31730; blocked by process 4493.
+              Process 4493: UPDATE accounts
+              SET amount = amount + 300.00 WHERE acc_no = 2;
+              Process 4492: UPDATE accounts
+              SET amount = amount + 200.00 WHERE acc_no = 1;
+              Process 4490: UPDATE accounts
+              SET amount = amount + 100.00 WHERE acc_no = 3;
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks HINT:  See server log for query details.
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks CONTEXT:  while updating tuple (0,2) in relation "accounts"
+      2023-05-11 01:32:38.198 UTC [4493] postgres@locks STATEMENT:  UPDATE accounts
+              SET amount = amount + 300.00 WHERE acc_no = 2;
+      2023-05-11 01:32:38.200 UTC [4490] postgres@locks LOG:  process 4490 acquired ShareLock on transaction 31730 after 21450.657 ms
+      2023-05-11 01:32:38.200 UTC [4490] postgres@locks CONTEXT:  while updating tuple (0,3) in relation "accounts"
+      2023-05-11 01:32:38.200 UTC [4490] postgres@locks STATEMENT:  UPDATE accounts
+              SET amount = amount + 100.00 WHERE acc_no = 3;
+      ```
+      * Результат:
+        * В первой сессии прошли оба запроса.
+        * Во второй сессии второй запрос висит в ожидании сняти блокировки.
+        * В третьей сессии транзакция прервалась с логом
+          ```
+          ERROR:  deadlock detected
+          DETAIL:  Process 4493 waits for ShareLock on transaction 31729; blocked by process 4492.
+          Process 4492 waits for ShareLock on transaction 31728; blocked by process 4490.
+          Process 4490 waits for ShareLock on transaction 31730; blocked by process 4493.
+          HINT:  See server log for query details.
+          CONTEXT:  while updating tuple (0,2) in relation "accounts"
+          ```
+      * Вывод. По логам postgres можно разобраться с блокировками, но это совсем не просто. Информация о блокировка у нас попадает т.к. мы настроили ее в самом начале.
+
 
 
 > Могут ли две транзакции, выполняющие единственную команду UPDATE одной и той же таблицы (без where), заблокировать друг друга?
