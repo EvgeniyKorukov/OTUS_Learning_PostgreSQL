@@ -5,113 +5,149 @@
 
 > ### 1. Настройте выполнение контрольной точки раз в 30 секунд
 * Поскольку `context=sighup`, то чтобы применить параметр, будет достаточно `SELECT pg_reload_conf()`
-```sql
-postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
-        name        | setting | unit | context 
---------------------+---------+------+---------
- checkpoint_timeout | 300     | s    | sighup
-(1 row)
+  ```sql
+  postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
+          name        | setting | unit | context 
+  --------------------+---------+------+---------
+   checkpoint_timeout | 300     | s    | sighup
+  (1 row)
 
-postgres=# alter system set checkpoint_timeout = 30;
-ALTER SYSTEM
-postgres=# 
-postgres=# select pg_reload_conf();
- pg_reload_conf 
-----------------
- t
-(1 row)
+  postgres=# alter system set checkpoint_timeout = 30;
+  ALTER SYSTEM
+  postgres=# 
+  postgres=# select pg_reload_conf();
+   pg_reload_conf 
+  ----------------
+   t
+  (1 row)
 
-postgres=# 
-postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
-        name        | setting | unit | context 
---------------------+---------+------+---------
- checkpoint_timeout | 30      | s    | sighup
-(1 row)
+  postgres=# 
+  postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
+          name        | setting | unit | context 
+  --------------------+---------+------+---------
+   checkpoint_timeout | 30      | s    | sighup
+  (1 row)
 
-postgres=# 
-```
+  postgres=# 
+  ```
 
 ***
 
 > ### 2. 10 минут c помощью утилиты pgbench подавайте нагрузку.
 * Для выполнения пункта(задания) 3, нам надо выполнить запрос, сохранив его данные, до и после тестов с pgbench.
 * Инициализацию pgbench, для БД `test_db1` провел заранее, командой `pgbench -i test_db1`
-```console
-ubuntu@srv-postgres:~$ sudo -u postgres psql -d test_db1
-psql (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
-Type "help" for help.
+  ```console
+  ubuntu@srv-postgres:~$ sudo -u postgres psql -d test_db1
+  psql (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+  Type "help" for help.
 
-test_db1=# SELECT pg_current_wal_lsn(), pg_current_wal_insert_lsn(), pg_walfile_name(pg_current_wal_lsn()) file_current_wal_lsn, pg_walfile_name(pg_current_wal_insert_lsn()) file_current_wal_insert_lsn;              
- pg_current_wal_lsn | pg_current_wal_insert_lsn |   file_current_wal_lsn   | file_current_wal_insert_lsn 
---------------------+---------------------------+--------------------------+-----------------------------
- 1/65410AC8         | 1/65410AC8                | 000000010000000100000065 | 000000010000000100000065
-(1 row)
+  test_db1=# SELECT pg_current_wal_lsn(), pg_current_wal_insert_lsn(), pg_walfile_name(pg_current_wal_lsn()) file_current_wal_lsn, pg_walfile_name(pg_current_wal_insert_lsn()) file_current_wal_insert_lsn;              
+   pg_current_wal_lsn | pg_current_wal_insert_lsn |   file_current_wal_lsn   | file_current_wal_insert_lsn 
+  --------------------+---------------------------+--------------------------+-----------------------------
+   1/65410AC8         | 1/65410AC8                | 000000010000000100000065 | 000000010000000100000065
+  (1 row)
 
-test_db1=# 
-test_db1=# \q
-ubuntu@srv-postgres:~$
-ubuntu@srv-postgres:~$ sudo -u postgres pgbench -P 30 -T 600 -c 10 test_db1
-pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
-starting vacuum...end.
-progress: 30.0 s, 253.1 tps, lat 39.323 ms stddev 18.350, 0 failed
-progress: 60.0 s, 257.3 tps, lat 38.854 ms stddev 18.449, 0 failed
-progress: 90.0 s, 258.1 tps, lat 38.742 ms stddev 17.978, 0 failed
-progress: 120.0 s, 258.3 tps, lat 38.716 ms stddev 18.426, 0 failed
-progress: 150.0 s, 262.2 tps, lat 38.132 ms stddev 18.431, 0 failed
-progress: 180.0 s, 264.2 tps, lat 37.855 ms stddev 18.073, 0 failed
-progress: 210.0 s, 258.1 tps, lat 38.734 ms stddev 18.581, 0 failed
-progress: 240.0 s, 258.7 tps, lat 38.644 ms stddev 18.574, 0 failed
-progress: 270.0 s, 262.4 tps, lat 38.111 ms stddev 18.592, 0 failed
-progress: 300.0 s, 261.0 tps, lat 38.317 ms stddev 18.481, 0 failed
-progress: 330.0 s, 256.5 tps, lat 38.973 ms stddev 18.245, 0 failed
-progress: 360.0 s, 262.9 tps, lat 38.030 ms stddev 17.721, 0 failed
-progress: 390.0 s, 260.8 tps, lat 38.335 ms stddev 18.061, 0 failed
-progress: 420.0 s, 263.1 tps, lat 38.009 ms stddev 17.724, 0 failed
-progress: 450.0 s, 262.9 tps, lat 38.029 ms stddev 18.349, 0 failed
-progress: 480.0 s, 260.1 tps, lat 38.444 ms stddev 18.071, 0 failed
-progress: 510.0 s, 253.1 tps, lat 39.508 ms stddev 18.379, 0 failed
-progress: 540.0 s, 256.7 tps, lat 38.953 ms stddev 18.822, 0 failed
-progress: 570.0 s, 258.9 tps, lat 38.633 ms stddev 17.867, 0 failed
-progress: 600.0 s, 259.1 tps, lat 38.581 ms stddev 18.103, 0 failed
-transaction type: <builtin: TPC-B (sort of)>
-scaling factor: 1
-query mode: simple
-number of clients: 10
-number of threads: 1
-maximum number of tries: 1
-duration: 600 s
-number of transactions actually processed: 155633
-number of failed transactions: 0 (0.000%)
-latency average = 38.541 ms
-latency stddev = 18.270 ms
-initial connection time = 114.318 ms
-tps = 259.419597 (without initial connection time)
+  test_db1=# 
+  test_db1=# \q
+  ubuntu@srv-postgres:~$
+  ubuntu@srv-postgres:~$ sudo -u postgres pgbench -P 30 -T 600 -c 10 test_db1
+  pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+  starting vacuum...end.
+  progress: 30.0 s, 253.1 tps, lat 39.323 ms stddev 18.350, 0 failed
+  progress: 60.0 s, 257.3 tps, lat 38.854 ms stddev 18.449, 0 failed
+  progress: 90.0 s, 258.1 tps, lat 38.742 ms stddev 17.978, 0 failed
+  progress: 120.0 s, 258.3 tps, lat 38.716 ms stddev 18.426, 0 failed
+  progress: 150.0 s, 262.2 tps, lat 38.132 ms stddev 18.431, 0 failed
+  progress: 180.0 s, 264.2 tps, lat 37.855 ms stddev 18.073, 0 failed
+  progress: 210.0 s, 258.1 tps, lat 38.734 ms stddev 18.581, 0 failed
+  progress: 240.0 s, 258.7 tps, lat 38.644 ms stddev 18.574, 0 failed
+  progress: 270.0 s, 262.4 tps, lat 38.111 ms stddev 18.592, 0 failed
+  progress: 300.0 s, 261.0 tps, lat 38.317 ms stddev 18.481, 0 failed
+  progress: 330.0 s, 256.5 tps, lat 38.973 ms stddev 18.245, 0 failed
+  progress: 360.0 s, 262.9 tps, lat 38.030 ms stddev 17.721, 0 failed
+  progress: 390.0 s, 260.8 tps, lat 38.335 ms stddev 18.061, 0 failed
+  progress: 420.0 s, 263.1 tps, lat 38.009 ms stddev 17.724, 0 failed
+  progress: 450.0 s, 262.9 tps, lat 38.029 ms stddev 18.349, 0 failed
+  progress: 480.0 s, 260.1 tps, lat 38.444 ms stddev 18.071, 0 failed
+  progress: 510.0 s, 253.1 tps, lat 39.508 ms stddev 18.379, 0 failed
+  progress: 540.0 s, 256.7 tps, lat 38.953 ms stddev 18.822, 0 failed
+  progress: 570.0 s, 258.9 tps, lat 38.633 ms stddev 17.867, 0 failed
+  progress: 600.0 s, 259.1 tps, lat 38.581 ms stddev 18.103, 0 failed
+  transaction type: <builtin: TPC-B (sort of)>
+  scaling factor: 1
+  query mode: simple
+  number of clients: 10
+  number of threads: 1
+  maximum number of tries: 1
+  duration: 600 s
+  number of transactions actually processed: 155633
+  number of failed transactions: 0 (0.000%)
+  latency average = 38.541 ms
+  latency stddev = 18.270 ms
+  initial connection time = 114.318 ms
+  tps = 259.419597 (without initial connection time)
 
-ubuntu@srv-postgres:~$ 
-ubuntu@srv-postgres:~$ sudo -u postgres psql -d test_db1 -c 'SELECT pg_current_wal_lsn(), pg_current_wal_insert_lsn(), pg_walfile_name(pg_current_wal_lsn()) file_current_wal_lsn, pg_walfile_name(pg_current_wal_insert_lsn()) file_current_wal_insert_lsn'
+  ubuntu@srv-postgres:~$ 
+  ubuntu@srv-postgres:~$ sudo -u postgres psql -d test_db1 -c 'SELECT pg_current_wal_lsn(), pg_current_wal_insert_lsn(), pg_walfile_name(pg_current_wal_lsn()) file_current_wal_lsn, pg_walfile_name(pg_current_wal_insert_lsn()) file_current_wal_insert_lsn'
 
- pg_current_wal_lsn | pg_current_wal_insert_lsn |   file_current_wal_lsn   | file_current_wal_insert_lsn 
---------------------+---------------------------+--------------------------+-----------------------------
- 1/7AFB2868         | 1/7AFB2868                | 00000001000000010000007A | 00000001000000010000007A
-(1 row)
+   pg_current_wal_lsn | pg_current_wal_insert_lsn |   file_current_wal_lsn   | file_current_wal_insert_lsn 
+  --------------------+---------------------------+--------------------------+-----------------------------
+   1/7AFB2868         | 1/7AFB2868                | 00000001000000010000007A | 00000001000000010000007A
+  (1 row)
 
-ubuntu@srv-postgres:~$ 
-```
+  ubuntu@srv-postgres:~$ 
+  ```
 
 ***
 
 > ### 3. Измерьте, какой объем журнальных файлов был сгенерирован за это время. Оцените, какой объем приходится в среднем на одну контрольную точку.
-* Д
+* Объем журнальных файлов был сгенерирован за это время. Данные lsn взяли из пункта(задания) 2
+  * Вариант 1 из курса
+    ```sql
+    test_db1=# SELECT '1/7AFB2868'::pg_lsn - '1/65410AC8'::pg_lsn wal_size;
+     wal_size  
+    -----------
+     364518816
+    (1 row)
+    ```
+  * Вариант 2 из курса, обвернутый в функцию `pg_size_pretty` с человеческим видом размера
+    ```sql
+    test_db1=# SELECT pg_size_pretty('1/7AFB2868'::pg_lsn - '1/65410AC8'::pg_lsn) wal_size;
+     wal_size  
+    -----------
+     348 MB
+    (1 row)
+    ```
+  * Вариант 3 через функцию `pg_wal_lsn_diff`
+    ```sql
+    test_db1=# select pg_wal_lsn_diff('1/7AFB2868'::pg_lsn,'1/65410AC8'::pg_lsn) wal_size;
+     wal_size  
+    -----------
+     364518816
+    (1 row)
+    ```  
+  * Вариант 4 через функцию `pg_wal_lsn_diff`, обвернутый в функцию `pg_size_pretty` с человеческим видом размера
+    ```sql
+    test_db1=# select pg_size_pretty(pg_wal_lsn_diff('1/7AFB2868'::pg_lsn,'1/65410AC8'::pg_lsn)) wal_size;
+     wal_size  
+    -----------
+     348 MB
+    (1 row)
+    ```
+    
+* Какой объем приходится в среднем на одну контрольную точку
+  * Объем сгенерированных wal `364 518 816 Кб` или `348 MB`
+  * Тест с pgbench выполнялся `10 минут` т.е. `600 секунд`
+  * Контрольная точка выполняется `раз в 30 секунд` `checkpoint_timeout=30`
+  * Получается: `364 518 816 Кб/600*30`=`18 225 940,8 Кб` или `348 MB/600*30`=`17,4 MB`
+
+***
+> ### 4. Проверьте данные статистики: все ли контрольные точки выполнялись точно по расписанию. Почему так произошло?
+* Думаем
 
 ***
 
-pg_current_wal_lsn()
-а вот как среднюю посчитать ?
-
 select blks_hit-:blks_hit"blk hit",blks_read-:blks_read"blk read",tup_inserted-:tup_inserted"ins",tup_updated-:tup_updated"upd",tup_deleted-:tup_deleted"del",tup_returned-:tup_returned"tup ret",tup_fetched-:tup_fetched"tup fch",xact_commit-:xact_commit"commit",xact_rollback-:xact_rollback"rbk",pg_size_pretty(pg_wal_lsn_diff(pg_current_wal_lsn(),:'pg_current_wal_lsn')) "WAL",pg_size_pretty(temp_bytes-:temp_bytes)"temp" from pg_stat_database where datname=current_database();
-
-pg_wal_lsn_diff
-
 SELECT pg_walfile_name(pg_current_wal_lsn());
 
 -- посмотрим какой у нас wal file
