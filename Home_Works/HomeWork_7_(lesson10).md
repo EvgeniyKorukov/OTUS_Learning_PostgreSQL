@@ -1,7 +1,41 @@
 <div align="center"><h2> Отчет о выполнении домашнего задания по теме: Журналы</h2></div>
 
- Настройте выполнение контрольной точки раз в 30 секунд
-checkpoint_timeout = 30 s
+
+***
+
+> ### Настройте выполнение контрольной точки раз в 30 секунд
+* Поскольку context=sighup, то чтобы применить параметр, будет достаточно SELECT pg_reload_conf()
+```sql
+postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
+        name        | setting | unit | context 
+--------------------+---------+------+---------
+ checkpoint_timeout | 300     | s    | sighup
+(1 row)
+
+postgres=# alter system set checkpoint_timeout = 30;
+ALTER SYSTEM
+postgres=# 
+postgres=# select pg_reload_conf();
+ pg_reload_conf 
+----------------
+ t
+(1 row)
+
+postgres=# 
+postgres=# select name, setting, unit, context from pg_settings where name='checkpoint_timeout';
+        name        | setting | unit | context 
+--------------------+---------+------+---------
+ checkpoint_timeout | 30      | s    | sighup
+(1 row)
+
+postgres=# 
+```
+
+***
+
+
+
+
 
 3. Измерьте, какой объем журнальных файлов был сгенерирован за это время. Оцените, какой
 объем приходится в среднем на одну контрольную точку.
