@@ -147,6 +147,190 @@
 
 ***
 
+***
+> ### 5. Сравните tps в синхронном/асинхронном режиме утилитой pgbench. Объясните полученный результат.
+  * Параметры синхронного режима из лекции:
+    * synchronous_commit = on
+    * commit_delay = 0
+    * commit_siblings = 5
+  * Проводим тестирование pgbench на синхронном режиме работы
+    ```sql
+    ubuntu@srv-postgres:~$ sudo -u postgres pgbench -P 1 -T 10 test_db1
+    pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+    starting vacuum...end.
+    progress: 1.0 s, 152.0 tps, lat 6.460 ms stddev 0.911, 0 failed
+    progress: 2.0 s, 149.0 tps, lat 6.741 ms stddev 0.577, 0 failed
+    progress: 3.0 s, 154.0 tps, lat 6.495 ms stddev 0.389, 0 failed
+    progress: 4.0 s, 167.0 tps, lat 5.977 ms stddev 0.163, 0 failed
+    progress: 5.0 s, 154.0 tps, lat 6.489 ms stddev 0.268, 0 failed
+    progress: 6.0 s, 159.0 tps, lat 6.299 ms stddev 0.483, 0 failed
+    progress: 7.0 s, 160.0 tps, lat 6.222 ms stddev 0.395, 0 failed
+    progress: 8.0 s, 172.0 tps, lat 5.829 ms stddev 0.288, 0 failed
+    progress: 9.0 s, 172.0 tps, lat 5.819 ms stddev 0.270, 0 failed
+    progress: 10.0 s, 163.0 tps, lat 6.111 ms stddev 0.646, 0 failed
+    transaction type: <builtin: TPC-B (sort of)>
+    scaling factor: 1
+    query mode: simple
+    number of clients: 1
+    number of threads: 1
+    maximum number of tries: 1
+    duration: 10 s
+    number of transactions actually processed: 1603
+    number of failed transactions: 0 (0.000%)
+    latency average = 6.230 ms
+    latency stddev = 0.564 ms
+    initial connection time = 12.167 ms
+    tps = 160.469327 (without initial connection time)
+    ubuntu@srv-postgres:~$ 
+    ```
+  * Параметры асинхронного режима из лекции:
+    * synchronous_commit = off
+    * wal_writer_delay = 200ms
+
+  * Переводим Postgres в асинхронный режим и проводим тестирование с помощью pgbench
+    ```sql
+    test_db1=# ALTER SYSTEM SET synchronous_commit = off;
+    ALTER SYSTEM
+    test_db1=# SELECT pg_reload_conf();
+     pg_reload_conf 
+    ----------------
+     t
+    (1 row)
+
+    test_db1=# show synchronous_commit;
+     synchronous_commit 
+    --------------------
+     off
+    (1 row)
+
+    test_db1=# \q
+    ubuntu@srv-postgres:~$ 
+    ubuntu@srv-postgres:~$ sudo -u postgres pgbench -P 1 -T 10 test_db1
+    [sudo] password for ubuntu: 
+    pgbench (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+    starting vacuum...end.
+    progress: 1.0 s, 264.0 tps, lat 3.740 ms stddev 0.506, 0 failed
+    progress: 2.0 s, 271.0 tps, lat 3.688 ms stddev 0.235, 0 failed
+    progress: 3.0 s, 273.0 tps, lat 3.655 ms stddev 0.264, 0 failed
+    progress: 4.0 s, 276.0 tps, lat 3.619 ms stddev 0.180, 0 failed
+    progress: 5.0 s, 276.0 tps, lat 3.629 ms stddev 0.222, 0 failed
+    progress: 6.0 s, 275.0 tps, lat 3.630 ms stddev 0.273, 0 failed
+    progress: 7.0 s, 277.0 tps, lat 3.609 ms stddev 0.500, 0 failed
+    progress: 8.0 s, 283.0 tps, lat 3.532 ms stddev 0.185, 0 failed
+    progress: 9.0 s, 284.9 tps, lat 3.513 ms stddev 0.197, 0 failed
+    progress: 10.0 s, 281.0 tps, lat 3.557 ms stddev 0.201, 0 failed
+    transaction type: <builtin: TPC-B (sort of)>
+    scaling factor: 1
+    query mode: simple
+    number of clients: 1
+    number of threads: 1
+    maximum number of tries: 1
+    duration: 10 s
+    number of transactions actually processed: 2762
+    number of failed transactions: 0 (0.000%)
+    latency average = 3.616 ms
+    latency stddev = 0.306 ms
+    initial connection time = 12.050 ms
+    tps = 276.437653 (without initial connection time)
+    ubuntu@srv-postgres:~$ 
+    ```
+  * Результат:
+    * Увеличились `tps` c `tps = 160.469327` до `tps = 276.437653`. Значительно увеличилось количество транзакций в секунду.
+    * Уменьшилась `latency average` с `latency average = 6.230 ms` до `latency average = 3.616 ms`. Уменьшилось среднее время задержки.
+    * Уменьшилась `latency stddev` с `latency stddev = 0.564 ms` до `latency stddev = 0.306 ms`. Уменьшилось время задержки с дисковым устройством.
+    * Да, производительность сервера увеличилась, но упала надежность и отказоустойчивость. Тут надо выбирать в зависимости от задачи, или надежнось или производителность, в ущерб надежности.
+    
+***
+
+> ### 6. Создайте новый кластер с включенной контрольной суммой страниц. 
+  ```sql
+    ubuntu@srv-postgres:~$ sudo pg_createcluster 15 main2 --start -- --data-checksums
+    Creating new PostgreSQL cluster 15/main2 ...
+    /usr/lib/postgresql/15/bin/initdb -D /var/lib/postgresql/15/main2 --auth-local peer --auth-host scram-sha-256 --no-instructions --data-checksums
+    The files belonging to this database system will be owned by user "postgres".
+    This user must also own the server process.
+
+    The database cluster will be initialized with locale "en_US.UTF-8".
+    The default database encoding has accordingly been set to "UTF8".
+    The default text search configuration will be set to "english".
+
+    Data page checksums are enabled.
+
+    fixing permissions on existing directory /var/lib/postgresql/15/main2 ... ok
+    creating subdirectories ... ok
+    selecting dynamic shared memory implementation ... posix
+    selecting default max_connections ... 100
+    selecting default shared_buffers ... 128MB
+    selecting default time zone ... Etc/UTC
+    creating configuration files ... ok
+    running bootstrap script ... ok
+    performing post-bootstrap initialization ... ok
+    syncing data to disk ... ok
+    Ver Cluster Port Status Owner    Data directory               Log file
+    15  main2   5433 online postgres /var/lib/postgresql/15/main2 /var/log/postgresql/postgresql-15-main2.log
+    ubuntu@srv-postgres:~$ 
+    ubuntu@srv-postgres:~$ sudo -u postgres psql -p 5433 -c 'show data_checksums'
+    could not change directory to "/home/ubuntu": Permission denied
+     data_checksums 
+    ----------------
+     on
+    (1 row)
+
+    ubuntu@srv-postgres:~$ 
+  ```
+> Создайте таблицу. 
+> Вставьте несколько значений. 
+> Выключите кластер. 
+> Измените пару байт в таблице. 
+> Включите кластер и сделайте выборку из таблицы. 
+  ```sql
+  ubuntu@srv-postgres:~$ sudo -u postgres psql -p 5433 
+  could not change directory to "/home/ubuntu": Permission denied
+  psql (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
+  Type "help" for help.
+
+  postgres=# 
+  postgres=# CREATE TABLE test_text(t text);
+  INSERT INTO test_text SELECT 'строка '||s.id FROM generate_series(1,500) AS s(id); 
+  CREATE TABLE
+  INSERT 0 500
+  postgres=# 
+  postgres=# SELECT pg_relation_filepath('test_text');
+   pg_relation_filepath 
+  ----------------------
+   base/5/16387
+  (1 row)
+
+  postgres=# 
+  postgres=# \q
+  ubuntu@srv-postgres:~$ sudo -u postgres pg_ctlcluster 15 main2 stop 
+  ubuntu@srv-postgres:~$ sudo -u postgres pg_lsclusters 
+  Ver Cluster Port Status Owner    Data directory               Log file
+  15  main    5432 online postgres /var/lib/postgresql/15/main  /var/log/postgresql/postgresql-15-main.log
+  15  main2   5433 down   postgres /var/lib/postgresql/15/main2 /var/log/postgresql/postgresql-15-main2.log
+  ubuntu@srv-postgres:~$ 
+  ubuntu@srv-postgres:~$  sudo dd if=/dev/zero of=/var/lib/postgresql/15/main2/base/5/16387 oflag=dsync conv=notrunc bs=1 count=8
+  8+0 records in
+  8+0 records out
+  8 bytes copied, 0.0214502 s, 0.4 kB/s
+  ubuntu@srv-postgres:~$ 
+  ubuntu@srv-postgres:~$ sudo -u postgres pg_ctlcluster 15 main2 start
+  ubuntu@srv-postgres:~$ 
+  ubuntu@srv-postgres:~$ sudo -u postgres psql -p 5433 -c 'select * from test_text'
+  could not change directory to "/home/ubuntu": Permission denied
+  WARNING:  page verification failed, calculated checksum 63015 but expected 49533
+  ERROR:  invalid page in block 0 of relation base/5/16387
+  ubuntu@srv-postgres:~$ 
+  
+  ```
+> Что и почему произошло? 
+* При обращение к объекту обнаружилось нарушение в контрольной сумме. Или, другими словами, обнаружились поврежденные данные. 
+
+> как проигнорировать ошибку и продолжить работу?
+  * Можно использовать параметр `ignore_checksum_failure = on` для того чтобы считать, не поврежденные, данные из таблицы.
+
+***
+
 select blks_hit-:blks_hit"blk hit",blks_read-:blks_read"blk read",tup_inserted-:tup_inserted"ins",tup_updated-:tup_updated"upd",tup_deleted-:tup_deleted"del",tup_returned-:tup_returned"tup ret",tup_fetched-:tup_fetched"tup fch",xact_commit-:xact_commit"commit",xact_rollback-:xact_rollback"rbk",pg_size_pretty(pg_wal_lsn_diff(pg_current_wal_lsn(),:'pg_current_wal_lsn')) "WAL",pg_size_pretty(temp_bytes-:temp_bytes)"temp" from pg_stat_database where datname=current_database();
 SELECT pg_walfile_name(pg_current_wal_lsn());
 
@@ -284,26 +468,3 @@ show wal_sync_method;
 ● wal_writer_delay = 200ms
 
 ---
-
-
--- Попробуем нагрузочное тестирование в синхронном и асинхронном режиме
-pgbench -i buffer_temp
-pgbench -P 1 -T 10 buffer_temp
-
-ALTER SYSTEM SET synchronous_commit = off;
-
-pgbench -P 1 -T 10 buffer_temp
--- почему не увидели разницы???
-
-
-SELECT pg_reload_conf(); -- конфигурацию-то не перечитали %)
-sudo pg_ctlcluster 13 main reload
--- на простых старых hdd разница до 30 раз 
-
-
-
-*__Домашнее задание
-Измерьте, какой объем журнальных файлов был сгенерирован за это время. Оцените, какой объем приходится в среднем на одну контрольную точку.
-Проверьте данные статистики: все ли контрольные точки выполнялись точно по расписанию. Почему так произошло?
-Сравните tps в синхронном/асинхронном режиме утилитой pgbench. Объясните полученный результат.
-Создайте новый кластер с включенной контрольной суммой страниц. Создайте таблицу. Вставьте несколько значений. Выключите кластер. Измените пару байт в таблице. Включите кластер и сделайте выборку из таблицы. Что и почему произошло? как проигнорировать ошибку и продолжить работу?__*
