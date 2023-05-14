@@ -36,7 +36,7 @@
 > ### 2. 10 минут c помощью утилиты pgbench подавайте нагрузку.
 * Для выполнения пункта(задания) 3, нам надо выполнить запрос, сохранив его данные, до и после тестов с pgbench.
 * Инициализацию pgbench, для БД `test_db1` провел заранее, командой `pgbench -i test_db1`
-  ```console
+  ```sql
   ubuntu@srv-postgres:~$ sudo -u postgres psql -d test_db1
   psql (15.2 (Ubuntu 15.2-1.pgdg22.04+1))
   Type "help" for help.
