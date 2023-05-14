@@ -61,6 +61,15 @@ https://dba.stackexchange.com/questions/192564/is-there-a-query-to-check-the-cur
 https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-WAL-VIEW
 https://www.ktexperts.com/wal-internals-in-postgresql/
 
+
+
+https://dataegret.com/2017/03/deep-dive-into-postgres-stats-pg_stat_bgwriter/
+https://habr.com/ru/articles/505440/
+https://sysadminium.ru/statistika_raboty_postgresql/
+https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-BGWRITER-VIEW
+https://www.postgresql.org/docs/current/monitoring-stats.html
+https://www.2ndquadrant.com/en/blog/measuring_postgresql_checkpoin/
+
 ---
 pg_current_wal_lsn()
 
