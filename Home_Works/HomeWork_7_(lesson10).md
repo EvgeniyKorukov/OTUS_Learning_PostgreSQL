@@ -42,6 +42,9 @@ sudo /usr/lib/postgresql/13/bin/pg_waldump -p /var/lib/postgresql/13/main/pg_wal
 кластер и сделайте выборку из таблицы. Что и почему произошло? как проигнорировать ошибку и
 продолжить работу?
 Найти параметр игнорирующих поврежденные данные
+=> SET ignore_checksum_failure = on;
+=> SELECT * FROM wallevel;
+
 
 \c buffer_temp
 SELECT pg_relation_filepath('test_text');
@@ -69,6 +72,8 @@ https://sysadminium.ru/statistika_raboty_postgresql/
 https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-BGWRITER-VIEW
 https://www.postgresql.org/docs/current/monitoring-stats.html
 https://www.2ndquadrant.com/en/blog/measuring_postgresql_checkpoin/
+https://sysadminium.ru/bufernyj_kesh_i_zhurnal_wal_v_postgresql/
+https://habr.com/ru/companies/postgrespro/articles/496150/
 
 ---
 pg_current_wal_lsn()
