@@ -79,7 +79,7 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
     eugin@pg-srv:~$ 
     ```
-  * ❗️ Проводим измерение нагрузки через pgbench, со значениями по умолчанию для PostgreSQL 15. Параметры запуска pgbench такие:
+  * ❗️ **Проводим измерение нагрузки через pgbench, со значениями по умолчанию для PostgreSQL 15. Параметры запуска pgbench такие:**
     * 20 клиентов `--client=20`
     * Новое подключение для каждой транзакции `--connect`
     * 5 параллельных потоков `--jobs=5`
