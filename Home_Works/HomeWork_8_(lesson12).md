@@ -150,8 +150,106 @@
 *** 
 
 > ### настроить кластер PostgreSQL 15 на максимальную производительность не обращая внимание на возможные проблемы с надежностью в случае аварийной перезагрузки виртуальной машины
-  * In Process
+ * Берем калькулятор параметров [PGTune](https://pgtune.leopard.in.ua/) и считаем параметры для следующей конфигурации:
+   * DB version: `15`
+   * OS Type: `Linux`
+   * DB Type: `Mixed type of application`
+   * Total Memory (RAM): `4 GB`
+   * Number of CPUs: `2`
+   * Number of Connections: `20` 
+   * Data Storage: `SSD Storage`
+     ```sql
+     # DB Version: 15
+     # OS Type: linux
+     # DB Type: mixed
+     # Total Memory (RAM): 4 GB
+     # CPUs num: 2
+     # Connections num: 20
+     # Data Storage: ssd
 
+     max_connections = 20
+     shared_buffers = 1GB
+     effective_cache_size = 3GB
+     maintenance_work_mem = 256MB
+     checkpoint_completion_target = 0.9
+     wal_buffers = 16MB
+     default_statistics_target = 100
+     random_page_cost = 1.1
+     effective_io_concurrency = 200
+     work_mem = 13107kB
+     min_wal_size = 1GB
+     max_wal_size = 4GB
+     ```
+ * Изменим еще ряд парамеров для ускорения СУБД, в ущерб надежности:
+   * Переведем режим журналирования в минимальный режим т.к. реплик у нас нет, а минимального уровня хватит для восстановаления. 
+     * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal)=`minimal`
+     * Параметр wal_level определяет, как много информации записывается в WAL. Со значением replica (по умолчанию) в журнал записываются данные, необходимые для поддержки архивирования WAL и репликации, включая запросы только на чтение на ведомом сервере. Вариант minimal оставляет только информацию, необходимую для восстановления после сбоя или аварийного отключения.
+   * Количество `max_wal_senders` надо сделать равным `0` т.к. мы изменили wal_level, и если этого не сделать, то кластер PostgreSQL не запуститься
+     * [max_wal_senders](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-MAX-WAL-SENDERS)=`0`
+   * Переведем кластер PostgreSQL в асинхронный режим, тем самым мы не будем дожидаться оповещения о результате операции. 
+     * [synchronous_commit](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-SYNCHRONOUS-COMMIT)=`off`
+     * Определяет, после завершения какого уровня обработки WAL сервер будет сообщать об успешном выполнении операции. Допустимые значения: remote_apply (применено удалённо), on (вкл., по умолчанию), remote_write (записано удалённо), local (локально) и off (выкл.).
+   * Отключим режим синхронизации(подтверждения физической записи на СХД) СУБД с ОС по дисковому вводу/выводу. Есть риск потерять данные в случает отключения питания. 
+     * [fsync](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-FSYNC)=`off`
+     * Если этот параметр установлен, сервер Postgres Pro старается добиться, чтобы изменения были записаны на диск физически, выполняя системные вызовы fsync() или другими подобными методами (см. wal_sync_method). Это даёт гарантию, что кластер баз данных сможет вернуться в согласованное состояние после сбоя оборудования или операционной системы.
+     * ❗️ Хотя отключение fsync часто даёт выигрыш в скорости, это может привести к неисправимой порче данных в случае отключения питания или сбоя системы. Поэтому отключать fsync рекомендуется, только если вы легко сможете восстановить всю базу из внешнего источника.
+   * Отключим запись всего содержимого каждой страницы в wal при checkpoint
+     * [full_page_writes](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-FULL-PAGE-WRITES)=`off`
+     * Когда этот параметр включён, сервер Postgres Pro записывает в WAL всё содержимое каждой страницы при первом изменении этой страницы после контрольной точки. Это необходимо, потому что запись страницы, прерванная при сбое операционной системы, может выполниться частично, и на диске окажется страница, содержащая смесь старых данных с новыми. При этом информации об изменениях на уровне строк, которая обычно сохраняется в WAL, будет недостаточно для получения согласованного содержимого такой страницы при восстановлении после сбоя. Сохранение образа всей страницы гарантирует, что страницу можно восстановить корректно, ценой увеличения объёма данных, которые будут записываться в WAL. (Так как воспроизведение WAL всегда начинается от контрольной точки, достаточно сделать это при первом изменении каждой страницы после контрольной точки. Таким образом, уменьшить затраты на запись полных страниц можно, увеличив интервалы контрольных точек.)
+     * ❗️ Отключение этого параметра ускоряет обычные операции, но может привести к неисправимому повреждению или незаметной порче данных после сбоя системы. Так как при этом возникают практически те же риски, что и при отключении fsync, хотя и в меньшей степени, отключать его следует только при тех же обстоятельствах, которые перечислялись в рекомендациях для вышеописанного параметра.
+
+
+ * Применяем параметры на СУБД PostgreSQL и перезапускаем кластер, чтобы применились параметры:
+    ```sql
+    eugin@pg-srv:~$ sudo -u postgres psql
+    psql (15.3 (Ubuntu 15.3-1.pgdg20.04+1))
+    Type "help" for help.
+
+    postgres=# ALTER SYSTEM SET max_connections = '20';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET shared_buffers = '1GB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET effective_cache_size = '3GB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET maintenance_work_mem = '256MB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET checkpoint_completion_target = '0.9';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET wal_buffers = '16MB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET default_statistics_target = '100';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET random_page_cost = '1.1';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET effective_io_concurrency = '200';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET work_mem = '13107kB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET min_wal_size = '1GB';
+    ALTER SYSTEM
+    postgres=# ALTER SYSTEM SET max_wal_size = '4GB';
+    ALTER SYSTEM
+    postgres=#  
+    postgres=# alter system set wal_level='minimal';
+    ALTER SYSTEM
+    postgres=# alter system set max_wal_senders='0';
+    ALTER SYSTEM
+    postgres=# alter system set synchronous_commit='off';
+    ALTER SYSTEM
+    postgres=# alter system set fsync='off';
+    ALTER SYSTEM
+    postgres=# alter system set full_page_writes='off'; 
+    ALTER SYSTEM
+    postgres=# 
+    postgres=# \q
+    eugin@pg-srv:~$ 
+    eugin@pg-srv:~$ sudo pg_ctlcluster 15 main restart
+    eugin@pg-srv:~$ 
+    eugin@pg-srv:~$ pg_lsclusters 
+    Ver Cluster Port Status Owner    Data directory              Log file
+    15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
+    eugin@pg-srv:~$ 
+    ```
 
 *** 
 
