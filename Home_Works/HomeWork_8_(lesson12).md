@@ -250,17 +250,60 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
     eugin@pg-srv:~$ 
     ```
-
 *** 
 
 > ### нагрузить кластер через утилиту через утилиту pgbench (https://postgrespro.ru/docs/postgrespro/14/pgbench)
-  * In Process
-  
-
+* Проводим измерение нагрузки через pgbench. Параметры запуска pgbench такие:**
+    * 20 клиентов `--client=20`
+    * Новое подключение для каждой транзакции `--connect`
+    * 5 параллельных потоков `--jobs=5`
+    * Выводим прогрес каждые 30 секунд `--progress=30`
+    * Время на тест 300 секунд или 5 минут `--time=300`
+    * База: bench_tests
+    ```console  
+    eugin@pg-srv:~$ sudo -u postgres pgbench --client=20 --connect --jobs=5 --progress=30 --time=300 bench_tests
+    pgbench (15.3 (Ubuntu 15.3-1.pgdg20.04+1))
+    starting vacuum...end.
+    pgbench: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: FATAL:  sorry, too many clients already
+    pgbench: error: client 2 aborted while establishing connection
+    progress: 30.0 s, 322.0 tps, lat 52.931 ms stddev 28.149, 0 failed
+    progress: 60.0 s, 323.6 tps, lat 52.094 ms stddev 27.503, 0 failed
+    progress: 90.0 s, 328.2 tps, lat 51.326 ms stddev 26.695, 0 failed
+    progress: 120.0 s, 323.7 tps, lat 52.067 ms stddev 27.247, 0 failed
+    progress: 150.0 s, 326.8 tps, lat 51.639 ms stddev 27.110, 0 failed
+    progress: 180.0 s, 324.6 tps, lat 52.092 ms stddev 26.365, 0 failed
+    progress: 210.0 s, 324.8 tps, lat 51.968 ms stddev 26.565, 0 failed
+    progress: 240.0 s, 325.0 tps, lat 51.929 ms stddev 26.235, 0 failed
+    progress: 270.0 s, 321.7 tps, lat 52.542 ms stddev 26.743, 0 failed
+    progress: 300.0 s, 325.2 tps, lat 51.913 ms stddev 26.672, 0 failed
+    transaction type: <builtin: TPC-B (sort of)>
+    scaling factor: 1
+    query mode: simple
+    number of clients: 20
+    number of threads: 5
+    maximum number of tries: 1
+    duration: 300 s
+    number of transactions actually processed: 97383
+    number of failed transactions: 0 (0.000%)
+    latency average = 52.047 ms
+    latency stddev = 26.935 ms
+    average connection time = 6.546 ms
+    tps = 324.580605 (including reconnection times)
+    pgbench: error: Run was aborted; the above results are incomplete.
+    eugin@pg-srv:~$ 
+    ```
 *** 
 
 > ### написать какого значения tps удалось достичь, показать какие параметры в какие значения устанавливали и почему
-  * In Process  
+* Выводы:
+  * `number of transactions actually processed` было `63410` стало `97383`. Количество транзакций увеличилось в `1,54` раза и это хороший результат.
+  * `latency average` было `91.079 ms` стало `52.047 ms`. Средняя задержка уменьшилась в `1,75` раза и это хороший результат.
+  * `latency stddev` было `84.750 ms` стало `26.935 ms`. Средняя задержка дисковых устройств уменьшилась в `3,15` раза и это очень хороший результат.
+  * `average connection time` было `3.554 ms` стало `6.546 ms`. Увеличилось среднее время подключения в `1,84` раза, что не есть хорошо. Но это вызывано тем, что pgbench упирался в количество подключений, которое мы уменьшили.
+  * `tps` было `211.293792` стало `324.580605`. В `1,54` раза увеличилось количество транзакций в секунду, что есть очень хорошо.
+* Результат: 
+  * Производительность стала намного выше, но в ущерб надежности.
+  * Второй прогон pgbench выполнился не полностью т.к. уперся в количество подключений `max_connections`, которое мы уменьшили с `100` до `20` в процессе настройки. 
  
 
 *** 
