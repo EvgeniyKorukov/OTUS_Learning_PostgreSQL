@@ -36,7 +36,7 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
     user@srv-pg-ubuntu:~$
     ```
- ***
+***
 
 > ### 2. Создаем БД, схему и в ней таблицу.
 * Тут все просто и логи ниже, но таблица создается с указанием схемы и список таблиц смотрим через указание схемы `\dt schm_backup.*`
@@ -84,7 +84,7 @@
 
     user@srv-pg-ubuntu:~$
     ```
- ***
+***
 
 > ### 3. Заполним таблицы автосгенерированными 100 записями.
 ```console
@@ -99,7 +99,7 @@ user@srv-pg-ubuntu:~$ sudo -u postgres psql -d db_backup -c 'SELECT count(*) fro
 
 user@srv-pg-ubuntu:~$ 
 ```
- ***
+***
 
 > ### 4. Под линукс пользователем Postgres создадим каталог для бэкапов
 ```console
@@ -114,19 +114,38 @@ postgres@srv-pg-ubuntu:~$ ls
 15  backups
 postgres@srv-pg-ubuntu:~$
 ```
- ***
+***
 
 > ### 5. Сделаем логический бэкап используя утилиту COPY
-  * Text
-    ```console
-    ```
+```sql
+postgres@srv-pg-ubuntu:~$ psql -d db_backup
+psql (15.3 (Ubuntu 15.3-1.pgdg22.04+1))
+Type "help" for help.
+
+db_backup=# \copy schm_backup.tbl1 to '/var/lib/postgresql/backups/tbl1.sql';
+COPY 100
+db_backup=#
+```
     
-  ***
+***
 
 > ### 6. Восстановим в 2 таблицу данные из бэкапа.
-  * Text
-    ```console
-    ```
+```sql
+db_backup=#
+db_backup=# create table schm_backup.tbl2(c1 int);
+CREATE TABLE
+db_backup=#
+db_backup=# \copy schm_backup.tbl2 from '/var/lib/postgresql/backups/tbl1.sql';
+COPY 100
+db_backup=#
+db_backup=# select count(*) from schm_backup.tbl2;
+ count
+-------
+   100
+(1 row)
+
+db_backup=#
+```
     
     
   ***
