@@ -87,15 +87,33 @@
  ***
 
 > ### 3. Заполним таблицы автосгенерированными 100 записями.
-  * Text
-    ```console
-    ```
+```console
+user@srv-pg-ubuntu:~$ sudo -u postgres psql -d db_backup -c 'INSERT INTO schm_backup.tbl1(c1) SELECT generate_series(1,100);'
+INSERT 0 100
+user@srv-pg-ubuntu:~$
+user@srv-pg-ubuntu:~$ sudo -u postgres psql -d db_backup -c 'SELECT count(*) from schm_backup.tbl1;'
+ count 
+-------
+   100
+(1 row)
+
+user@srv-pg-ubuntu:~$ 
+```
  ***
 
 > ### 4. Под линукс пользователем Postgres создадим каталог для бэкапов
-  * Text
-    ```console
-    ```
+```console
+user@srv-pg-ubuntu:~$ sudo su - postgres
+postgres@srv-pg-ubuntu:~$
+postgres@srv-pg-ubuntu:~$ cd ~
+postgres@srv-pg-ubuntu:~$
+postgres@srv-pg-ubuntu:~$ pwd
+/var/lib/postgresql
+postgres@srv-pg-ubuntu:~$ mkdir backups
+postgres@srv-pg-ubuntu:~$ ls
+15  backups
+postgres@srv-pg-ubuntu:~$
+```
  ***
 
 > ### 5. Сделаем логический бэкап используя утилиту COPY
