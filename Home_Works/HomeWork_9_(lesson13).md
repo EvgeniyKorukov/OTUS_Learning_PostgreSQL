@@ -148,7 +148,7 @@ db_backup=#
 ```
     
     
-  ***
+***
 
 > ### 7. Используя утилиту pg_dump создадим бэкап с оглавлением в кастомном сжатом формате 2 таблиц
 * ❗️Если я правильно понял термин "бэкап с оглавлением", то это про опцию `--schema-only` т.е. бэкап со структурой, но без данных
@@ -163,13 +163,32 @@ db_backup=#
   -rw-rw-r-- 1 postgres postgres  292 May 24 21:51 tbl1.sql
   postgres@srv-pg-ubuntu:~/backups$
   ```
+   
     
-    
- ***
+***
 
 > ### 8. Используя утилиту pg_restore восстановим в новую БД только вторую таблицу!
-  * Text
-    ```console
-    ```
+```console
+postgres@srv-pg-ubuntu:~/backups$ echo "CREATE DATABASE otus;" | psql -U postgres
+CREATE DATABASE
+postgres@srv-pg-ubuntu:~/backups$ echo "CREATE SCHEMA schm_backup;" | psql -U postgres -d otus
+CREATE SCHEMA
+postgres@srv-pg-ubuntu:~/backups$
+postgres@srv-pg-ubuntu:~/backups$ pg_restore -d otus -U postgres -n schm_backup -t tbl2  '/var/lib/postgresql/backups/db_backup_all.gz'
+postgres@srv-pg-ubuntu:~/backups$
+postgres@srv-pg-ubuntu:~/backups$ psql -d otus -c '\dt schm_backup.*'
+           List of relations
+   Schema    | Name | Type  |  Owner
+-------------+------+-------+----------
+ schm_backup | tbl2 | table | postgres
+(1 row)
+
+postgres@srv-pg-ubuntu:~/backups$ psql -d otus -c 'select * from schm_backup.tbl2;'
+ c1
+----
+(0 rows)
+
+postgres@srv-pg-ubuntu:~/backups$
+```
       
- ***      
+***      
