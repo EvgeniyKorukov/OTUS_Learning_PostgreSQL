@@ -151,9 +151,18 @@ db_backup=#
   ***
 
 > ### 7. Используя утилиту pg_dump создадим бэкап с оглавлением в кастомном сжатом формате 2 таблиц
-  * Text
-    ```console
-    ```
+* ❗️Если я правильно понял термин "бэкап с оглавлением", то это про опцию `--schema-only` т.е. бэкап со структурой, но без данных
+  ```console
+  postgres@srv-pg-ubuntu:~/backups$ pwd
+  /var/lib/postgresql/backups
+  postgres@srv-pg-ubuntu:~/backups$ pg_dump -d db_backup --schema-only -Fc > db_backup_all.gz
+  postgres@srv-pg-ubuntu:~/backups$
+  postgres@srv-pg-ubuntu:~/backups$ ls -ll
+  total 8
+  -rw-rw-r-- 1 postgres postgres 1500 May 24 22:18 db_backup_all.gz
+  -rw-rw-r-- 1 postgres postgres  292 May 24 21:51 tbl1.sql
+  postgres@srv-pg-ubuntu:~/backups$
+  ```
     
     
  ***
