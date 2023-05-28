@@ -399,6 +399,7 @@
     ```
   * Правим параметры и рестартуем postgres, чтобы параметры применились:
     * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
+    * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
       ALTER SYSTEM
