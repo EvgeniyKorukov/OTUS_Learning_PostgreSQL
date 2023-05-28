@@ -4,8 +4,6 @@
 
 > ### 1. На 1 ВМ создаем таблицы test для записи, test2 для запросов на чтение.
   * Создаем ВМ 1
-  * Подключаемся к ВМ 1
-  * Устанавливаем PostgreSQL 15 
     ```console
     eugink@nb-xiaomi ~ $ yc compute instance create \
       --name pg-srv1 \
@@ -55,8 +53,10 @@
       preemptible: true
     network_settings:
       type: STANDARD
-    placement_policy: {}
-
+    placement_policy: {}  
+    ```
+  * Подключаемся к ВМ 1
+    ```console
     eugink@nb-xiaomi ~ $ ssh ubuntu@51.250.19.127
     Warning: Permanently added '51.250.19.127' (ED25519) to the list of known hosts.
     Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-148-generic x86_64)
@@ -74,8 +74,10 @@
 
     /usr/bin/xauth:  file /home/ubuntu/.Xauthority does not exist
     To run a command as administrator (user "root"), use "sudo <command>".
-    See "man sudo_root" for details.
-
+    See "man sudo_root" for details.    
+    ```
+  * Устанавливаем PostgreSQL 15 
+    ```console
     ubuntu@pg-srv1:~$ sudo apt update && sudo apt upgrade -y && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt-get -y install postgresql-15
     Hit:1 http://mirror.yandex.ru/ubuntu focal InRelease
     Get:2 http://mirror.yandex.ru/ubuntu focal-updates InRelease [114 kB]
@@ -393,9 +395,28 @@
     ubuntu@pg-srv1:~$ 
     ubuntu@pg-srv1:~$ pg_lsclusters 
     Ver Cluster Port Status Owner    Data directory              Log file
-    15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-    ubuntu@pg-srv1:~$ 
+    15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log    
     ```
+  * Правим параметры и рестартуем postgres, чтобы параметры применились:
+    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
+      ```console
+      ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
+      ALTER SYSTEM
+      ubuntu@pg-srv1:~$ sudo pg_ctlcluster 15 main restart
+      ubuntu@pg-srv1:~$ 
+      ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'show wal_level'
+       wal_level 
+      -----------
+       logical
+      (1 row)
+      ```
+  * Правим pg_hba и делаем reload, чтобы применились параметры:
+    * Добавляем:
+      * host    all             all             10.129.0.0/24           trust 
+      ```console
+      ubuntu@pg-srv1:~$ sudo vim /etc/postgresql/15/main/pg_hba.conf 
+      ubuntu@pg-srv1:~$ sudo pg_ctlcluster 15 main reload
+      ```
 ***
 
 > ### 2. Создаем публикацию таблицы test и подписываемся на публикацию таблицы test2 с ВМ №2.
