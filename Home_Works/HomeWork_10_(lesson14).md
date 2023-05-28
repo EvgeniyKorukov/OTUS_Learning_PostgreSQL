@@ -423,7 +423,8 @@
       ```
   * Правим pg_hba и делаем reload, чтобы применились параметры:
     * Добавляем:
-      * host    all             all             10.129.0.0/24           trust 
+      * host    all             all             10.129.0.0/24           trust
+      * host    otus_replica    otus_replica    127.0.0.1/32            trust
       ```console
       ubuntu@pg-srv1:~$ sudo vim /etc/postgresql/15/main/pg_hba.conf 
       ubuntu@pg-srv1:~$ sudo pg_ctlcluster 15 main reload
