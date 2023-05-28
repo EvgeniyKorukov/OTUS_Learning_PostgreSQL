@@ -89,10 +89,34 @@
 ***
 
 > ### 2. Создаем публикацию таблицы test и подписываемся на публикацию таблицы test2 с ВМ №2.
-  * Text
-    ```console
+  * Создаем публикацию таблицы test
+    ```pgsql
+    postgres=# CREATE PUBLICATION test_pub FOR TABLE test;
+    CREATE PUBLICATION
+    postgres=# \dRp+
+                                Publication test_pub
+      Owner   | All tables | Inserts | Updates | Deletes | Truncates | Via root 
+    ----------+------------+---------+---------+---------+-----------+----------
+     postgres | f          | t       | t       | t       | t         | f
+    Tables:
+        "public.test"
+
+    postgres=# 
     ```
-  * Создаем ВМ 2
+  * Подписываемся на публикацию таблицы test2 с ВМ №2
+  * ❗️ Это будет возможным после настройки PostgreSQL на ВМ №2. Но мы считаем, что уже настроили ВМ №2 в пункте 3 и вернулись сюда 
+    ```pgsql
+    postgres=# CREATE SUBSCRIPTION test2_sub 
+    postgres-# CONNECTION 'host=10.129.0.22 port=5432 user=postgres password=Pass1234 dbname=otus_replica' 
+    postgres-# PUBLICATION test2_pub WITH (copy_data = true);
+    ERROR:  could not connect to the publisher: connection to server at "10.129.0.22", port 5432 failed: Connection refused
+            Is the server running on that host and accepting TCP/IP connections?
+    postgres=# 
+    ```
+      
+***
+> ### 3. На 2 ВМ создаем таблицы test2 для записи, test для запросов на чтение.
+* Создаем ВМ 2
   * Подключаемся к ВМ 2
   * Устанавливаем PostgreSQL 15 
     ```console
