@@ -402,6 +402,8 @@
       ```console
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
       ALTER SYSTEM
+      ubuntu@pg-srv1:~$ sudo -u postgres psql -c "alter system set listen_addresses = '*';"
+      ALTER SYSTEM
       ubuntu@pg-srv1:~$ sudo pg_ctlcluster 15 main restart
       ubuntu@pg-srv1:~$ 
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'show wal_level'
@@ -409,6 +411,15 @@
       -----------
        logical
       (1 row)
+      
+      ubuntu@pg-srv1:~$ 
+      ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'show listen_addresses'
+       listen_addresses 
+      ------------------
+       *
+      (1 row)
+
+      ubuntu@pg-srv1:~$ 
       ```
   * Правим pg_hba и делаем reload, чтобы применились параметры:
     * Добавляем:
