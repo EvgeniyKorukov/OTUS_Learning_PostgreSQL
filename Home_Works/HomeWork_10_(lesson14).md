@@ -27,7 +27,7 @@
       --preemptible \
       --metadata-from-file ssh-keys=/home/eugink/.ssh/eugin_yandex_key.pub
        ```
-  * Подключаемся к ВМ 1 (логи убрал т.к. полезного там мало)
+  * Подключаемся к ВМ 1 
     ```console
     eugink@nb-xiaomi ~ $ ssh ubuntu@51.250.19.127
     ubuntu@pg-srv1:~$
@@ -65,16 +65,27 @@
 
       ubuntu@pg-srv1:~$ 
       ```
-  * Правим pg_hba и делаем reload, чтобы применились параметры:
+  * Правим `pg_hba` и делаем `reload`, чтобы применились параметры:
     * Добавляем:
       * host    all             all             10.129.0.0/24           trust
-      * host    otus_replica    otus_replica    127.0.0.1/32            trust
       ```console
       ubuntu@pg-srv1:~$ sudo vim /etc/postgresql/15/main/pg_hba.conf 
       ubuntu@pg-srv1:~$ sudo pg_ctlcluster 15 main reload
       ```
-  * Создаем таблицы и выдаем права на них
-   * ❗️ Доступ будет предоставлен по ролевой модели для пользователя otus_replica и входить надо будет под этим пользователем
+  * Создаем таблицы и выдаем права на них для пользователя `otus_replica`
+   * ❗️ Доступ будет предоставлен по ролевой модели для пользователя `otus_replica` и входить надо будет под этим пользователем
+     ```pgsql
+     postgres=# create user otus_replica with password 'Pass1234';
+     CREATE ROLE
+     postgres=# create table test (id int, txt text);
+     CREATE TABLE
+     postgres=# create table test2 (id2 int, txt2 text);
+     CREATE TABLE
+     postgres=# grant select on table test2 to otus_replica;
+     GRANT
+     postgres=# grant all on table test to otus_replica;
+     GRANT
+     ```
 ***
 
 > ### 2. Создаем публикацию таблицы test и подписываемся на публикацию таблицы test2 с ВМ №2.
