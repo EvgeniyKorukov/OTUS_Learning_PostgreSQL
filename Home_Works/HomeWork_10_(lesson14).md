@@ -247,8 +247,65 @@
     CREATE SUBSCRIPTION
     postgres=# 
     ```
-    
+   
+***
+> ### 2.1 Проверка работы логической реликации на ВМ 1
+ * ВМ 1 до теста
+  ```console
+  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+  Password for user otus_replica: 
+   id |   txt   
+  ----+---------
+   11 | test_11
+  (1 row)
+
+  ubuntu@pg-srv1:~$ 
+  ```
+ * ВМ 2 до теста
+  ```console
+  ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+  Password for user otus_replica: 
+   id |   txt   
+  ----+---------
+   11 | test_11
+  (1 row)
+
+  ubuntu@pg-srv2:~$ 
+  ``` 
+ * ВМ 1 после теста
+  ```console
+  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test values (22, 'test_22');"
+  Password for user otus_replica: 
+  INSERT 0 1
+  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+  Password for user otus_replica: 
+   id |   txt   
+  ----+---------
+   11 | test_11
+   22 | test_22
+  (2 rows)
+
+  ubuntu@pg-srv1:~$ 
+  ```
+ * ВМ 2 после теста
+   ```console
+   ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+   Password for user otus_replica: 
+    id |   txt   
+   ----+---------
+    11 | test_11
+    22 | test_22
+   (2 rows)
+
+   ubuntu@pg-srv2:~$ 
+   ```
+ * Вывод: Логическая репликация работает на таблице test между ВМ1 и ВМ2  
+   
+***
+> ### 4.1 Проверка работы логической реликации на ВМ 1
+
     ***
+
 
 > ### 5. 3 ВМ использовать как реплику для чтения и бэкапов (подписаться на таблицы из ВМ №1 и №2 ).
   * Создаем ВМ 3
