@@ -591,8 +591,40 @@
      ubuntu@pg-srv4:~$ 
      ubuntu@pg-srv4:~$ sudo pg_ctlcluster 15 main start
      ubuntu@pg-srv4:~$ 
-
-
      ```
+  * Проверяем что репликация работает в синхронном режиме `sync_state=sync`
+     ```console
+     ubuntu@pg-srv3:~$ sudo -u postgres psql 
+     psql (15.3 (Ubuntu 15.3-1.pgdg20.04+1))
+     Type "help" for help.
+
+     postgres=# select * from pg_stat_replication;
+     postgres=# select * from pg_stat_replication \gx
+     postgres=# select * from pg_stat_replication \gx
+     -[ RECORD 1 ]----+------------------------------
+     pid              | 4601
+     usesysid         | 10
+     usename          | postgres
+     application_name | 15/main
+     client_addr      | 10.129.0.24
+     client_hostname  | 
+     client_port      | 33200
+     backend_start    | 2023-05-29 19:57:19.557217+00
+     backend_xmin     | 757
+     state            | streaming
+     sent_lsn         | 0/5015610
+     write_lsn        | 0/5015610
+     flush_lsn        | 0/5015610
+     replay_lsn       | 0/5015610
+     write_lag        | 
+     flush_lag        | 
+     replay_lag       | 
+     sync_priority    | 1
+     sync_state       | sync
+     reply_time       | 2023-05-29 20:07:41.678126+00
+
+     postgres=# 
+     ```
+  * :+1: Вывод: мы создали синхронную реплику с максимальной отказоустойчивостью т.к. пока не зафиксируется изменения на реплике-не зафиксируется и на primary
 ***
 
