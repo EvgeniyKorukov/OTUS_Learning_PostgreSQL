@@ -106,13 +106,12 @@
   * Подписываемся на публикацию таблицы test2 с ВМ №2
   * ❗️ Это будет возможным после настройки PostgreSQL на ВМ №2. Но мы считаем, что уже выполнили пункты 3 и 4 и вернулись сюда 
     ```pgsql
-postgres=# CREATE SUBSCRIPTION test2_sub 
-postgres-# CONNECTION 'host=10.129.0.22 port=5432 user=postgres password=Pass1234 dbname=postgres' 
-postgres-# PUBLICATION test2_pub WITH (copy_data = true);
-NOTICE:  created replication slot "test2_sub" on publisher
-CREATE SUBSCRIPTION
-postgres=# 
-
+    postgres=# CREATE SUBSCRIPTION test2_sub 
+    postgres-# CONNECTION 'host=10.129.0.22 port=5432 user=postgres password=Pass1234 dbname=postgres' 
+    postgres-# PUBLICATION test2_pub WITH (copy_data = true);
+    NOTICE:  created replication slot "test2_sub" on publisher
+    CREATE SUBSCRIPTION
+    postgres=# 
     ```
       
 ***
