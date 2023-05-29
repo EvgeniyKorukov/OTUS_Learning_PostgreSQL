@@ -249,62 +249,112 @@
     ```
    
 ***
-> ### 2.1 Проверка работы логической реликации на ВМ 1
- * ВМ 1 до теста
-  ```console
-  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
-  Password for user otus_replica: 
-   id |   txt   
-  ----+---------
-   11 | test_11
-  (1 row)
+> ### ❗️ 2.1 Проверка работы логической реликации на ВМ 1
+  * ВМ 1 до теста
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+    Password for user otus_replica: 
+     id |   txt   
+    ----+---------
+     11 | test_11
+    (1 row)
 
-  ubuntu@pg-srv1:~$ 
-  ```
- * ВМ 2 до теста
-  ```console
-  ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
-  Password for user otus_replica: 
-   id |   txt   
-  ----+---------
-   11 | test_11
-  (1 row)
+    ubuntu@pg-srv1:~$ 
+    ```
+  * ВМ 2 до теста
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+    Password for user otus_replica: 
+     id |   txt   
+    ----+---------
+     11 | test_11
+    (1 row)
 
-  ubuntu@pg-srv2:~$ 
-  ``` 
- * ВМ 1 после теста
-  ```console
-  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test values (22, 'test_22');"
-  Password for user otus_replica: 
-  INSERT 0 1
-  ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
-  Password for user otus_replica: 
-   id |   txt   
-  ----+---------
-   11 | test_11
-   22 | test_22
-  (2 rows)
+    ubuntu@pg-srv2:~$ 
+    ``` 
+  * ВМ 1 после теста
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test values (22, 'test_22');"
+    Password for user otus_replica: 
+    INSERT 0 1
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+    Password for user otus_replica: 
+     id |   txt   
+    ----+---------
+     11 | test_11
+     22 | test_22
+    (2 rows)
 
-  ubuntu@pg-srv1:~$ 
-  ```
- * ВМ 2 после теста
-   ```console
-   ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
-   Password for user otus_replica: 
-    id |   txt   
-   ----+---------
-    11 | test_11
-    22 | test_22
-   (2 rows)
+    ubuntu@pg-srv1:~$ 
+    ```
+  * ВМ 2 после теста
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "select * from  test;"
+    Password for user otus_replica: 
+     id |   txt   
+    ----+---------
+     11 | test_11
+     22 | test_22
+    (2 rows)
 
-   ubuntu@pg-srv2:~$ 
-   ```
- * Вывод: Логическая репликация работает на таблице test между ВМ1 и ВМ2  
-   
+    ubuntu@pg-srv2:~$ 
+    ```
+  * ❗️ Вывод: Логическая репликация работает на таблице test между ВМ1 и ВМ2  
+
 ***
-> ### 4.1 Проверка работы логической реликации на ВМ 1
+> ### ❗️ 4.1 Проверка работы логической реликации на ВМ 2
+  * ВМ 2 до теста
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c 'select * from test2;'
+    Password for user otus_replica: 
+     id2 |  txt2   
+    -----+---------
+      44 | test_44
+    (1 row)
 
-    ***
+    ubuntu@pg-srv2:~$ 
+    ```
+  * ВМ 1 до теста
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c 'select * from test2;'
+    Password for user otus_replica: 
+     id2 |  txt2   
+    -----+---------
+      44 | test_44
+    (1 row)
+
+    ubuntu@pg-srv1:~$ 
+    ``` 
+  * ВМ 2 после теста
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test2 values (88, 'test_88');"
+    Password for user otus_replica: 
+    INSERT 0 1
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c 'select * from test2;'
+    Password for user otus_replica: 
+     id2 |  txt2   
+    -----+---------
+      44 | test_44
+      88 | test_88
+    (2 rows)
+
+    ubuntu@pg-srv2:~$ 
+    ```
+  * ВМ 1 после теста
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c 'select * from test2;'
+    Password for user otus_replica: 
+     id2 |  txt2   
+    -----+---------
+      44 | test_44
+      88 | test_88
+    (2 rows)
+
+    ubuntu@pg-srv1:~$ 
+    ```
+  * ❗️ Вывод: Логическая репликация работает на таблице test2 между ВМ2 и ВМ1  
+
+***
 
 
 > ### 5. 3 ВМ использовать как реплику для чтения и бэкапов (подписаться на таблицы из ВМ №1 и №2 ).
