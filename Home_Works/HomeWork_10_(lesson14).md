@@ -454,8 +454,31 @@
      ```       
  
  * Подписываемся на таблицы из ВМ №1 и №2 и проверяем, что все изменения есть
-     ```console
-     
+     ```sql
+     postgres=# CREATE SUBSCRIPTION test2_3_sub 
+     postgres-# CONNECTION 'host=10.129.0.22 port=5432 user=postgres password=Pass1234 dbname=postgres' 
+     postgres-# PUBLICATION test2_pub WITH (copy_data = true);
+     NOTICE:  created replication slot "test2_3_sub" on publisher
+     CREATE SUBSCRIPTION
+     postgres=# 
+     postgres=# CREATE SUBSCRIPTION test_3_pub 
+     postgres-# CONNECTION 'host=10.129.0.21 port=5432 user=postgres password=Pass1234 dbname=postgres' 
+     postgres-# PUBLICATION test_pub WITH (copy_data = true);
+     NOTICE:  created replication slot "test_3_pub" on publisher
+     CREATE SUBSCRIPTION
+     postgres=# 
+     postgres=# select * from test;
+      id |   txt   
+     ----+---------
+      11 | test_11
+      22 | test_22
+     (2 rows)
+
+     postgres=# select * from test2;
+      id2 |  txt2   
+     -----+---------
+       44 | test_44
+       88 | test_88
      ```
 ***
 
