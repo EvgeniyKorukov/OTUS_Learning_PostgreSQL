@@ -41,7 +41,7 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log    
     ```
   * Правим параметры и рестартуем postgres, чтобы параметры применились:
-    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
+    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL) = `logical`
     * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c "alter user postgres with password 'Pass1234';"
@@ -168,8 +168,8 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log    
     ```
   * Правим параметры и рестартуем postgres, чтобы параметры применились:
-    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
-    * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
+    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL) = `logical`
+    * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES) = '*'
       ```console
       ubuntu@pg-srv2:~$ sudo -u postgres psql -c "alter user postgres with password 'Pass1234';"
       ALTER ROLE
@@ -460,7 +460,7 @@
      NOTICE:  created replication slot "test2_3_sub" on publisher
      CREATE SUBSCRIPTION
      postgres=# 
-     postgres=# CREATE SUBSCRIPTION test_3_pub 
+     postgres=# CREATE SUBSCRIPTION test_3_pub x
      postgres-# CONNECTION 'host=10.129.0.21 port=5432 user=postgres password=Pass1234 dbname=postgres' 
      postgres-# PUBLICATION test_pub WITH (copy_data = true);
      NOTICE:  created replication slot "test_3_pub" on publisher
@@ -482,11 +482,19 @@
 ***
 
 > ### 6. Задачка под звездочкой: реализовать горячее реплицирование для высокой доступности на 4ВМ. Источником должна выступать ВМ №3. Написать с какими проблемами столкнулись.
-  * Для решения этой части надо перевести PostgreSQL на ВМ №3 в режим потоковой репликации с ожиданием подтверждения операций от PostgreSQL на ВМ №4. А PostgreSQL на ВМ №4 надо настроить как синхронную реплику.
-  * Начнем с настройки параметров PostgreSQL на ВМ №3 и перезагрузки для применения изменений
-    * 
-    ```console
-    
-    ```
+  * Для решения этой части надо потоковую репликацию 
+    * Начнем с настройки параметров PostgreSQL на ВМ №3 и перезагрузки для применения изменений
+      * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL) = `replica`
+      * [max_wal_senders](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-MAX-WAL-SENDERS) = `10`
+      ```console
+      ubuntu@pg-srv3:~$ sudo -u postgres psql -c 'alter system set wal_level=replica'
+      ALTER SYSTEM
+      ubuntu@pg-srv3:~$ 
+      ubuntu@pg-srv3:~$ sudo -u postgres psql -c 'alter system set max_wal_senders=10'
+      ALTER SYSTEM
+      ubuntu@pg-srv3:~$ 
+      ubuntu@pg-srv3:~$ sudo pg_ctlcluster 15 main restart
+      ubuntu@pg-srv3:~$ 
+      ```
 ***
 
