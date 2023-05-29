@@ -496,5 +496,44 @@
       ubuntu@pg-srv3:~$ sudo pg_ctlcluster 15 main restart
       ubuntu@pg-srv3:~$ 
       ```
+  * Создаем ВМ 4 в YandexCloud
+     :hammer_and_wrench: Параметр | :memo: Значение |:hammer_and_wrench: Параметр | :memo: Значение |
+     --------------:|---------------|--------------:|---------------|
+     | Название ВМ | **`pg-srv4`** | Гарантированная доля vCPU | `20%` | 
+     | Зона доступности | `ru-central1-b` | Внутренний IPv4 | `10.129.0.24` | 
+     | Операционная система | `Ubuntu 20.04 LTS` | Публичный IPv4 | `130.193.41.201` |
+     | Платформа | `Intel Cascade Lake	` | Тип диска | `SSD` | 
+     | vCPU | `2` | Объём дискового пространства | `10 ГБ` |
+     | RAM | `4 ГБ` | Макс. IOPS (чтение / запись) | `1000 / 1000` |
+     | Прерываемая | :ballot_box_with_check: | Макс. bandwidth (чтение / запись) | `15 МБ/с / 15 МБ/с` |
+
+     ```console
+     eugink@nb-xiaomi ~ $ yc compute instance create \
+       --name pg-srv4 \
+       --hostname pg-srv4 \
+       --cores 2 \
+       --memory 4 \
+       --create-boot-disk size=10G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+       --network-interface subnet-name=default-ru-central1-b,nat-ip-version=ipv4,ipv4-address=10.129.0.24 \
+       --zone ru-central1-b \
+       --core-fraction 20 \
+       --preemptible \
+       --metadata-from-file ssh-keys=/home/eugink/.ssh/eugin_yandex_key.pub
+     ```
+   
+     * Подключаемся к ВМ №4
+     ```console
+     eugink@nb-xiaomi ~ $ ssh ubuntu@130.193.41.201
+     ubuntu@pg-srv4:~$
+     ```
+     * Устанавливаем PostgreSQL 15 (логи убрал т.к. полезного там мало)
+     ```console
+     ubuntu@pg-srv4:~$ sudo apt update && sudo apt upgrade -y && sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list' && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt-get -y install postgresql-15
+     ubuntu@pg-srv4:~$ 
+     ubuntu@pg-srv4:~$ pg_lsclusters 
+     Ver Cluster Port Status Owner    Data directory              Log file
+     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log    
+     ```
+         
 ***
 
