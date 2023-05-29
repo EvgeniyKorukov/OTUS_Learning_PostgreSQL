@@ -44,6 +44,9 @@
     * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
     * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
+      ubuntu@pg-srv1:~$ sudo -u postgres psql -c "alter user postgres with password 'Pass1234';"
+      ALTER ROLE
+      ubuntu@pg-srv1:~$
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
       ALTER SYSTEM
       ubuntu@pg-srv1:~$ sudo -u postgres psql -c "alter system set listen_addresses = '*';"
@@ -168,6 +171,9 @@
     * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
     * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
+      ubuntu@pg-srv2:~$ sudo -u postgres psql -c "alter user postgres with password 'Pass1234';"
+      ALTER ROLE
+      ubuntu@pg-srv2:~$      
       ubuntu@pg-srv2:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
       ALTER SYSTEM
       ubuntu@pg-srv2:~$ sudo -u postgres psql -c "alter system set listen_addresses = '*';"
@@ -399,6 +405,9 @@
   * Правим параметры и рестартуем postgres, чтобы параметры применились:
     * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
+      ubuntu@pg-srv3:~$ sudo -u postgres psql -c "alter user postgres with password 'Pass1234';"
+      ALTER ROLE
+      ubuntu@pg-srv3:~$      
       ubuntu@pg-srv3:~$ sudo -u postgres psql -c "alter system set listen_addresses = '*';"
       ALTER SYSTEM
       ubuntu@pg-srv3:~$ sudo pg_ctlcluster 15 main restart
@@ -473,8 +482,11 @@
 ***
 
 > ### 6. Задачка под звездочкой: реализовать горячее реплицирование для высокой доступности на 4ВМ. Источником должна выступать ВМ №3. Написать с какими проблемами столкнулись.
-  * Text
+  * Для решения этой части надо перевести PostgreSQL на ВМ №3 в режим потоковой репликации с ожиданием подтверждения операций от PostgreSQL на ВМ №4. А PostgreSQL на ВМ №4 надо настроить как синхронную реплику.
+  * Начнем с настройки параметров PostgreSQL на ВМ №3 и перезагрузки для применения изменений
+    * 
     ```console
+    
     ```
 ***
 
