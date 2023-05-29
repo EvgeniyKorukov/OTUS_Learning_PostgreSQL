@@ -486,13 +486,13 @@
     * Начнем с настройки параметров PostgreSQL на ВМ №3 и перезагрузки для применения изменений. Здесь меняем и те парамеры, которые при восстановлении "переедут" на реплику.
       * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL) = `replica`
       * [max_wal_senders](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-MAX-WAL-SENDERS) = `10`
-      * synchronous_commit = on
-      * hot_standby = on
-      * listen_addresses = '*'
-      * hot_standby_feedback = 'on'
-      * full_page_writes = 'on'
-      * wal_log_hints = 'on'
-      * synchronous_standby_names='*'
+      * [synchronous_commit](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-SYNCHRONOUS-COMMIT) = `on`
+      * [hot_standby](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-HOT-STANDBY) = `on`
+      * [listen_addresses](https://postgrespro.ru/docs/postgrespro/15/runtime-config-connection#GUC-LISTEN-ADDRESSES) = '*'
+      * [hot_standby_feedback](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-HOT-STANDBY-FEEDBACK) = `on`
+      * [full_page_writes](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-FULL-PAGE-WRITES) = `on`
+      * [wal_log_hints](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LOG-HINTS) = `on`
+      * [synchronous_standby_names](https://postgrespro.ru/docs/postgrespro/15/runtime-config-replication#GUC-SYNCHRONOUS-STANDBY-NAMES) = '*'
       ```console
       postgres=# alter system set synchronous_commit = on ;
       ALTER SYSTEM
