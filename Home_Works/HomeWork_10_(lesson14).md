@@ -397,21 +397,11 @@
     15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log    
     ```
   * Правим параметры и рестартуем postgres, чтобы параметры применились:
-    * [wal_level](https://postgrespro.ru/docs/postgrespro/15/runtime-config-wal#GUC-WAL-LEVEL)=logical
     * [listen_addresses](https://postgrespro.ru/docs/enterprise/15/runtime-config-connection#GUC-LISTEN-ADDRESSES)='*'
       ```console
-      ubuntu@pg-srv3:~$ sudo -u postgres psql -c 'alter system set wal_level=logical;'
-      ALTER SYSTEM
       ubuntu@pg-srv3:~$ sudo -u postgres psql -c "alter system set listen_addresses = '*';"
       ALTER SYSTEM
       ubuntu@pg-srv3:~$ sudo pg_ctlcluster 15 main restart
-      ubuntu@pg-srv3:~$ 
-      ubuntu@pg-srv3:~$ sudo -u postgres psql -c 'show wal_level'
-       wal_level 
-      -----------
-       logical
-      (1 row)
-      
       ubuntu@pg-srv3:~$ 
       ubuntu@pg-srv3:~$ sudo -u postgres psql -c 'show listen_addresses'
        listen_addresses 
