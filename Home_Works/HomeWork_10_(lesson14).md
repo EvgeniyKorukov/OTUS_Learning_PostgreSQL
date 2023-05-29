@@ -86,6 +86,16 @@
      postgres=# grant all on table test to otus_replica;
      GRANT
      ```
+   * Проверяем работу прав доступа на ВМ 1
+     ```console
+     ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test values (11, 'test_11');"
+     Password for user otus_replica: 
+     INSERT 0 1
+     ubuntu@pg-srv1:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test2 values (55, 'test_55');"
+     Password for user otus_replica: 
+     ERROR:  permission denied for table test2
+     ubuntu@pg-srv1:~$ 
+     ```     
 ***
 
 > ### 2. Создаем публикацию таблицы test и подписываемся на публикацию таблицы test2 с ВМ №2.
@@ -113,7 +123,7 @@
     CREATE SUBSCRIPTION
     postgres=# 
     ```
-      
+    
 ***
 > ### 3. На 2 ВМ создаем таблицы test2 для записи, test для запросов на чтение.
   * Создаем ВМ 2 в YandexCloud
@@ -199,15 +209,46 @@
      GRANT
      postgres=# grant all on table test2 to otus_replica;
      GRANT
-     ```      
+     ```  
+   * Проверяем работу прав доступа на ВМ 2
+     ```console
+     ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test values (22, 'test_22');"
+     Password for user otus_replica: 
+     ERROR:  permission denied for table test
+     ubuntu@pg-srv2:~$ sudo -u postgres psql -d postgres -U otus_replica -h localhost -c "insert into test2 values (44, 'test_44');"
+     Password for user otus_replica: 
+     INSERT 0 1
+     ubuntu@pg-srv2:~$ 
+     ```       
 ***
-
 
 > ### 4. Создаем публикацию таблицы test2 и подписываемся на публикацию таблицы test1 с ВМ №1.
-  * Text
-    ```console
+  * Создаем публикацию таблицы test
+    ```pgsql
+    postgres=# CREATE PUBLICATION test2_pub FOR TABLE test2;
+    CREATE PUBLICATION
+    postgres=# 
+    postgres=# \dRp+
+                               Publication test2_pub
+      Owner   | All tables | Inserts | Updates | Deletes | Truncates | Via root 
+    ----------+------------+---------+---------+---------+-----------+----------
+     postgres | f          | t       | t       | t       | t         | f
+    Tables:
+        "public.test2"
+
+    postgres=# 
     ```
-***
+  * Подписываемся на публикацию таблицы test1 с ВМ №1
+    ```pgsql
+    postgres=# CREATE SUBSCRIPTION test_pub 
+    postgres-# CONNECTION 'host=10.129.0.21 port=5432 user=postgres password=Pass1234 dbname=postgres' 
+    postgres-# PUBLICATION test_pub WITH (copy_data = true);
+    NOTICE:  created replication slot "test_pub" on publisher
+    CREATE SUBSCRIPTION
+    postgres=# 
+    ```
+    
+    ***
 
 > ### 5. 3 ВМ использовать как реплику для чтения и бэкапов (подписаться на таблицы из ВМ №1 и №2 ).
   * Создаем ВМ 3
