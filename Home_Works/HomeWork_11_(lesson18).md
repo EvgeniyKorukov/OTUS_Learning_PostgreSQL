@@ -493,4 +493,43 @@
 
 ***
 > ### Задание с *
-    > Придумайте 3 своих метрики на основе показанных представлений, отправьте их через ЛК, а так же поделитесь с коллегами в слаке
+> Придумайте 3 своих метрики на основе показанных представлений, отправьте их через ЛК, а так же поделитесь с коллегами в слаке
+  
+  1. Использование индексов. Этот запрос показывает количество строк в таблицах и процент времени использования индексов по сравнению с чтением без индексов. Идеальные кандидаты для добавления индекса - это таблицы размером более 10000 строк с нулевым или низким использованием индекса.
+      ```sql
+      SELECT relname,   
+             100 * idx_scan / (seq_scan + idx_scan) percent_of_times_index_used,   
+             n_live_tup rows_in_table 
+      FROM pg_stat_user_tables 
+      WHERE seq_scan + idx_scan > 0 
+      ORDER BY n_live_tup DESC;
+      ```
+  2. Неиспользуемые индексы. Данный запрос находит индексы, которые созданы, но не использовались в SQL-запросах.
+      ```sql
+      SELECT schemaname, relname, indexrelname
+      FROM pg_stat_all_indexes
+      WHERE idx_scan = 0 and schemaname <> 'pg_toast' and  schemaname <> 'pg_catalog';
+      ```
+  3. Проверка запусков VACUUM. Раздувание можно уменьшить с помощью команды VACUUM, но также PostgreSQL поддерживает AUTOVACUUM
+      ```sql
+      SELECT relname, 
+             last_vacuum, 
+             last_autovacuum 
+      FROM pg_stat_user_tables;
+      ```
+  4. Показывает количество открытых подключений.Показывает открытые подключения ко всем базам данных в вашем экземпляре PostgreSQL. Если у вас несколько баз данных в одном PostgreSQL, то в условие WHERE стоит добавить datname = 'Ваша_база_данных'.
+      ```sql
+      SELECT COUNT(*) as connections,
+             backend_type
+      FROM pg_stat_activity
+      where state = 'active' OR state = 'idle'
+      GROUP BY backend_type
+      ORDER BY connections DESC;
+      ```
+  5. Показывает выполняющиеся запросы. Показывает выполняющиеся запросы и их длительность.
+      ```sql
+      SELECT pid, age(clock_timestamp(), query_start), usename, query, state
+      FROM pg_stat_activity
+      WHERE state != 'idle' AND query NOT ILIKE '%pg_stat_activity%'
+      ORDER BY query_start desc;
+      ```      
