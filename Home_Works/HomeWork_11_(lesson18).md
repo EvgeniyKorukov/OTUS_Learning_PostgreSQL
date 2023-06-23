@@ -297,7 +297,43 @@
 
 > 3. Реализовать кросс соединение двух или более таблиц
   ```sql
-
+  postgres=# 
+  postgres=# select *
+      from tbl_city c cross join tbl_orders o
+          limit 10;       
+   city_id | city_name | order_id | buyer_id | city_id |     order_sum      
+  ---------+-----------+----------+----------+---------+--------------------
+         1 | Moscow    |        1 |        4 |       1 | 34.331113458899445
+         2 | Kemerovo  |        1 |        4 |       1 | 34.331113458899445
+         3 | Minsk     |        1 |        4 |       1 | 34.331113458899445
+         4 | Omsk      |        1 |        4 |       1 | 34.331113458899445
+         1 | Moscow    |        2 |        1 |       3 |  80.76671442559271
+         2 | Kemerovo  |        2 |        1 |       3 |  80.76671442559271
+         3 | Minsk     |        2 |        1 |       3 |  80.76671442559271
+         4 | Omsk      |        2 |        1 |       3 |  80.76671442559271
+         1 | Moscow    |        3 |        3 |       4 |   79.0007158733092
+         2 | Kemerovo  |        3 |        3 |       4 |   79.0007158733092
+  (10 rows)
+  
+  postgres=# 
+  postgres=# explain analyze                                                               
+  select *
+      from tbl_city c cross join tbl_orders o;
+                                                           QUERY PLAN                                                         
+  ----------------------------------------------------------------------------------------------------------------------------
+   Nested Loop  (cost=0.00..11847293.38 rows=946785000 width=68) (actual time=174.246..1139.354 rows=2982000 loops=1)
+     ->  Seq Scan on tbl_orders o  (cost=0.00..12455.00 rows=745500 width=32) (actual time=0.029..86.036 rows=745500 loops=1)
+     ->  Materialize  (cost=0.00..29.05 rows=1270 width=36) (actual time=0.000..0.000 rows=4 loops=745500)
+           ->  Seq Scan on tbl_city c  (cost=0.00..22.70 rows=1270 width=36) (actual time=0.012..0.015 rows=4 loops=1)
+   Planning Time: 0.212 ms
+   JIT:
+     Functions: 3
+     Options: Inlining true, Optimization true, Expressions true, Deforming true
+     Timing: Generation 1.243 ms, Inlining 101.821 ms, Optimization 47.773 ms, Emission 24.596 ms, Total 175.432 ms
+   Execution Time: 1335.072 ms
+  (10 rows)
+  
+  postgres=# 
   ```
 
 > 4. Реализовать полное соединение двух или более таблиц
