@@ -257,7 +257,7 @@
   INSERT 0 1
   postgres=# 
   postgres=# create table tbl_orders as
-  select generate_series as order_id,
+  select trunc(generate_series(1,500)) as order_id,
          trunc((random() * 8+1)) as buyer_id,
          trunc((random() * 4+1)) as city_id,
          generate_series(10,1500)*(random()*8+1) as order_sum                                                                                                                                                                      
