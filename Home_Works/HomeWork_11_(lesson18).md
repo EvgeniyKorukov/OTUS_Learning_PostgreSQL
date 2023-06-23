@@ -14,7 +14,7 @@
   postgres=# create table tbl1 as
   select generate_series as pkey
           , generate_series::text || (random() * 10)::text as cnumber
-      , (array['Masha', 'Dasha', 'Sasha', 'Dima', 'Tolya'])[floor(random() * 3 + 1)] as cname
+      , (array['Masha', 'Dasha', 'Sasha', 'Dima', 'Tolya'])[floor(random() * 6)] as cname
   from generate_series(1, 100000);
   SELECT 100000
   postgres=# 
@@ -52,6 +52,12 @@
 
 > 3. Реализовать индекс для полнотекстового поиска
   ```sql
+  postgres=# 
+  postgres=# alter table tbl1 add column cname_tsv tsvector;
+  ALTER TABLE
+  postgres=# update tbl1 set cname_tsv=to_tsvector(cname);
+  UPDATE 100000
+  postgres=# 
 
   ```
 
