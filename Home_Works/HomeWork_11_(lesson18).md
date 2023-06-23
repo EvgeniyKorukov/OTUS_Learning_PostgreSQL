@@ -195,12 +195,104 @@
 > Необходимо:
 > 1. Реализовать прямое соединение двух или более таблиц
   ```sql
-
+  postgres=# select o.order_id, c.city_name as city, b.cname as buyer, o.order_sum 
+    from tbl_orders o, tbl_city c, tbl_names b 
+    where c.city_id=o.city_id
+          and b.pkey=o.buyer_id
+    limit 10; 
+   order_id |  city  | buyer  |     order_sum      
+  ----------+--------+--------+--------------------
+          1 | Moscow | Dima   | 34.331113458899445
+          2 | Minsk  | Masha  |  80.76671442559271
+          3 | Omsk   | Sasha  |   79.0007158733092
+          4 | Minsk  | Mickle |  47.75236914290505
+          5 | Omsk   | Vanya  |  70.69224304207677
+          6 | Minsk  | Dima   |  65.51118196232768
+          7 | Moscow | Dima   |  88.92297902272955
+          8 | Omsk   | Sasha  | 42.585477660987124
+          9 | Omsk   | Masha  | 124.68334499402735
+         10 | Omsk   | Dima   | 136.18656019586598
+  (10 rows)
+  
+  postgres=# 
+  postgres=# explain analyze                                                       
+  select o.order_id, c.city_name as city, b.cname as buyer, o.order_sum 
+    from tbl_orders o, tbl_city c, tbl_names b 
+    where c.city_id=o.city_id
+          and b.pkey=o.buyer_id;
+                                                                    QUERY PLAN                                                                  
+  ----------------------------------------------------------------------------------------------------------------------------------------------
+   Merge Join  (cost=121925.86..206642.82 rows=4733925 width=80) (actual time=891.246..1534.096 rows=745500 loops=1)
+     Merge Cond: (((c.city_id)::double precision) = o.city_id)
+     ->  Sort  (cost=88.17..91.35 rows=1270 width=36) (actual time=33.664..33.667 rows=4 loops=1)
+           Sort Key: ((c.city_id)::double precision)
+           Sort Method: quicksort  Memory: 25kB
+           ->  Seq Scan on tbl_city c  (cost=0.00..22.70 rows=1270 width=36) (actual time=33.635..33.641 rows=4 loops=1)
+     ->  Materialize  (cost=121837.69..125565.19 rows=745500 width=56) (actual time=857.534..1282.511 rows=745500 loops=1)
+           ->  Sort  (cost=121837.69..123701.44 rows=745500 width=56) (actual time=857.527..1001.326 rows=745500 loops=1)
+                 Sort Key: o.city_id
+                 Sort Method: external merge  Disk: 25248kB
+                 ->  Hash Join  (cost=1.18..23638.68 rows=745500 width=56) (actual time=0.054..405.735 rows=745500 loops=1)
+                       Hash Cond: (o.buyer_id = (b.pkey)::double precision)
+                       ->  Seq Scan on tbl_orders o  (cost=0.00..12455.00 rows=745500 width=32) (actual time=0.013..93.037 rows=745500 loops=1)
+                       ->  Hash  (cost=1.08..1.08 rows=8 width=36) (actual time=0.023..0.024 rows=8 loops=1)
+                             Buckets: 1024  Batches: 1  Memory Usage: 9kB
+                             ->  Seq Scan on tbl_names b  (cost=0.00..1.08 rows=8 width=36) (actual time=0.011..0.013 rows=8 loops=1)
+   Planning Time: 0.436 ms
+   JIT:
+     Functions: 20
+     Options: Inlining false, Optimization false, Expressions true, Deforming true
+     Timing: Generation 5.013 ms, Inlining 0.000 ms, Optimization 2.340 ms, Emission 31.309 ms, Total 38.663 ms
+   Execution Time: 1595.112 ms
+  (22 rows)
+  
+  postgres=# 
   ```
 
 > 2. Реализовать левостороннее (или правостороннее) соединение двух или более таблиц
   ```sql
-
+  postgres=# select *
+      from tbl_city c left join tbl_orders o on c.city_id=o.city_id limit 10;             
+   city_id | city_name | order_id | buyer_id | city_id |     order_sum      
+  ---------+-----------+----------+----------+---------+--------------------
+         1 | Moscow    |        1 |        4 |       1 | 34.331113458899445
+         3 | Minsk     |        2 |        1 |       3 |  80.76671442559271
+         4 | Omsk      |        3 |        3 |       4 |   79.0007158733092
+         3 | Minsk     |        4 |        8 |       3 |  47.75236914290505
+         4 | Omsk      |        5 |        6 |       4 |  70.69224304207677
+         3 | Minsk     |        6 |        4 |       3 |  65.51118196232768
+         1 | Moscow    |        7 |        4 |       1 |  88.92297902272955
+         4 | Omsk      |        8 |        3 |       4 | 42.585477660987124
+         4 | Omsk      |        9 |        1 |       4 | 124.68334499402735
+         4 | Omsk      |       10 |        4 |       4 | 136.18656019586598
+  (10 rows)
+  
+  postgres=# 
+  postgres=# explain analyze                                                               
+  select *
+      from tbl_city c left join tbl_orders o on c.city_id=o.city_id;      
+                                                                 QUERY PLAN                                                               
+  ----------------------------------------------------------------------------------------------------------------------------------------
+   Merge Left Join  (cost=103098.18..187815.14 rows=4733925 width=68) (actual time=526.519..1160.331 rows=745500 loops=1)
+     Merge Cond: (((c.city_id)::double precision) = o.city_id)
+     ->  Sort  (cost=88.17..91.35 rows=1270 width=36) (actual time=11.217..11.221 rows=4 loops=1)
+           Sort Key: ((c.city_id)::double precision)
+           Sort Method: quicksort  Memory: 25kB
+           ->  Seq Scan on tbl_city c  (cost=0.00..22.70 rows=1270 width=36) (actual time=11.196..11.201 rows=4 loops=1)
+     ->  Materialize  (cost=103010.01..106737.51 rows=745500 width=32) (actual time=515.258..942.647 rows=745500 loops=1)
+           ->  Sort  (cost=103010.01..104873.76 rows=745500 width=32) (actual time=515.252..658.590 rows=745500 loops=1)
+                 Sort Key: o.city_id
+                 Sort Method: external merge  Disk: 26840kB
+                 ->  Seq Scan on tbl_orders o  (cost=0.00..12455.00 rows=745500 width=32) (actual time=0.012..96.132 rows=745500 loops=1)
+   Planning Time: 0.275 ms
+   JIT:
+     Functions: 9
+     Options: Inlining false, Optimization false, Expressions true, Deforming true
+     Timing: Generation 2.178 ms, Inlining 0.000 ms, Optimization 0.762 ms, Emission 10.439 ms, Total 13.379 ms
+   Execution Time: 1219.459 ms
+  (17 rows)
+  
+  postgres=# 
   ```
 
 > 3. Реализовать кросс соединение двух или более таблиц
