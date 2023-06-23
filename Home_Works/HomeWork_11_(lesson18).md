@@ -2,7 +2,6 @@
 
 ***
 > ### 1 вариант:
-***
 > Создать индексы на БД, которые ускорят доступ к данным. В данном задании тренируются навыки:
 > * определения узких мест
 > * написания запросов для создания индекса
@@ -187,3 +186,89 @@
 > 7. Описать что и как делали и с какими проблемами столкнулись
   * Для корректной работы индексов - должна быть актуальная статистика.
   * Больше проблемы не было
+
+***
+> ### 2 вариант:
+> В результате выполнения ДЗ вы научитесь пользоваться различными вариантами соединения таблиц. В данном задании тренируются навыки:
+> * написания запросов с различными типами соединений
+>
+> Необходимо:
+> 1. Реализовать прямое соединение двух или более таблиц
+  ```sql
+
+  ```
+
+> 2. Реализовать левостороннее (или правостороннее) соединение двух или более таблиц
+  ```sql
+
+  ```
+
+> 3. Реализовать кросс соединение двух или более таблиц
+  ```sql
+
+  ```
+
+> 4. Реализовать полное соединение двух или более таблиц
+  ```sql
+
+  ```
+
+> 5. Реализовать запрос, в котором будут использованы разные типы соединений
+  ```sql
+
+  ```
+
+
+> 6. Сделать комментарии на каждый запрос
+  ```sql
+
+  ```
+
+> 7. К работе приложить структуру таблиц, для которых выполнялись соединения
+  ```sql
+  postgres=# create table tbl_names (pkey int, cname text);
+  CREATE TABLE
+  postgres=# 
+  postgres=# insert into tbl_names values (1,'Masha');
+  insert into tbl_names values (2,'Dasha');
+  insert into tbl_names values (3,'Sasha');
+  insert into tbl_names values (4,'Dima');
+  insert into tbl_names values (5,'Tolya');
+  insert into tbl_names values (6,'Vanya');
+  insert into tbl_names values (7,'Igor');
+  insert into tbl_names values (8,'Mickle');
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  postgres=# create table tbl_city (city_id int, city_name text);
+  CREATE TABLE
+  insert into tbl_city values (1,'Moscow');
+  insert into tbl_city values (2,'Kemerovo');
+  insert into tbl_city values (3,'Minsk');
+  insert into tbl_city values (4,'Omsk');
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  INSERT 0 1
+  postgres=# 
+  postgres=# create table tbl_orders as
+  select generate_series as order_id,
+         trunc((random() * 8+1)) as buyer_id,
+         trunc((random() * 4+1)) as city_id,
+         generate_series(10,1500)*(random()*8+1) as order_sum                                                                                                                                                                      
+  from generate_series(1, 500);
+  SELECT 745500
+  postgres=# 
+  postgres=# analyze tbl_orders;
+  ANALYZE
+  postgres=# 
+  ```
+
+***
+> ### Задание с *
+    > Придумайте 3 своих метрики на основе показанных представлений, отправьте их через ЛК, а так же поделитесь с коллегами в слаке
