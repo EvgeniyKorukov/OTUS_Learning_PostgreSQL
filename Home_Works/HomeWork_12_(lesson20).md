@@ -297,10 +297,200 @@
     Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
     ubuntu@pg-srv:~$ 
     </details></pre>
-  * 
   * Загружаем большую БД с полетами за год [demo-big](https://edu.postgrespro.ru/demo-big.zip)
     <pre><details><summary>Вывод терминала</summary>
-     
+    ubuntu@pg-srv:~$ cd /tmp/
+    ubuntu@pg-srv:/tmp$ 
+    ubuntu@pg-srv:/tmp$ wget https://edu.postgrespro.ru/demo-big.zip
+    --2023-06-28 20:42:55--  https://edu.postgrespro.ru/demo-big.zip
+    Resolving edu.postgrespro.ru (edu.postgrespro.ru)... 213.171.56.196
+    Connecting to edu.postgrespro.ru (edu.postgrespro.ru)|213.171.56.196|:443... connected.
+    HTTP request sent, awaiting response... 200 OK
+    Length: 243203214 (232M) [application/zip]
+    Saving to: ‘demo-big.zip’
+    
+    demo-big.zip                                               100%[========================================================================================================================================>] 231.94M  22.3MB/s    in 11s     
+    
+    2023-06-28 20:43:05 (22.1 MB/s) - ‘demo-big.zip’ saved [243203214/243203214]
+    
+    ubuntu@pg-srv:/tmp$ 
+    ubuntu@pg-srv:/tmp$ chmod 777 /tmp/demo-big.zip 
+    ubuntu@pg-srv:/tmp$ 
+    ubuntu@pg-srv:/tmp$ unzip demo-big.zip 
+    Archive:  demo-big.zip
+      inflating: demo-big-20170815.sql   
+    ubuntu@pg-srv:/tmp$ 
+    ubuntu@pg-srv:/tmp$ ls -ltr
+    total 1146768
+    -rw-rw-r-- 1 ubuntu ubuntu 931068524 Jan  5  2018 demo-big-20170815.sql
+    -rwxrwxrwx 1 ubuntu ubuntu 243203214 Jan 11  2018 demo-big.zip
+    drwx------ 3 root   root        4096 Jun 28 20:16 systemd-private-52a2987604b24b48975b7e85755c6c51-systemd-timesyncd.service-32aSZi
+    drwx------ 3 root   root        4096 Jun 28 20:16 systemd-private-52a2987604b24b48975b7e85755c6c51-systemd-resolved.service-Tqv8dj
+    drwx------ 3 root   root        4096 Jun 28 20:16 systemd-private-52a2987604b24b48975b7e85755c6c51-systemd-logind.service-KJrn8e
+    drwxr-xr-x 2 root   root        4096 Jun 28 20:20 ubuntu-advantage
+    ubuntu@pg-srv:/tmp$ 
+    ubuntu@pg-srv:/tmp$ sudo -u postgres psql -f demo-big-20170815.sql 
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    psql:demo-big-20170815.sql:17: ERROR:  database "demo" does not exist
+    CREATE DATABASE
+    You are now connected to database "demo" as user "postgres".
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    SET
+    CREATE SCHEMA
+    COMMENT
+    CREATE EXTENSION
+    COMMENT
+    SET
+    CREATE FUNCTION
+    CREATE FUNCTION
+    COMMENT
+    SET
+    SET
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE VIEW
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE VIEW
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE SEQUENCE
+    ALTER SEQUENCE
+    CREATE VIEW
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE VIEW
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    CREATE TABLE
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    COMMENT
+    ALTER TABLE
+    COPY 9
+    COPY 104
+    COPY 7925812
+    COPY 2111110
+    COPY 214867
+    COPY 1339
+    COPY 8391852
+    COPY 2949857
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER TABLE
+    ALTER DATABASE
+    ALTER DATABASE
+    ubuntu@pg-srv:/tmp$ 
     </details></pre>
 
 
