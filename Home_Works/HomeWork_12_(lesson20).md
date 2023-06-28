@@ -492,5 +492,83 @@
     ALTER DATABASE
     ubuntu@pg-srv:/tmp$ 
     </details></pre>
+  * Смотрим, какой диапазон данных(mix, max) есть в таблице `flights`
+  ```pgsql
+  demo=# select min(scheduled_departure),max(scheduled_departure) from flights;
+            min           |          max           
+  ------------------------+------------------------
+   2016-08-14 23:45:00+00 | 2017-09-14 17:55:00+00
+  (1 row)
+  ```
 
+  * Создаем партицированную таблицу `flights_new`, с ключом по диапазону `range` по полю `scheduled_departure`+партиции
+  ```pgsql
+  demo=# create table flights_new (like flights) partition by range (scheduled_departure);
+  CREATE TABLE
+  demo=# 
+  demo=# create table flights_new_2016_08 partition of flights_new for values from ('2016-08-01') to ('2016-09-01');
+  CREATE TABLE
+  demo=# create table flights_new_2016_09 partition of flights_new for values from ('2016-09-01') to ('2016-10-01');
+  CREATE TABLE
+  demo=# create table flights_new_2016_10 partition of flights_new for values from ('2016-10-01') to ('2016-11-01');
+  CREATE TABLE
+  demo=# create table flights_new_2016_11 partition of flights_new for values from ('2016-11-01') to ('2016-12-01');
+  CREATE TABLE
+  demo=# create table flights_new_2016_12 partition of flights_new for values from ('2016-12-01') to ('2017-01-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_01 partition of flights_new for values from ('2017-01-01') to ('2017-02-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_02 partition of flights_new for values from ('2017-02-01') to ('2017-03-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_03 partition of flights_new for values from ('2017-03-01') to ('2017-04-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_04 partition of flights_new for values from ('2017-04-01') to ('2017-05-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_05 partition of flights_new for values from ('2017-05-01') to ('2017-06-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_06 partition of flights_new for values from ('2017-06-01') to ('2017-07-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_07 partition of flights_new for values from ('2017-07-01') to ('2017-08-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_08 partition of flights_new for values from ('2017-08-01') to ('2017-09-01');
+  CREATE TABLE
+  demo=# create table flights_new_2017_09 partition of flights_new for values from ('2017-09-01') to ('2017-10-01');
+  CREATE TABLE
+  demo=# 
+  demo=# 
+  demo=# \d+ flights_new
+                                                 Partitioned table "bookings.flights_new"
+         Column        |           Type           | Collation | Nullable | Default | Storage  | Compression | Stats target | Description 
+  ---------------------+--------------------------+-----------+----------+---------+----------+-------------+--------------+-------------
+   flight_id           | integer                  |           | not null |         | plain    |             |              | 
+   flight_no           | character(6)             |           | not null |         | extended |             |              | 
+   scheduled_departure | timestamp with time zone |           | not null |         | plain    |             |              | 
+   scheduled_arrival   | timestamp with time zone |           | not null |         | plain    |             |              | 
+   departure_airport   | character(3)             |           | not null |         | extended |             |              | 
+   arrival_airport     | character(3)             |           | not null |         | extended |             |              | 
+   status              | character varying(20)    |           | not null |         | extended |             |              | 
+   aircraft_code       | character(3)             |           | not null |         | extended |             |              | 
+   actual_departure    | timestamp with time zone |           |          |         | plain    |             |              | 
+   actual_arrival      | timestamp with time zone |           |          |         | plain    |             |              | 
+  Partition key: RANGE (scheduled_departure)
+  Partitions: flights_new_2016_08 FOR VALUES FROM ('2016-08-01 00:00:00+00') TO ('2016-09-01 00:00:00+00'),
+              flights_new_2016_09 FOR VALUES FROM ('2016-09-01 00:00:00+00') TO ('2016-10-01 00:00:00+00'),
+              flights_new_2016_10 FOR VALUES FROM ('2016-10-01 00:00:00+00') TO ('2016-11-01 00:00:00+00'),
+              flights_new_2016_11 FOR VALUES FROM ('2016-11-01 00:00:00+00') TO ('2016-12-01 00:00:00+00'),
+              flights_new_2016_12 FOR VALUES FROM ('2016-12-01 00:00:00+00') TO ('2017-01-01 00:00:00+00'),
+              flights_new_2017_01 FOR VALUES FROM ('2017-01-01 00:00:00+00') TO ('2017-02-01 00:00:00+00'),
+              flights_new_2017_02 FOR VALUES FROM ('2017-02-01 00:00:00+00') TO ('2017-03-01 00:00:00+00'),
+              flights_new_2017_03 FOR VALUES FROM ('2017-03-01 00:00:00+00') TO ('2017-04-01 00:00:00+00'),
+              flights_new_2017_04 FOR VALUES FROM ('2017-04-01 00:00:00+00') TO ('2017-05-01 00:00:00+00'),
+              flights_new_2017_05 FOR VALUES FROM ('2017-05-01 00:00:00+00') TO ('2017-06-01 00:00:00+00'),
+              flights_new_2017_06 FOR VALUES FROM ('2017-06-01 00:00:00+00') TO ('2017-07-01 00:00:00+00'),
+              flights_new_2017_07 FOR VALUES FROM ('2017-07-01 00:00:00+00') TO ('2017-08-01 00:00:00+00'),
+              flights_new_2017_08 FOR VALUES FROM ('2017-08-01 00:00:00+00') TO ('2017-09-01 00:00:00+00'),
+              flights_new_2017_09 FOR VALUES FROM ('2017-09-01 00:00:00+00') TO ('2017-10-01 00:00:00+00')
+  
+  demo=# 
+  ```
+  * Смотрим, какой диапазон данных(mix, max) есть в таблице `flights`
+  ```console
 
+  ```
