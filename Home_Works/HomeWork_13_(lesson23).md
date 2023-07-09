@@ -123,4 +123,63 @@
         ```sql
         INSERT INTO sales (good_id, sales_qty) VALUES (1, 10), (1, 1), (1, 120), (2, 1);
         ```
+    * Выполним SQL для отчета
+        ```sql
+        SELECT G.good_name, sum(G.good_price * S.sales_qty)
+        FROM goods G
+        INNER JOIN sales S ON S.good_id = G.goods_id
+        GROUP BY G.good_name;
+        ```
+        ```console
+                good_name         |     sum
+        --------------------------+--------------
+         Автомобиль Ferrari FXX K | 185000000.01
+         Спички хозайственные     |        65.50
+        (2 rows)
+        ```
         
+    * Проверим содержимое таблицы `public.good_sum_smart` и что тригер `sum_good` отработал
+        ```sql
+        select * from public.good_sum_smart;
+        ```
+        ```console
+                good_name         |   sum_sale
+        --------------------------+--------------
+         Спички хозайственные     |        65.50
+         Автомобиль Ferrari FXX K | 185000000.01
+        (2 rows)
+        ```
+
+    * Сделаем продажу одной Ferrari
+        ```sql
+        INSERT INTO sales(good_id, sales_qty) VALUES (2, 1);
+        ```
+
+    * Проверим содержимое таблицы `public.good_sum_smart` и что тригер `sum_good` отработал
+        ```sql
+        select * from public.good_sum_smart;
+        ```
+        ```console
+                good_name         |   sum_sale
+        --------------------------+--------------
+         Спички хозайственные     |        65.50
+         Автомобиль Ferrari FXX K | 370000000.02
+        (2 rows)
+        ```
+        
+    * Выполним обновление продаж, как оказалось мы продали за один раз две штуки Ferrari :-)
+        ```sql
+        update sales set sales_qty = 2 where good_id = 2 and sales_id = 15;
+        ```
+    * Проверим содержимое таблицы `public.good_sum_smart` и что тригер `sum_good` отработал
+        ```sql
+        select * from public.good_sum_smart;
+        ```
+        ```console
+                good_name         |   sum_sale
+        --------------------------+--------------
+         Спички хозайственные     |        65.50
+         Автомобиль Ferrari FXX K | 555000000.03
+        (2 rows)
+        ```
+            
