@@ -75,3 +75,52 @@
     select * from public.goods;
     select * from public.sales;
     ```
+
+* Создаем функцию
+    ```plpgsql
+    CREATE OR REPLACE FUNCTION sum_good() RETURNS TRIGGER AS $$
+    
+    DECLARE
+     v_qty integer;
+     v_good_id integer;
+    begin
+    IF (TG_OP = 'INSERT') THEN
+    	v_qty = NEW.sales_qty;
+     	v_good_id = NEW.good_id; 
+     ELSIF (TG_OP = 'UPDATE') THEN
+    	 v_qty = NEW.sales_qty - OLD.sales_qty;
+     	 v_good_id = OLD.good_id;
+     ELSIF (TG_OP = 'DELETE') THEN
+     	v_qty = 0 - OLD.sales_qty;
+     	v_good_id = OLD.good_id;
+    END IF;
+    
+    INSERT INTO good_sum_smart (good_name, sum_sale)
+    SELECT good_name , good_price * v_qty
+    FROM goods WHERE goods_id = v_good_id
+    ON CONFLICT ON CONSTRAINT good_sum_smart_pkey
+    DO UPDATE SET sum_sale = good_sum_smart.sum_sale + EXCLUDED.sum_sale
+    WHERE good_sum_smart.good_name = EXCLUDED.good_name;
+    RETURN NULL;
+    END;
+    $$ LANGUAGE plpgsql;
+    ```
+
+* Создаем триггер
+    ```plpgsql
+    CREATE TRIGGER sum_good
+    AFTER INSERT OR UPDATE OR DELETE ON sales
+    FOR EACH ROW EXECUTE FUNCTION sum_good();
+    ```
+
+* Для проверки работы триггера и функции
+    * сначала очистим таблицу продаж
+        ```sql
+        truncate table public.sales;
+        truncate table public.good_sum_smart;
+        ``` 
+    * а пототом заполним
+        ```sql
+        INSERT INTO sales (good_id, sales_qty) VALUES (1, 10), (1, 1), (1, 120), (2, 1);
+        ```
+        
