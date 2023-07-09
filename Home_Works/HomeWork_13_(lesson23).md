@@ -1,6 +1,6 @@
 <div align="center"><h2> Отчет о выполнении домашнего задания по теме: "Хранимые функции и процедуры." </h2></div>
 
-***
+
 > ### Цель: Создать триггер для поддержки витрины в актуальном состоянии.
 > ### Описание/Пошаговая инструкция выполнения домашнего задания:
 > ### Скрипт и развернутое описание задачи – в ЛК (файл hw_triggers.sql) или по ссылке: https://disk.yandex.ru/d/l70AvknAepIJXQ
@@ -60,4 +60,18 @@
     
     -- Чем такая схема (витрина+триггер) предпочтительнее отчета, создаваемого "по требованию" (кроме производительности)?
     -- Подсказка: В реальной жизни возможны изменения цен.
-```
+    ```
+
+***
+
+* Зачищаем свои объекты БД, перед началом
+    ```sql
+    drop function sum_good() 
+    DROP TRIGGER sum_good ON public.sales;
+    drop table public.good_sum_smart
+    drop table public.goods
+    drop table public.sales
+    select * from public.good_sum_smart;
+    select * from public.goods;
+    select * from public.sales;
+    ```
