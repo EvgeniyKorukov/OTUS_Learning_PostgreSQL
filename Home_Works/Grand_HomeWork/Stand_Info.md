@@ -3,29 +3,135 @@
 
 ***
 
-> ### 1. Создаем 3 ВМ для Patroni+Consul+PGBouncer в YandexCloud.
-   * Общие параметры для всех 3х ВМ для Patroni+Consul+PGBouncer с фиксированным внутренним IPv4.
-       :hammer_and_wrench: Параметр | :memo: Значение |
-      --------------:|---------------| 
-      | Операционная система | `Ubuntu 20.04 LTS` |
-      | Зона доступности | `ru-central1-b` |
-      | Платформа | `Intel Cascade Lake	` |
-      | vCPU | `2` |
-      | Гарантированная доля vCPU | `20%` |
-      | RAM | `4 ГБ` |
-      | Тип диска | `SSD` | 
-      | Объём дискового пространства | `10 ГБ` |
-      | Макс. IOPS (чтение / запись) | `1000 / 1000` |
-      | Макс. bandwidth (чтение / запись) | `15 МБ/с / 15 МБ/с` |
-      | Прерываемая | :ballot_box_with_check: |
-        
-   * Индивидуальные параметры каждой ВМ
-      :hammer_and_wrench: Название ВМ | :memo: Внутренний IPv4 |
-      --------------:|---------------|
-      | **`pg-srv1`** | `10.129.0.21` |
-      | **`pg-srv2`** | `10.129.0.22` |      
-      | **`pg-srv3`** | `10.129.0.23` |
+### В идеале, надо создавать группы ВМ для каждого компонента:
+  * 3 ВМ с Patroni
+  * 3 ВМ с Consul
+  * 3 ВМ с PGBouncer
+  * 2 ВМ с HAProxy+KeepAlived
 
+***
+
+### Но у нас бюджетный проект и мы ограничены ресурсами и имеем всего 5 серверов в виде ВМ в YandexCloud:
+  * Создаем 3 ВМ для Patroni+Consul+PGBouncer.
+    * Общие параметры для всех 3х ВМ для Patroni+Consul+PGBouncer с фиксированным внутренним IPv4.
+        :hammer_and_wrench: Параметр | :memo: Значение |
+        --------------:|---------------| 
+        | Операционная система | `Ubuntu 20.04 LTS` |
+        | Зона доступности | `ru-central1-b` |
+        | Платформа | `Intel Cascade Lake	` |
+        | vCPU | `2` |
+        | Гарантированная доля vCPU | `20%` |
+        | RAM | `4 ГБ` |
+        | Тип диска | `SSD` | 
+        | Объём дискового пространства | `5 ГБ` |
+        | Макс. IOPS (чтение / запись) | `1000 / 1000` |
+        | Макс. bandwidth (чтение / запись) | `15 МБ/с / 15 МБ/с` |
+        | Прерываемая | :ballot_box_with_check: |
+          
+     * Индивидуальные параметры каждой ВМ
+        :hammer_and_wrench: Название ВМ | :memo: Внутренний IPv4 |
+        --------------:|---------------|
+        | **`pg-srv1`** | `10.129.0.21` |
+        | **`pg-srv2`** | `10.129.0.22` |      
+        | **`pg-srv3`** | `10.129.0.23` |
+
+    ```bash
+    yc compute instance create \
+      --name pg-srv1 \
+      --hostname pg-srv1 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.21 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    ```
+    ```console
+    yc compute instance create \
+      --name pg-srv1 \
+      --hostname pg-srv1 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.21 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    done (51s)
+    id: epdc3hgv218fb9c8b1l0
+    folder_id: b1g59qc1dbgj9fu1qp9t
+    created_at: "2023-08-09T21:05:23Z"
+    name: pg-srv1
+    zone_id: ru-central1-b
+    platform_id: standard-v2
+    resources:
+      memory: "4294967296"
+      cores: "2"
+      core_fraction: "20"
+    status: RUNNING
+    metadata_options:
+      gce_http_endpoint: ENABLED
+      aws_v1_http_endpoint: ENABLED
+      gce_http_token: ENABLED
+      aws_v1_http_token: DISABLED
+    boot_disk:
+      mode: READ_WRITE
+      device_name: epdff2veknj825kicj6j
+      auto_delete: true
+      disk_id: epdff2veknj825kicj6j
+    network_interfaces:
+      - index: "0"
+        mac_address: d0:0d:c1:c6:1f:10
+        subnet_id: e2lk4cvo04hq6d33rlkt
+        primary_v4_address:
+          address: 10.129.0.21
+          one_to_one_nat:
+            address: 51.250.27.115
+            ip_version: IPV4
+    gpu_settings: {}
+    fqdn: pg-srv1.ru-central1.internal
+    scheduling_policy:
+      preemptible: true
+    network_settings:
+      type: STANDARD
+    placement_policy: {}
+    ```
+    ```bash
+    yc compute instance create \
+      --name pg-srv2 \
+      --hostname pg-srv2 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.22 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    ```
+    ```console
+
+    ```
+    ```bash
+    yc compute instance create \
+      --name pg-srv3 \
+      --hostname pg-srv3 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.23 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    ```
+    ```console
+
+    ```
+***   
    * На каждой ВМ устанавливаем PostgreSQL 15 и проверяем, что экземпляры запустились (вывод установки приводить не стал т.к. в этом нет особого смысла)
          ```bash
          sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15
