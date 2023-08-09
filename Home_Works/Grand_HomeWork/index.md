@@ -1,4 +1,4 @@
-<div align="center"><h2> Описание проекта и этапы </h2></div>
+<div align="center"><h2> Проект "Создание отказоустойчивого кластера на базе: Patroni+Consul+PGBouncer+HAProxy+KeepAlived" </h2></div>
 
 ***
 
