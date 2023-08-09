@@ -113,7 +113,55 @@
       --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
     ```
     ```console
-
+    yc compute instance create \
+      --name pg-srv2 \
+      --hostname pg-srv2 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.22 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    done (32s)
+    id: epdkbdt84gtqrkv3f9du
+    folder_id: b1g59qc1dbgj9fu1qp9t
+    created_at: "2023-08-09T21:09:16Z"
+    name: pg-srv2
+    zone_id: ru-central1-b
+    platform_id: standard-v2
+    resources:
+      memory: "4294967296"
+      cores: "2"
+      core_fraction: "20"
+    status: RUNNING
+    metadata_options:
+      gce_http_endpoint: ENABLED
+      aws_v1_http_endpoint: ENABLED
+      gce_http_token: ENABLED
+      aws_v1_http_token: DISABLED
+    boot_disk:
+      mode: READ_WRITE
+      device_name: epd91ck7agfmiqmpq6ji
+      auto_delete: true
+      disk_id: epd91ck7agfmiqmpq6ji
+    network_interfaces:
+      - index: "0"
+        mac_address: d0:0d:14:5b:7a:82
+        subnet_id: e2lk4cvo04hq6d33rlkt
+        primary_v4_address:
+          address: 10.129.0.22
+          one_to_one_nat:
+            address: 62.84.122.92
+            ip_version: IPV4
+    gpu_settings: {}
+    fqdn: pg-srv2.ru-central1.internal
+    scheduling_policy:
+      preemptible: true
+    network_settings:
+      type: STANDARD
+    placement_policy: {}
     ```
     ```bash
     yc compute instance create \
@@ -129,7 +177,55 @@
       --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
     ```
     ```console
-
+    yc compute instance create \
+      --name pg-srv3 \
+      --hostname pg-srv3 \
+      --cores 2 \
+      --memory 4 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.23 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    done (50s)
+    id: epd9ei86t3ctsh0d9b8d
+    folder_id: b1g59qc1dbgj9fu1qp9t
+    created_at: "2023-08-09T21:09:36Z"
+    name: pg-srv3
+    zone_id: ru-central1-b
+    platform_id: standard-v2
+    resources:
+      memory: "4294967296"
+      cores: "2"
+      core_fraction: "20"
+    status: RUNNING
+    metadata_options:
+      gce_http_endpoint: ENABLED
+      aws_v1_http_endpoint: ENABLED
+      gce_http_token: ENABLED
+      aws_v1_http_token: DISABLED
+    boot_disk:
+      mode: READ_WRITE
+      device_name: epdl4vcf5nnooeckfv3e
+      auto_delete: true
+      disk_id: epdl4vcf5nnooeckfv3e
+    network_interfaces:
+      - index: "0"
+        mac_address: d0:0d:97:49:06:e8
+        subnet_id: e2lk4cvo04hq6d33rlkt
+        primary_v4_address:
+          address: 10.129.0.23
+          one_to_one_nat:
+            address: 51.250.96.91
+            ip_version: IPV4
+    gpu_settings: {}
+    fqdn: pg-srv3.ru-central1.internal
+    scheduling_policy:
+      preemptible: true
+    network_settings:
+      type: STANDARD
+    placement_policy: {}
     ```
 ***   
    * На каждой ВМ устанавливаем PostgreSQL 15 и проверяем, что экземпляры запустились (вывод установки приводить не стал т.к. в этом нет особого смысла)
