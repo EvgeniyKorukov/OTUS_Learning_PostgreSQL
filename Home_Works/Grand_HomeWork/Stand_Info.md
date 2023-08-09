@@ -227,6 +227,13 @@
       type: STANDARD
     placement_policy: {}
     ```
+    * На всех 3 ВМ ставим PostgreSQL 15 и удаляем кластер по умолчанию
+    ```bash
+    sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15 && sudo -u postgres pg_dropcluster 15 main --stop && pg_lsclusters
+    ```
+
+
+    
 ***   
    * На каждой ВМ устанавливаем PostgreSQL 15 и проверяем, что экземпляры запустились (вывод установки приводить не стал т.к. в этом нет особого смысла)
          ```bash
