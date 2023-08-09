@@ -383,5 +383,23 @@
     placement_policy: {}
     ```
 
+***
+### В итоге получился вот такой стенд:
+  ```bash
+  yc compute instance list
+  ```
+
+  ```console
+  yc compute instance list
+  +----------------------+---------+---------------+---------+---------------+-------------+
+  |          ID          |  NAME   |    ZONE ID    | STATUS  |  EXTERNAL IP  | INTERNAL IP |
+  +----------------------+---------+---------------+---------+---------------+-------------+
+  | epd9ei86t3ctsh0d9b8d | pg-srv3 | ru-central1-b | RUNNING | 51.250.96.91  | 10.129.0.23 |
+  | epdc3hgv218fb9c8b1l0 | pg-srv1 | ru-central1-b | RUNNING | 51.250.27.115 | 10.129.0.21 |
+  | epddj88rneil10t018im | hap2    | ru-central1-b | RUNNING | 51.250.23.58  | 10.129.0.12 |
+  | epdkbdt84gtqrkv3f9du | pg-srv2 | ru-central1-b | RUNNING | 62.84.122.92  | 10.129.0.22 |
+  | epdu4ca1etl7e0v323aj | hap1    | ru-central1-b | RUNNING | 51.250.31.223 | 10.129.0.11 |
+  +----------------------+---------+---------------+---------+---------------+-------------+
+  ```
 
 ***
