@@ -12,7 +12,7 @@
 ***
 
 ### Но у нас бюджетный проект и мы ограничены ресурсами и имеем всего 5 серверов в виде ВМ в YandexCloud:
-  * Создаем 3 ВМ для Patroni+Consul+PGBouncer.
+  * #### Создаем 3 ВМ для Patroni+Consul+PGBouncer.
     * Общие параметры для всех 3х ВМ для Patroni+Consul+PGBouncer с фиксированным внутренним IPv4.
         :hammer_and_wrench: Параметр | :memo: Значение |
         --------------:|---------------| 
@@ -232,41 +232,9 @@
     sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15 && sudo -u postgres pg_dropcluster 15 main --stop && pg_lsclusters
     ```
 
-
-    
-***   
-   * На каждой ВМ устанавливаем PostgreSQL 15 и проверяем, что экземпляры запустились (вывод установки приводить не стал т.к. в этом нет особого смысла)
-         ```bash
-         sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15
-
-         pg_lsclusters
-         ```
-       * Вывод pg_lsclusters с каждой ВМ:
-         ```console
-         ubuntu@pg-srv1:~$ hostname; pg_lsclusters
-         pg-srv1
-         Ver Cluster Port Status Owner    Data directory              Log file
-         15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-         ubuntu@pg-srv1:~$        
-         ```
-         ```console
-         ubuntu@pg-srv2:~$ hostname; pg_lsclusters
-         pg-srv2
-         Ver Cluster Port Status Owner    Data directory              Log file
-         15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-         ubuntu@pg-srv2:~$ 
-         ```
-         ```console
-         ubuntu@pg-srv3:~$ pg_lsclusters
-         Ver Cluster Port Status Owner    Data directory              Log file
-         15  main    5432 online postgres /var/lib/postgresql/15/main /var/log/postgresql/postgresql-15-main.log
-         ubuntu@pg-srv3:~$ 
-         ```  
-
-
-> ### 2. Создаем 2 ВМ для HAProxy+KeepAlived в YandexCloud.
-  * Общие параметры для всех 2х ВМ для HAProxy+KeepAlived с фиксированным внутренним IPv4. Команды по созданию ВМ прилагать не буду т.к. они типовые
-       :hammer_and_wrench: Параметр | :memo: Значение |
+  * #### Создаем 2 ВМ для HAProxy+KeepAlived.
+    * Общие параметры для всех 2х ВМ для HAProxy+KeepAlived с фиксированным внутренним IPv4.
+      :hammer_and_wrench: Параметр | :memo: Значение |
       --------------:|---------------| 
       | Операционная система | `Ubuntu 20.04 LTS` |
       | Зона доступности | `ru-central1-b` |
@@ -285,42 +253,135 @@
       | **`hap1`** | `10.129.0.11` |
       | **`hap2`** | `10.129.0.12` |      
 
+    ```bash
+    yc compute instance create \
+      --name hap1 \
+      --hostname hap1 \
+      --cores 2 \
+      --memory 2 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.11 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    ```
+    ```console
+    yc compute instance create \
+      --name hap1 \
+      --hostname hap1 \
+      --cores 2 \
+      --memory 2 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.11 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    done (41s)
+    id: epdu4ca1etl7e0v323aj
+    folder_id: b1g59qc1dbgj9fu1qp9t
+    created_at: "2023-08-09T21:33:30Z"
+    name: hap1
+    zone_id: ru-central1-b
+    platform_id: standard-v2
+    resources:
+      memory: "2147483648"
+      cores: "2"
+      core_fraction: "20"
+    status: RUNNING
+    metadata_options:
+      gce_http_endpoint: ENABLED
+      aws_v1_http_endpoint: ENABLED
+      gce_http_token: ENABLED
+      aws_v1_http_token: DISABLED
+    boot_disk:
+      mode: READ_WRITE
+      device_name: epd0s6libvqf818v61i1
+      auto_delete: true
+      disk_id: epd0s6libvqf818v61i1
+    network_interfaces:
+      - index: "0"
+        mac_address: d0:0d:1e:23:14:17
+        subnet_id: e2lk4cvo04hq6d33rlkt
+        primary_v4_address:
+          address: 10.129.0.11
+          one_to_one_nat:
+            address: 51.250.31.223
+            ip_version: IPV4
+    gpu_settings: {}
+    fqdn: hap1.ru-central1.internal
+    scheduling_policy:
+      preemptible: true
+    network_settings:
+      type: STANDARD
+    placement_policy: {}
+    ```
+    
+    ```bash
+    yc compute instance create \
+      --name hap2 \
+      --hostname hap2 \
+      --cores 2 \
+      --memory 2 \
+      --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+      --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.12 \
+      --zone ru-central1-b \
+      --core-fraction 20 \
+      --preemptible \
+      --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    ```
+    ```console
+    yc compute instance create \
+          --name hap2 \
+          --hostname hap2 \
+          --cores 2 \
+          --memory 2 \
+          --create-boot-disk size=5G,type=network-ssd,image-folder-id=standard-images,image-family=ubuntu-2004-lts \
+          --network-interface subnet-name=default-subnet,nat-ip-version=ipv4,ipv4-address=10.129.0.12 \
+          --zone ru-central1-b \
+          --core-fraction 20 \
+          --preemptible \
+          --metadata-from-file ssh-keys=/home/muser/.ssh/yc_key.pub
+    done (47s)
+    id: epddj88rneil10t018im
+    folder_id: b1g59qc1dbgj9fu1qp9t
+    created_at: "2023-08-09T21:34:17Z"
+    name: hap2
+    zone_id: ru-central1-b
+    platform_id: standard-v2
+    resources:
+      memory: "2147483648"
+      cores: "2"
+      core_fraction: "20"
+    status: RUNNING
+    metadata_options:
+      gce_http_endpoint: ENABLED
+      aws_v1_http_endpoint: ENABLED
+      gce_http_token: ENABLED
+      aws_v1_http_token: DISABLED
+    boot_disk:
+      mode: READ_WRITE
+      device_name: epd8tfl2r9o73nommiae
+      auto_delete: true
+      disk_id: epd8tfl2r9o73nommiae
+    network_interfaces:
+      - index: "0"
+        mac_address: d0:0d:d9:a1:1b:bb
+        subnet_id: e2lk4cvo04hq6d33rlkt
+        primary_v4_address:
+          address: 10.129.0.12
+          one_to_one_nat:
+            address: 51.250.23.58
+            ip_version: IPV4
+    gpu_settings: {}
+    fqdn: hap2.ru-central1.internal
+    scheduling_policy:
+      preemptible: true
+    network_settings:
+      type: STANDARD
+    placement_policy: {}
+    ```
+
+
 ***
-* На каждой ВМ устанавливаем etcd и останавливаем etcd, чтобы изменить конфигурацию
-       ```bash
-       sudo apt update && sudo apt upgrade -y && sudo apt install -y etcd
-       sudo systemctl stop etcd
-       ```
-     * На каждой ВМ с etcd:
-       * Формируем конфигурацию для etcd
-       * Делаем сервис etcd автозапускаемым
-       * Запускаем etcd
-       * **❗️используем FQDM, полное имя хоста (сервера) получаем командой `hostname -f`**
-         ```bash
-         cat > temp.cfg << EOF 
-         ETCD_NAME="$(hostname)"
-         ETCD_LISTEN_CLIENT_URLS="http://0.0.0.0:2379"
-         ETCD_ADVERTISE_CLIENT_URLS="http://$(hostname -f):2379"
-         ETCD_LISTEN_PEER_URLS="http://0.0.0.0:2380"
-         ETCD_INITIAL_ADVERTISE_PEER_URLS="http://$(hostname -f):2380"
-         ETCD_INITIAL_CLUSTER_TOKEN="PatroniCluster"
-         ETCD_INITIAL_CLUSTER="etcd1=http://etcd1.ru-central1.internal:2380,etcd2=http://etcd2.ru-central1.internal:2380,etcd3=http://etcd3.ru-central1.internal:2380"
-         ETCD_INITIAL_CLUSTER_STATE="new"
-         ETCD_DATA_DIR="/var/lib/etcd"
-         EOF
-         cat temp.cfg | sudo tee -a /etc/default/etcd
-
-         sudo systemctl enable etcd
-
-         sudo systemctl start etcd
-         ```
-     * Проверяем статус etcd на одной из ВМ
-       ```console
-       ubuntu@etcd1:~$ etcdctl cluster-health
-       member 61f991406239b07 is healthy: got healthy result from http://etcd1.ru-central1.internal:2379
-       member 3376d9633be63daf is healthy: got healthy result from http://etcd3.ru-central1.internal:2379
-       member 64b82de471857189 is healthy: got healthy result from http://etcd2.ru-central1.internal:2379
-       cluster is healthy
-       ubuntu@etcd1:~$ 
-       ```
-  * Создаем 3 ВМ для PostgreSQL 15+Patroni в YandexCloud
