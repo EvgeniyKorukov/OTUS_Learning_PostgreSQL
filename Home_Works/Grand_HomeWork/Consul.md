@@ -128,10 +128,32 @@
     consul validate /etc/consul.d/config.json
     ```
     ```console
-  
+    ubuntu@pg-srv1:~$ consul validate /etc/consul.d/config.json
+    The 'start_join' field is deprecated. Use the 'retry_join' field instead.
+    bootstrap_expect > 0: expecting 3 servers
+    using enable-script-checks without ACLs and without allow_write_http_from is DANGEROUS, use enable-local-script-checks instead, see https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations/
+    Configuration is valid!
+    ubuntu@pg-srv1:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ consul validate /etc/consul.d/config.json
+    The 'start_join' field is deprecated. Use the 'retry_join' field instead.
+    bootstrap_expect > 0: expecting 3 servers
+    using enable-script-checks without ACLs and without allow_write_http_from is DANGEROUS, use enable-local-script-checks instead, see https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations/
+    Configuration is valid!
+    ubuntu@pg-srv2:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv3:~$ consul validate /etc/consul.d/config.json
+    The 'start_join' field is deprecated. Use the 'retry_join' field instead.
+    bootstrap_expect > 0: expecting 3 servers
+    using enable-script-checks without ACLs and without allow_write_http_from is DANGEROUS, use enable-local-script-checks instead, see https://www.hashicorp.com/blog/protecting-consul-from-rce-risk-in-specific-configurations/
+    Configuration is valid!
+    ubuntu@pg-srv3:~$ 
     ```
 
 ***
+
 ###  Создаем настраиваем службу в ОС для `Consul`
   * В завершение настройки создадим юнит в systemd для возможности автоматического запуска сервиса
     ```bash
