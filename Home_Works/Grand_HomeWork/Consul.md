@@ -5,9 +5,13 @@
   * В концепции кластера все значения/параметры/статусы/прочее должны храниться в единном месте - `DCS (Distributed Config Store)` и должны быть одинаковыми для всех участников кластера. Другими словами - это единное хранилище вида "Ключ-Значение". 
   * PostgreSQL не умеет напрямую работать с `DCS (Distributed Config Store)` поэтому ему нужно некоторое ПО, в нашем случае - это [`Patroni`](https://github.com/zalando/patroni). Но о нем позже.
   * В качестве `DCS (Distributed Config Store)` для [`Patroni`](https://github.com/zalando/patroni) могут выступать:
-    * [`Consul`](https://github.com/hashicorp/consul). ❗️Именно его мы и будет использовать
+    * [`Consul`](https://www.consul.io/). ❗️Именно его мы и будет использовать
     * [`etcd`](https://github.com/etcd-io/etcd)
     * [`ZooKeeper`](https://zookeeper.apache.org/)
+  * [`Consul`](https://www.consul.io/) не чувствителен к вводу/выводу в отличие от [`etcd`](https://github.com/etcd-io/etcd). Хотя и его правильно размещать на отдельных серверах.
   
 ***
+### Установка и настройка [`Consul`](https://www.consul.io/)
+
+
 
