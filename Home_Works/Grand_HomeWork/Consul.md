@@ -68,6 +68,53 @@
     ubuntu@pg-srv1:~$ 
     ```
 
+  * Создаем конфигурационный файл для консула [`/etc/consul.d/config.json`](config.json)
+    ```json
+    {
+        "bind_addr": "0.0.0.0",
+        "bootstrap_expect": 3,
+        "client_addr": "0.0.0.0",
+        "data_dir": "/var/lib/consul",
+        "enable_script_checks": true,
+        "dns_config": {
+            "enable_truncate": true,
+            "only_passing": true
+        },
+        "enable_syslog": true,
+        "encrypt": "XvaUAIrls/9iIxtZfWdF0P1XDfW38m4jJHPK+yXXneE=",
+        "leave_on_terminate": true,
+        "log_level": "INFO",
+        "rejoin_after_leave": true,
+        "retry_join": [
+            "pg-srv1",
+            "pg-srv2",
+            "pg-srv3"
+        ],
+        "server": true,
+        "start_join": [
+            "pg-srv1",
+            "pg-srv2",
+            "pg-srv3"
+        ],
+       "ui_config": { "enabled": true }
+    }
+    ```
+
+
+  * 
+    ```bash
+  
+    ```
+    ```console
+  
+    ```
+  * 
+    ```bash
+  
+    ```
+    ```console
+  
+    ```
 
   * 
     ```bash
@@ -77,5 +124,11 @@
   
     ```
 
-
+  * 
+    ```bash
+  
+    ```
+    ```console
+  
+    ```            
 
