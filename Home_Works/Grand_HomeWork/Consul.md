@@ -58,14 +58,14 @@
     sudo chmod 775 /var/lib/consul /etc/consul.d
     ```
 
-
-
-  * 
+  * Сгенерируем ключ для консула на любой из нод кластера
     ```bash
-  
+    consul keygen
     ```
     ```console
-  
+    ubuntu@pg-srv1:~$ consul keygen
+    XvaUAIrls/9iIxtZfWdF0P1XDfW38m4jJHPK+yXXneE=
+    ubuntu@pg-srv1:~$ 
     ```
 
 
