@@ -155,116 +155,175 @@
 ***
 
 ###  Создаем настраиваем службу в ОС для `Consul`
-  * В завершение настройки создадим юнит в systemd для возможности автоматического запуска сервиса
+  * Создаем службу [`/usr/lib/systemd/system/consul.service`](consul.service) в ОС на каждой из 3х ВМ
+  * ❗️Разница только в `-node=pg-srv`
     ```bash
-  
+    sudo vim /usr/lib/systemd/system/consul.service
     ```
-    ```console
-  
+    ```service
+    [Unit]
+    Description=Consul Service Discovery Agent
+    Documentation=https://www.consul.io/
+    After=network-online.target
+    Wants=network-online.target
+    
+    [Service]
+    Type=simple
+    User=consul
+    Group=consul
+    ExecStart=/usr/bin/consul agent \
+        -node=pg-srv \
+        -config-dir=/etc/consul.d
+    ExecReload=/bin/kill -HUP $MAINPID
+    KillSignal=SIGINT
+    TimeoutStopSec=5
+    Restart=on-failure
+    SyslogIdentifier=consul
+    
+    [Install]
+    WantedBy=multi-user.target
     ```
 
   * Перечитываем конфигурацию systemd
     ```bash
-    systemctl daemon-reload
+    sudo systemctl daemon-reload
     ```
 
   * Стартуем наш сервис
     ```bash
-    systemctl start consul
+    sudo systemctl start consul
     ```
-    ```console
-  
-    ```            
-
 
   * Также разрешаем автоматический старт при запуске сервера
     ```bash
-    systemctl enable consul
+    sudo systemctl enable consul
     ```
     ```console
-  
+    ubuntu@pg-srv1:~$ sudo systemctl enable consul
+    Created symlink /etc/systemd/system/multi-user.target.wants/consul.service → /lib/systemd/system/consul.service.
+    ubuntu@pg-srv1:~$ 
     ```
-
-
+    ```console
+    ubuntu@pg-srv2:~$ sudo systemctl enable consul
+    Created symlink /etc/systemd/system/multi-user.target.wants/consul.service → /lib/systemd/system/consul.service.
+    ubuntu@pg-srv2:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv3:~$ sudo systemctl enable consul
+    Created symlink /etc/systemd/system/multi-user.target.wants/consul.service → /lib/systemd/system/consul.service.
+    ubuntu@pg-srv3:~$ 
+    ```
 
   * Смотрим текущее состояние работы сервиса:
     ```bash
-    systemctl status consul
+    sudo systemctl status consul
     ```
     ```console
-  
+    ubuntu@pg-srv1:~$ sudo systemctl status consul
+    ● consul.service - Consul Service Discovery Agent
+         Loaded: loaded (/lib/systemd/system/consul.service; enabled; vendor preset: enabled)
+         Active: active (running) since Thu 2023-08-10 21:36:38 UTC; 5min ago
+           Docs: https://www.consul.io/
+       Main PID: 14398 (consul)
+          Tasks: 8 (limit: 4631)
+         Memory: 34.0M
+         CGroup: /system.slice/consul.service
+                 └─14398 /usr/bin/consul agent -node=pg-srv1 -config-dir=/etc/consul.d
+    
+    Aug 10 21:37:11 pg-srv1 consul[14398]: 2023-08-10T21:37:11.272Z [INFO]  agent.leader: stopped r>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: agent.leader: stopped routine: routine="virtual IP versi>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: 2023-08-10T21:37:11.277Z [INFO]  agent.server: member jo>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: agent.server: member joined, marking health alive: membe>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: 2023-08-10T21:37:11.303Z [INFO]  agent.server: member jo>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: agent.server: member joined, marking health alive: membe>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: 2023-08-10T21:37:11.607Z [INFO]  agent.server: federatio>
+    Aug 10 21:37:11 pg-srv1 consul[14398]: agent.server: federation state anti-entropy synced
+    Aug 10 21:37:15 pg-srv1 consul[14398]: 2023-08-10T21:37:15.491Z [INFO]  agent: Synced node info
+    Aug 10 21:37:15 pg-srv1 consul[14398]: agent: Synced node info
+    lines 1-20/20 (END)
     ```
-
-
-
+    ```console
+    ubuntu@pg-srv2:~$ sudo systemctl status consul
+    ● consul.service - Consul Service Discovery Agent
+         Loaded: loaded (/lib/systemd/system/consul.service; enabled; vendor preset: enabled)
+         Active: active (running) since Thu 2023-08-10 21:37:07 UTC; 3min 15s ago
+           Docs: https://www.consul.io/
+       Main PID: 13761 (consul)
+          Tasks: 8 (limit: 4631)
+         Memory: 32.4M
+         CGroup: /system.slice/consul.service
+                 └─13761 /usr/bin/consul agent -node=pg-srv2 -config-dir=/etc/consul.d
+    
+    Aug 10 21:37:08 pg-srv2 consul[13761]: 2023-08-10T21:37:08.611Z [INFO]  agent.server: Found exp>
+    Aug 10 21:37:08 pg-srv2 consul[13761]: agent.server: Found expected number of peers, attempting>
+    Aug 10 21:37:08 pg-srv2 consul[13761]: 2023-08-10T21:37:08.619Z [INFO]  agent.server.serf.wan: >
+    Aug 10 21:37:08 pg-srv2 consul[13761]: agent.server.serf.wan: serf: EventMemberJoin: pg-srv3.dc>
+    Aug 10 21:37:08 pg-srv2 consul[13761]: 2023-08-10T21:37:08.619Z [INFO]  agent.server: Handled e>
+    Aug 10 21:37:08 pg-srv2 consul[13761]: agent.server: Handled event for server in area: event=me>
+    Aug 10 21:37:11 pg-srv2 consul[13761]: 2023-08-10T21:37:11.271Z [INFO]  agent.server: New leade>
+    Aug 10 21:37:11 pg-srv2 consul[13761]: agent.server: New leader elected: payload=pg-srv1
+    Aug 10 21:37:16 pg-srv2 consul[13761]: 2023-08-10T21:37:16.418Z [INFO]  agent: Synced node info
+    Aug 10 21:37:16 pg-srv2 consul[13761]: agent: Synced node info
+    lines 1-20/20 (END)
+    ```
+    ```console
+    ubuntu@pg-srv3:~$ sudo systemctl status consul
+    ● consul.service - Consul Service Discovery Agent
+         Loaded: loaded (/lib/systemd/system/consul.service; enabled; vendor preset: enabled)
+         Active: active (running) since Thu 2023-08-10 21:37:08 UTC; 4min 15s ago
+           Docs: https://www.consul.io/
+       Main PID: 14126 (consul)
+          Tasks: 8 (limit: 4631)
+         Memory: 32.4M
+         CGroup: /system.slice/consul.service
+                 └─14126 /usr/bin/consul agent -node=pg-srv3 -config-dir=/etc/consul.d
+    
+    Aug 10 21:37:08 pg-srv3 consul[14126]: agent.server: Handled event for server in area: event=me>
+    Aug 10 21:37:08 pg-srv3 consul[14126]: agent.server: Handled event for server in area: event=me>
+    Aug 10 21:37:08 pg-srv3 consul[14126]: 2023-08-10T21:37:08.624Z [INFO]  agent: (LAN) joined: nu>
+    Aug 10 21:37:08 pg-srv3 consul[14126]: 2023-08-10T21:37:08.624Z [INFO]  agent: Join cluster com>
+    Aug 10 21:37:08 pg-srv3 consul[14126]: agent: (LAN) joined: number_of_nodes=6
+    Aug 10 21:37:08 pg-srv3 consul[14126]: agent: Join cluster completed. Synced with initial agent>
+    Aug 10 21:37:11 pg-srv3 consul[14126]: 2023-08-10T21:37:11.272Z [INFO]  agent.server: New leade>
+    Aug 10 21:37:11 pg-srv3 consul[14126]: agent.server: New leader elected: payload=pg-srv1
+    Aug 10 21:37:12 pg-srv3 consul[14126]: 2023-08-10T21:37:12.092Z [INFO]  agent: Synced node info
+    Aug 10 21:37:12 pg-srv3 consul[14126]: agent: Synced node info
+    lines 1-20/20 (END)
+    ```
+    
+***
+###  Полезные команды `Consul`
   * Состояние нод кластера мы можем посмотреть командой
     ```bash
     consul members
     ```
     ```console
-  
+    ubuntu@pg-srv1:~$ consul members
+    Node     Address           Status  Type    Build   Protocol  DC   Partition  Segment
+    pg-srv1  10.129.0.21:8301  alive   server  1.16.1  2         dc1  default    <all>
+    pg-srv2  10.129.0.22:8301  alive   server  1.16.1  2         dc1  default    <all>
+    pg-srv3  10.129.0.23:8301  alive   server  1.16.1  2         dc1  default    <all>
+    ubuntu@pg-srv1:~$ 
     ```
-
-
 
   * А данной командой можно увидеть дополнительную информацию
     ```bash
     consul members -detailed
     ```
     ```console
-  
+    ubuntu@pg-srv3:~$ consul members -detailed
+    Node     Address           Status  Tags
+    pg-srv1  10.129.0.21:8301  alive   acls=0,ap=default,build=1.16.1:e0ab4d29,dc=dc1,expect=3,ft_fs=1,ft_si=1,grpc_tls_port=8503,id=98445677-186f-8ab3-fd11-0ab2979f799c,port=8300,raft_vsn=3,role=consul,segment=<all>,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302
+    pg-srv2  10.129.0.22:8301  alive   acls=0,ap=default,build=1.16.1:e0ab4d29,dc=dc1,expect=3,ft_fs=1,ft_si=1,grpc_tls_port=8503,id=8d19d22b-016a-e803-9be4-d71b8afb27b8,port=8300,raft_vsn=3,role=consul,segment=<all>,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302
+    pg-srv3  10.129.0.23:8301  alive   acls=0,ap=default,build=1.16.1:e0ab4d29,dc=dc1,expect=3,ft_fs=1,ft_si=1,grpc_tls_port=8503,id=e325f19b-c64b-54e1-b64e-267dcc1f7984,port=8300,raft_vsn=3,role=consul,segment=<all>,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302
+    ubuntu@pg-srv3:~$ 
     ```
 
   * Также у нас должен быть доступен веб-интерфейс по адресу:
     ```bash
-  
-    ```
-    ```console
-  
+    http://<IP-адрес любого сервера консул>:8500  
     ```
 
+***
 
-
-  * Консул установлен
-    ```bash
-  
-    ```
-    ```console
-  
-    ```
-
-
-  * 
-    ```bash
-  
-    ```
-    ```console
-  
-    ```
-
-
-
-  * 
-    ```bash
-  
-    ```
-    ```console
-  
-    ```
-  * 
-    ```bash
-  
-    ```
-    ```console
-  
-    ```
-
-
-
-  * 
-    ```bash
-  
-    ```
-    ```console
-  
-    ```      
+### :+1: Консул установлен и настроен
