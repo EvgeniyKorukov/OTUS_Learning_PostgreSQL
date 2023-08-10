@@ -71,6 +71,9 @@
     ```
 
   * Создаем конфигурационный файл для консула [`/etc/consul.d/config.json`](config.json) на всех 3х ВМ
+    ```bash
+    sudo vim /etc/consul.d/config.json
+    ```
     ```json
     {
         "bind_addr": "0.0.0.0",
