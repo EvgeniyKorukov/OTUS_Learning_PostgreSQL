@@ -53,41 +53,33 @@
 
 ***
 ###  Создаем конфигурацию для `Patroni`
-  * ❗️Сгенерируем ключ для консула на любой из нод кластера
+  * Создаем конфигурационный файл [`/etc/patroni/patroni.yml`](patroni.yml)
     ```bash
-    consul keygen
+
     ```
     ```console
-    ubuntu@pg-srv1:~$ consul keygen
-    XvaUAIrls/9iIxtZfWdF0P1XDfW38m4jJHPK+yXXneE=
-    ubuntu@pg-srv1:~$ 
     ```
 ***    
 ###  Создаем настраиваем службу в ОС для `Patroni`
-  * Создаем службу [`/usr/lib/systemd/system/consul.service`](consul.service) в ОС на каждой из 3х ВМ
+  * Создаем службу [`/usr/lib/systemd/system/patroni.service`](patroni.service) в ОС на каждой из 3х ВМ
   * ❗️Разница только в `-node=pg-srv`
     ```bash
-    sudo vim /usr/lib/systemd/system/consul.service
+    sudo vim /usr/lib/systemd/system/patroni.service
     ```
     ```service
     [Unit]
-    Description=Consul Service Discovery Agent
-    Documentation=https://www.consul.io/
-    After=network-online.target
-    Wants=network-online.target
+    Description=Patroni service
+    After=syslog.target network.target
     
     [Service]
     Type=simple
-    User=consul
-    Group=consul
-    ExecStart=/usr/bin/consul agent \
-        -node=pg-srv \
-        -config-dir=/etc/consul.d
-    ExecReload=/bin/kill -HUP $MAINPID
-    KillSignal=SIGINT
-    TimeoutStopSec=5
-    Restart=on-failure
-    SyslogIdentifier=consul
+    User=postgres
+    Group=postgres
+    ExecStart=/usr/local/bin/patroni /etc/patroni/patroni.yml
+    ExecReload=/bin/kill -s HUP $MAINPID
+    KillMode=process
+    TimeoutSec=30
+    Restart=no
     
     [Install]
     WantedBy=multi-user.target
