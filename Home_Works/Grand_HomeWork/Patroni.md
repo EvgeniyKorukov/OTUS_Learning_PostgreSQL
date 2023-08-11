@@ -58,6 +58,9 @@
     * `name: pg-srvX`
     * `restapi - connect_address: "10.129.0.X:8008"`
     * `postgresql - connect_address: "10.129.0.X:5432"`
+    ```bash
+    sudo vim /etc/patroni/patroni.yml
+    ```
     ```yml
     name: pg-srv1
     scope: postgres
