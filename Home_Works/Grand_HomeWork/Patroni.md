@@ -178,10 +178,19 @@
     sudo systemctl enable patroni
     ```
     ```console
+    ubuntu@pg-srv1:~$ sudo systemctl enable patroni
+    Created symlink /etc/systemd/system/multi-user.target.wants/patroni.service → /lib/systemd/system/patroni.service.
+    ubuntu@pg-srv1:~$    
     ```
     ```console
+    ubuntu@pg-srv2:~$ sudo systemctl enable patroni
+    Created symlink /etc/systemd/system/multi-user.target.wants/patroni.service → /lib/systemd/system/patroni.service.
+    ubuntu@pg-srv2:~$    
     ```
     ```console
+    ubuntu@pg-srv3:~$ sudo systemctl enable patroni
+    Created symlink /etc/systemd/system/multi-user.target.wants/patroni.service → /lib/systemd/system/patroni.service.
+    ubuntu@pg-srv3:~$    
     ```
 
   * Смотрим текущее состояние работы сервиса:
@@ -189,13 +198,100 @@
     sudo systemctl status patroni
     ```
     ```console
-    ```
-    ```console
-    ```
-    ```console
-    ```
+    ubuntu@pg-srv1:~$ sudo systemctl status patroni
+    ● patroni.service - Patroni service
+         Loaded: loaded (/lib/systemd/system/patroni.service; enabled; vendor preset: enabled)
+         Active: active (running) since Fri 2023-08-11 16:08:38 UTC; 2min 37s ago
+       Main PID: 7348 (patroni)
+          Tasks: 12 (limit: 4631)
+         Memory: 106.4M
+         CGroup: /system.slice/patroni.service
+                 ├─7348 /usr/bin/python3 /usr/local/bin/patroni /etc/patroni/patroni.yml
+                 ├─7398 /usr/lib/postgresql/15/bin/postgres -D /var/lib/postgresql/15/main/ --config-file=/var/lib/postgresql/15/main/postgresql.conf --listen_addresses=0.0>
+                 ├─7403 postgres: postgres: checkpointer
+                 ├─7404 postgres: postgres: background writer
+                 ├─7408 postgres: postgres: walwriter
+                 ├─7409 postgres: postgres: autovacuum launcher
+                 ├─7410 postgres: postgres: archiver
+                 ├─7411 postgres: postgres: logical replication launcher
+                 └─7413 postgres: postgres: postgres postgres 127.0.0.1(53556) idle
     
-
+    Aug 11 16:09:42 pg-srv1 patroni[7348]: 2023-08-11 16:09:42,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:09:52 pg-srv1 patroni[7348]: 2023-08-11 16:09:52,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:02 pg-srv1 patroni[7348]: 2023-08-11 16:10:02,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:12 pg-srv1 patroni[7348]: 2023-08-11 16:10:12,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:22 pg-srv1 patroni[7348]: 2023-08-11 16:10:22,903 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:32 pg-srv1 patroni[7348]: 2023-08-11 16:10:32,919 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:42 pg-srv1 patroni[7348]: 2023-08-11 16:10:42,888 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:10:52 pg-srv1 patroni[7348]: 2023-08-11 16:10:52,888 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:11:02 pg-srv1 patroni[7348]: 2023-08-11 16:11:02,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    Aug 11 16:11:12 pg-srv1 patroni[7348]: 2023-08-11 16:11:12,887 INFO: no action. I am (pg-srv1), the leader with the lock
+    lines 3-27/27 (END)
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ sudo systemctl status patroni
+    ● patroni.service - Patroni service
+         Loaded: loaded (/lib/systemd/system/patroni.service; enabled; vendor preset: enabled)
+         Active: active (running) since Fri 2023-08-11 16:12:21 UTC; 7s ago
+       Main PID: 6714 (patroni)
+          Tasks: 6 (limit: 4631)
+         Memory: 68.0M
+         CGroup: /system.slice/patroni.service
+                 ├─6714 /usr/bin/python3 /usr/local/bin/patroni /etc/patroni/patroni.yml
+                 └─6740 /usr/lib/postgresql/15/bin/postgres --describe-config
+    
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,221 INFO: No PostgreSQL configuration items >
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,226 INFO: Deregister service postgres/pg-srv2
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,241 INFO: Lock owner: pg-srv1; I am pg-srv2
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,242 INFO: Deregister service postgres/pg-srv2
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,257 INFO: trying to bootstrap from leader 'p>
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,263 INFO: Lock owner: pg-srv1; I am pg-srv2
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,266 WARNING: Could not register service: unk>
+    Aug 11 16:12:22 pg-srv2 patroni[6714]: 2023-08-11 16:12:22,295 INFO: bootstrap from leader 'pg-srv1' in>
+    Aug 11 16:12:29 pg-srv2 patroni[6714]: 2023-08-11 16:12:29,470 INFO: replica has been created using bas>
+    Aug 11 16:12:29 pg-srv2 patroni[6714]: 2023-08-11 16:12:29,471 INFO: bootstrapped from leader 'pg-srv1'
+    lines 1-20/20 (END)
+    ```
+    ```console
+    ubuntu@pg-srv3:~$ sudo systemctl status patroni
+    ● patroni.service - Patroni service
+         Loaded: loaded (/lib/systemd/system/patroni.service; enabled; vendor preset: enab>
+         Active: active (running) since Fri 2023-08-11 16:13:05 UTC; 5s ago
+       Main PID: 6979 (patroni)
+          Tasks: 6 (limit: 4631)
+         Memory: 69.1M
+         CGroup: /system.slice/patroni.service
+                 ├─6979 /usr/bin/python3 /usr/local/bin/patroni /etc/patroni/patroni.yml
+                 └─7001 /usr/lib/postgresql/15/bin/postgres --describe-config
+    
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,142 INFO: No PostgreSQL con>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,154 INFO: Deregister servic>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,164 INFO: Lock owner: pg-sr>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,164 INFO: Deregister servic>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,183 INFO: trying to bootstr>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,185 INFO: Lock owner: pg-sr>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,187 INFO: Deregister servic>
+    Aug 11 16:13:06 pg-srv3 patroni[6979]: 2023-08-11 16:13:06,188 INFO: bootstrap from le>
+    Aug 11 16:13:10 pg-srv3 patroni[6979]: 2023-08-11 16:13:10,725 INFO: replica has been >
+    Aug 11 16:13:10 pg-srv3 patroni[6979]: 2023-08-11 16:13:10,727 INFO: bootstrapped from>
+    lines 1-20/20 (END)
+    ```
+  * Посмотреть список нод
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml list
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: postgres ----+---------+-----------+----+-----------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB |
+    +---------+-------------+---------+-----------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Leader  | running   |  1 |           |
+    | pg-srv2 | 10.129.0.22 | Replica | streaming |  1 |         0 |
+    | pg-srv3 | 10.129.0.23 | Replica | streaming |  1 |         0 |
+    +---------+-------------+---------+-----------+----+-----------+
+    ubuntu@pg-srv1:~$ 
+    ```
+ 
 ***
 ###  Полезные команды `Patroni`
   * Посмотреть список нод
@@ -210,7 +306,7 @@
 
   * Рестарт одной ноды
     ```bash
-    patronictl -c /etc/patroni/patroni.yml restart postgres postgresql-patroni1
+    patronictl -c /etc/patroni/patroni.yml restart postgres pg-srv1
     ```
 
   * Рестарт всего кластера
@@ -230,7 +326,7 @@
 
   * Реинициализации ноды
     ```bash
-    patronictl -c /etc/patroni/patroni.yml reinit postgres postgresql-patroni2
+    patronictl -c /etc/patroni/patroni.yml reinit postgres pg-srv2
     ```
 
 ***
