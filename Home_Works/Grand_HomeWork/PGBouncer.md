@@ -31,7 +31,7 @@
     ```bash
     sudo systemctl stop pgbouncer
     ```
-  * ????Отключаем автозагрузку службы/сервиса в ОС на всех 3х ВМ
+  * Отключаем автозагрузку службы/сервиса в ОС на всех 3х ВМ
     ```bash
     sudo systemctl disable pgbouncer
     ```
@@ -55,11 +55,6 @@
     sudo -u postgres psql -Atq -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow" >> /tmp/userlist.txt && \
     sudo mv /tmp/userlist.txt /etc/pgbouncer/userlist.txt
     ```
-    ```console
-    !!!Добавить пользователя админки с простым паролем
-    !!!Фишка с пользователем и паролем
-
-    ```
   
   * Проверяем локальное подключение к `postgres` через `PgBouncer`
     ```bash  
@@ -71,14 +66,18 @@
   * Запуск
     ```bash
     pgbouncer -d /etc/pgbouncer/pgbouncer.ini
+    или
+    sudo systemctl start pgbouncer
     ```
   * Перезапуск
     ```bash
     pgbouncer -R /etc/pgbouncer/pgbouncer.ini
+    или
+    sudo systemctl restart pgbouncer
     ```
   * Админка
     ```bash
-    psql -p 6432 pgbouncer
+    sudo -u postgres psql -p 6432 -U pgbouncer pgbouncer
     ```
   * Подключение через `PgBouncer`
     ```bash
