@@ -37,7 +37,6 @@
     ```
 
 ***
-
 ### Конфигурируем `PgBouncer`
   * Создаем файл конфигурации [`/etc/pgbouncer/pgbouncer.ini`](pgbouncer.ini) на всех 3х ВМ
   * ❗️Сохраняем оригинальный файл перед правкой
@@ -52,10 +51,26 @@
     ```
   * Создаем файл пользователей [`/etc/pgbouncer/userlist.txt`](userlist.txt) на всех 3х ВМ
     ```bash
-    
+    sudo -u postgres psql -Atq -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow" >> /etc/pgbouncer/userlist.txt
+    !!!Добавить пользователя админки с простым паролем
+    !!!Фишка с пользователем и паролем
     ```
     ```console
 
     ```
     
 ***
+### Полезные команды `PgBouncer`
+  * Запуск
+    ```bash
+    pgbouncer -d /etc/pgbouncer/pgbouncer.ini
+    ```
+  * Перезапуск
+    ```bash
+    pgbouncer -R /etc/pgbouncer/pgbouncer.ini
+    ```
+  * Админка
+    ```bash
+    psql -p 6432 pgbouncer
+    ```
+  * Подключение через `PgBouncer`
