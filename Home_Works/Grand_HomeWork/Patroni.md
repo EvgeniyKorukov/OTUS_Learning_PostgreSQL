@@ -291,7 +291,7 @@
     ```
     ```console
     ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
-    + Cluster: postgres ----+---------+-----------+----+-----------+
+    + Cluster: pg-15-cluster ----+---------+-----------+----+-----------+
     | Member  | Host        | Role    | State     | TL | Lag in MB |
     +---------+-------------+---------+-----------+----+-----------+
     | pg-srv1 | 10.129.0.21 | Leader  | running   |  1 |           |
@@ -315,27 +315,27 @@
 
   * Рестарт одной ноды
     ```bash
-    patronictl -c /etc/patroni/patroni.yml restart postgres pg-srv1
+    patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster pg-srv1
     ```
 
   * Рестарт всего кластера
     ```bash
-    patronictl -c /etc/patroni/patroni.yml restart postgres
+    patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
     ```
 
   * Рестарт reload кластера
     ```bash
-    patronictl -c /etc/patroni/patroni.yml reload postgres
+    patronictl -c /etc/patroni/patroni.yml reload pg-15-cluster
     ```
 
   * Плановое переключение
     ```bash
-    patronictl -c /etc/patroni/patroni.yml switchover postgres
+    patronictl -c /etc/patroni/patroni.yml switchover pg-15-cluster
     ```
 
   * Реинициализации ноды
     ```bash
-    patronictl -c /etc/patroni/patroni.yml reinit postgres pg-srv2
+    patronictl -c /etc/patroni/patroni.yml reinit pg-15-cluster pg-srv2
     ```
 
 ***
