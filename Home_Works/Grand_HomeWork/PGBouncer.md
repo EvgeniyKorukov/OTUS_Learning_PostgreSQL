@@ -43,19 +43,21 @@
     ```bash
     sudo cp /etc/pgbouncer/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini.orig
     ```
+  * Правим файл конфигурации
+    * Меняем параметр с `listen_addr = localhost` на `listen_addr = *`
+    * Добавляем в раздел `[databases]` строку подключения ко всем БД `* = host=10.129.0.21 port=5432 dbname=postgres` на `ip` ❗️текущего сервера т.е. разница в `ip` ВМ 
     ```bash
-    
+    sudo vim /etc/pgbouncer/pgbouncer.ini
     ```
-    ```console
 
-    ```
   * Создаем файл пользователей [`/etc/pgbouncer/userlist.txt`](userlist.txt) на всех 3х ВМ
     ```bash
-    sudo -u postgres psql -Atq -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow" >> /etc/pgbouncer/userlist.txt
-    !!!Добавить пользователя админки с простым паролем
-    !!!Фишка с пользователем и паролем
+    sudo -u postgres psql -Atq -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow" >> /tmp/userlist.txt && \
+    sudo mv /tmp/userlist.txt /etc/pgbouncer/userlist.txt
     ```
     ```console
+    !!!Добавить пользователя админки с простым паролем
+    !!!Фишка с пользователем и паролем
 
     ```
     
