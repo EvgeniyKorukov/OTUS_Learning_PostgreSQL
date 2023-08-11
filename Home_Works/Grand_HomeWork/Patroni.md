@@ -56,13 +56,84 @@
   * Создаем конфигурационный файл [`/etc/patroni/patroni.yml`](patroni.yml)
   * ❗️Разница для каждой ВМ в:
     * `name: pg-srvX`
-    * `connect_address: "10.129.0.X:8008"`
-    * `connect_address: "10.129.0.X:5432"`
-    ```bash
+    * `restapi - connect_address: "10.129.0.X:8008"`
+    * `postgresql - connect_address: "10.129.0.X:5432"`
+    ```yml
+    name: pg-srv1
+    scope: postgres
+    
+    watchdog:
+      mode: off
+    
+    consul:
+      host: "localhost:8500"
+      register_service: true
+      #token: <consul-acl-token>
+    
+    restapi:
+      listen: 0.0.0.0:8008
+      connect_address: "10.129.0.21:8008"
+      auth: 'patroni:patroni'
+    
+    bootstrap:
+      dcs:
+        ttl: 30
+        loop_wait: 10
+        maximum_lag_on_failover: 1048576
+        postgresql:
+          use_pg_rewind: true
+          use_slots: true
+          parameters:
+            archive_mode: "on"
+            wal_level: hot_standby
+            max_wal_senders: 10
+            wal_keep_segments: 8
+            archive_timeout: 1800s
+            max_replication_slots: 5
+            hot_standby: "on"
+            wal_log_hints: "on"
+          pg_hba:
+            - local all all trust
+            - host replication replicator 10.129.0.21/32 trust
+            - host replication replicator 10.129.0.22/32 trust
+            - host replication replicator 10.129.0.23/32 trust
+            - host replication replicator 127.0.0.1/32 trust
+            - host all all 0.0.0.0/0 scram-sha-256
+        
+    
+    initdb:
+      - encoding: UTF8
+      - data-checksums
+    
+    postgresql:
+      pgpass: /var/lib/postgresql/15/.pgpass
+      listen: 0.0.0.0:5432
+      connect_address: "10.129.0.21:5432"
+      data_dir: /var/lib/postgresql/15/main/
+      bin_dir: /usr/lib/postgresql/15/bin/
+      pg_rewind:
+        username: postgres
+        password: password
+      replication:
+        username: replicator
+        password: replicator
+      superuser:
+        username: postgres
+        password: postgres
+    ```
+  * Параметры конфига
+    * `name` — имя узла, на котором настраивается данный конфиг.
+    * `scope` — имя кластера. Его мы будем использовать при обращении к ресурсу, а также под этим именем будет зарегистрирован сервис в consul.
+    * `consul-token` — если наш кластер consul использует ACL, необходимо указать токен.
+    * `restapi-connect_address` — адрес на настраиваемом сервере, на который будут приходить подключения к patroni.
+    * `restapi-auth` — логин и пароль для аутентификации на интерфейсе API.
+    * `pg_hba` — блок конфигурации pg_hba для разрешения подключения к СУБД и ее базам. Необходимо обратить внимание на подсеть для строки host replication replicator. Она должна соответствовать той, которая используется в вашей инфраструктуре.
+    * `postgresql-pgpass` — путь до файла, который создаст патрони. В нем будет храниться пароль для подключения к postgresql.
+    * `postgresql-connect_address` — адрес и порт, которые будут использоваться для подключения к СУДБ.
+    * `postgresql - data_dir` — путь до файлов с данными базы.
+    * `postgresql - bin_dir` — путь до бинарников postgresql.
+    * `pg_rewind, replication, superuser` — логины и пароли, которые будут созданы для базы.
 
-    ```
-    ```console
-    ```
 ***    
 ###  Создаем настраиваем службу в ОС для `Patroni`
   * Создаем службу [`/usr/lib/systemd/system/patroni.service`](patroni.service) в ОС на каждой из 3х ВМ
