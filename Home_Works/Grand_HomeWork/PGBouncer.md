@@ -8,7 +8,16 @@
       * [`PgPool`](https://www.pgpool.net/mediawiki/index.php/Main_Page)
       * [`Odyssey`](https://github.com/yandex/odyssey)
 
+*** 
+### Список ВМ с которыми идет взаимодействие на данном этапе
+  :hammer_and_wrench: Название ВМ | :memo: Внутренний IPv4 |
+  |--------------:|---------------|
+  | **`pg-srv1`** | `10.129.0.21` |
+  | **`pg-srv2`** | `10.129.0.22` |      
+  | **`pg-srv3`** | `10.129.0.23` |
+  
 ***
+
 
 
 > ### 1. Text
