@@ -305,62 +305,147 @@
 
 ### Применим настройка `PostgreSQL 15` в конфигурации `Patroni` на основании [`PGTune`](https://pgtune.leopard.in.ua/)
   * Для нашеших ВМ получаем следующее:
-  ```console
-  # DB Version: 15
-  # OS Type: linux
-  # DB Type: mixed
-  # Total Memory (RAM): 4 GB
-  # CPUs num: 2
-  # Connections num: 100
-  # Data Storage: ssd
-  
-  max_connections = 100
-  shared_buffers = 1GB
-  effective_cache_size = 3GB
-  maintenance_work_mem = 256MB
-  checkpoint_completion_target = 0.9
-  wal_buffers = 16MB
-  default_statistics_target = 100
-  random_page_cost = 1.1
-  effective_io_concurrency = 200
-  work_mem = 2621kB
-  min_wal_size = 1GB
-  max_wal_size = 4GB
-  ```
-  * редактируем конфигурацию patroni
-  ```bash
-  patronictl -c /etc/patroni/patroni.yml edit-config
-  ```
-  ```console
-  ubuntu@pg-srv2:~$ patronictl -c /etc/patroni/patroni.yml edit-config
-  --- 
-  +++ 
-  @@ -10,6 +10,18 @@
-       wal_keep_segments: 8
-       wal_level: hot_standby
-       wal_log_hints: 'on'
-  +    max_connections: 100
-  +    shared_buffers: '1GB'
-  +    effective_cache_size: '3GB'
-  +    maintenance_work_mem: '256MB'
-  +    checkpoint_completion_target: 0.9
-  +    wal_buffers: '16MB'
-  +    default_statistics_target: 100
-  +    random_page_cost: 1.1
-  +    effective_io_concurrency: 200
-  +    work_mem: '2621kB'
-  +    min_wal_size: '1GB'
-  +    max_wal_size: '4GB'
-     pg_hba:
-     - local all all trust
-     - host replication replicator 10.129.0.21/32 trust
-  
-  Apply these changes? [y/N]: y
-  Configuration changed
-  ubuntu@pg-srv2:~$ 
-  ```
-
-
+    ```console
+    # DB Version: 15
+    # OS Type: linux
+    # DB Type: mixed
+    # Total Memory (RAM): 4 GB
+    # CPUs num: 2
+    # Connections num: 100
+    # Data Storage: ssd
+    
+    max_connections = 100
+    shared_buffers = 1GB
+    effective_cache_size = 3GB
+    maintenance_work_mem = 256MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 2621kB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+    ```
+  * Редактируем конфигурацию `Patroni`
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml edit-config
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ patronictl -c /etc/patroni/patroni.yml edit-config
+    --- 
+    +++ 
+    @@ -10,6 +10,18 @@
+         wal_keep_segments: 8
+         wal_level: hot_standby
+         wal_log_hints: 'on'
+    +    max_connections: 100
+    +    shared_buffers: '1GB'
+    +    effective_cache_size: '3GB'
+    +    maintenance_work_mem: '256MB'
+    +    checkpoint_completion_target: 0.9
+    +    wal_buffers: '16MB'
+    +    default_statistics_target: 100
+    +    random_page_cost: 1.1
+    +    effective_io_concurrency: 200
+    +    work_mem: '2621kB'
+    +    min_wal_size: '1GB'
+    +    max_wal_size: '4GB'
+       pg_hba:
+       - local all all trust
+       - host replication replicator 10.129.0.21/32 trust
+    
+    Apply these changes? [y/N]: y
+    Configuration changed
+    ubuntu@pg-srv2:~$ 
+    ```
+* Видим, что для примеенния определенных переменный нужен рестарт кластера `Pending restart`
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+-----------------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB | Pending restart |
+    +---------+-------------+---------+-----------+----+-----------+-----------------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  4 |         0 | *               |
+    | pg-srv2 | 10.129.0.22 | Replica | streaming |  4 |         0 | *               |
+    | pg-srv3 | 10.129.0.23 | Leader  | running   |  4 |           | *               |
+    +---------+-------------+---------+-----------+----+-----------+-----------------+
+    ubuntu@pg-srv1:~$ 
+    ```
+  * Для примемения параметров - перезагружаем кластер
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+-----------------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB | Pending restart |
+    +---------+-------------+---------+-----------+----+-----------+-----------------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  4 |         0 | *               |
+    | pg-srv2 | 10.129.0.22 | Replica | streaming |  4 |         0 | *               |
+    | pg-srv3 | 10.129.0.23 | Leader  | running   |  4 |           | *               |
+    +---------+-------------+---------+-----------+----+-----------+-----------------+
+    When should the restart take place (e.g. 2023-08-11T18:29)  [now]: 
+    Are you sure you want to restart members pg-srv1, pg-srv2, pg-srv3? [y/N]: y
+    Restart if the PostgreSQL version is less than provided (e.g. 9.5.2)  []: 
+    Success: restart on member pg-srv1
+    Success: restart on member pg-srv2
+    Success: restart on member pg-srv3
+    ubuntu@pg-srv1:~$ 
+    ```
+  * Смотрим, что параметры применились
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml show-config
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml show-config
+    loop_wait: 10
+    maximum_lag_on_failover: 1048576
+    postgresql:
+      parameters:
+        archive_mode: 'on'
+        archive_timeout: 1800s
+        checkpoint_completion_target: 0.9
+        default_statistics_target: 100
+        effective_cache_size: 3GB
+        effective_io_concurrency: 200
+        hot_standby: 'on'
+        maintenance_work_mem: 256MB
+        max_connections: 100
+        max_replication_slots: 5
+        max_wal_senders: 10
+        max_wal_size: 4GB
+        min_wal_size: 1GB
+        random_page_cost: 1.1
+        shared_buffers: 1GB
+        wal_buffers: 16MB
+        wal_keep_segments: 8
+        wal_level: hot_standby
+        wal_log_hints: 'on'
+        work_mem: 2621kB
+      pg_hba:
+      - local all all trust
+      - host replication replicator 10.129.0.21/32 trust
+      - host replication replicator 10.129.0.22/32 trust
+      - host replication replicator 10.129.0.23/32 trust
+      - host replication replicator 127.0.0.1/32 trust
+      - host all all 0.0.0.0/0 scram-sha-256
+      use_pg_rewind: true
+      use_slots: true
+    ttl: 30
+    
+    ubuntu@pg-srv1:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB |
+    +---------+-------------+---------+-----------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  4 |         0 |
+    | pg-srv2 | 10.129.0.22 | Replica | streaming |  4 |         0 |
+    | pg-srv3 | 10.129.0.23 | Leader  | running   |  4 |           |
+    +---------+-------------+---------+-----------+----+-----------+
+    ubuntu@pg-srv1:~$ 
+    ```
 ***
 ###  Полезные команды `Patroni`
   * Посмотреть список нод
