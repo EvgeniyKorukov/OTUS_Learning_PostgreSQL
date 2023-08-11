@@ -54,6 +54,10 @@
 ***
 ###  Создаем конфигурацию для `Patroni`
   * Создаем конфигурационный файл [`/etc/patroni/patroni.yml`](patroni.yml)
+  * ❗️Разница для каждой ВМ в:
+    * `name: pg-srvX`
+    * `connect_address: "10.129.0.X:8008"`
+    * `connect_address: "10.129.0.X:5432"`
     ```bash
 
     ```
@@ -62,7 +66,7 @@
 ***    
 ###  Создаем настраиваем службу в ОС для `Patroni`
   * Создаем службу [`/usr/lib/systemd/system/patroni.service`](patroni.service) в ОС на каждой из 3х ВМ
-  * ❗️Разница только в `-node=pg-srv`
+  * ❗Обратите внимание, что в официальной документации предлагается не перезапускать автоматически службу (Restart=no). Это дает возможность разобраться в причине падения базы️
     ```bash
     sudo vim /usr/lib/systemd/system/patroni.service
     ```
