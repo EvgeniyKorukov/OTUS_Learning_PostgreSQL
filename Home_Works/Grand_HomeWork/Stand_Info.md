@@ -6,14 +6,14 @@
 ### В идеале, надо создавать группы ВМ для каждого компонента:
   * 3 ВМ с Patroni
   * 3 ВМ с Consul
-  * 3 ВМ с PGBouncer
+  * 3 ВМ с PgBouncer
   * 2 ВМ с HAProxy+KeepAlived
 
 ***
 
 ### ❗️Но у нас бюджетный проект и мы ограничены ресурсами и имеем всего 5 серверов в виде ВМ в YandexCloud:
-  * #### Создаем 3 ВМ для Patroni+Consul+PGBouncer.
-    * Общие параметры для всех 3х ВМ для Patroni+Consul+PGBouncer с фиксированным внутренним IPv4.
+  * #### Создаем 3 ВМ для Patroni+Consul+PgBouncer.
+    * Общие параметры для всех 3х ВМ для Patroni+Consul+PgBouncer с фиксированным внутренним IPv4.
         :hammer_and_wrench: Параметр | :memo: Значение |
         --------------:|---------------| 
         | Операционная система | `Ubuntu 20.04 LTS` |
