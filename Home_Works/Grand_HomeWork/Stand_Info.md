@@ -227,10 +227,6 @@
       type: STANDARD
     placement_policy: {}
     ```
-    * На всех 3 ВМ ставим PostgreSQL 15 и удаляем кластер по умолчанию
-    ```bash
-    sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && sudo apt -y install postgresql-15 && sudo -u postgres pg_dropcluster 15 main --stop && pg_lsclusters
-    ```
 
   * #### Создаем 2 ВМ для HAProxy+KeepAlived.
     * Общие параметры для всех 2х ВМ для HAProxy+KeepAlived с фиксированным внутренним IPv4.
@@ -394,11 +390,11 @@
   +----------------------+---------+---------------+---------+---------------+-------------+
   |          ID          |  NAME   |    ZONE ID    | STATUS  |  EXTERNAL IP  | INTERNAL IP |
   +----------------------+---------+---------------+---------+---------------+-------------+
-  | epd9ei86t3ctsh0d9b8d | pg-srv3 | ru-central1-b | RUNNING | 51.250.96.91  | 10.129.0.23 |
   | epdc3hgv218fb9c8b1l0 | pg-srv1 | ru-central1-b | RUNNING | 51.250.27.115 | 10.129.0.21 |
-  | epddj88rneil10t018im | hap2    | ru-central1-b | RUNNING | 51.250.23.58  | 10.129.0.12 |
   | epdkbdt84gtqrkv3f9du | pg-srv2 | ru-central1-b | RUNNING | 62.84.122.92  | 10.129.0.22 |
+  | epd9ei86t3ctsh0d9b8d | pg-srv3 | ru-central1-b | RUNNING | 51.250.96.91  | 10.129.0.23 |
   | epdu4ca1etl7e0v323aj | hap1    | ru-central1-b | RUNNING | 51.250.31.223 | 10.129.0.11 |
+  | epddj88rneil10t018im | hap2    | ru-central1-b | RUNNING | 51.250.23.58  | 10.129.0.12 |
   +----------------------+---------+---------------+---------+---------------+-------------+
   ```
 
