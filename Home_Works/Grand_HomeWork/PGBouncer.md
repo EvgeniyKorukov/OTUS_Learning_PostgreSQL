@@ -60,6 +60,11 @@
     !!!Фишка с пользователем и паролем
 
     ```
+  
+  * Проверяем локальное подключение к `postgres` через `PgBouncer`
+    ```bash  
+    sudo -u postgres psql -p 6432 -h localhost
+    ```
     
 ***
 ### Полезные команды `PgBouncer`
@@ -76,3 +81,6 @@
     psql -p 6432 pgbouncer
     ```
   * Подключение через `PgBouncer`
+    ```bash
+    sudo -u postgres psql -p 6432 -h localhost
+    ``` 
