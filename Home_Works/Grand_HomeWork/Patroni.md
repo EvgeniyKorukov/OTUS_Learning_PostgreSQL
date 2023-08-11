@@ -302,6 +302,66 @@
     ```
  
 ***
+
+### Применим настройка `PostgreSQL 15` в конфигурации `Patroni` на основании [`PGTune`](https://pgtune.leopard.in.ua/)
+  * Для нашеших ВМ получаем следующее:
+  ```console
+  # DB Version: 15
+  # OS Type: linux
+  # DB Type: mixed
+  # Total Memory (RAM): 4 GB
+  # CPUs num: 2
+  # Connections num: 100
+  # Data Storage: ssd
+  
+  max_connections = 100
+  shared_buffers = 1GB
+  effective_cache_size = 3GB
+  maintenance_work_mem = 256MB
+  checkpoint_completion_target = 0.9
+  wal_buffers = 16MB
+  default_statistics_target = 100
+  random_page_cost = 1.1
+  effective_io_concurrency = 200
+  work_mem = 2621kB
+  min_wal_size = 1GB
+  max_wal_size = 4GB
+  ```
+  * редактируем конфигурацию patroni
+  ```bash
+  patronictl -c /etc/patroni/patroni.yml edit-config
+  ```
+  ```console
+  ubuntu@pg-srv2:~$ patronictl -c /etc/patroni/patroni.yml edit-config
+  --- 
+  +++ 
+  @@ -10,6 +10,18 @@
+       wal_keep_segments: 8
+       wal_level: hot_standby
+       wal_log_hints: 'on'
+  +    max_connections: 100
+  +    shared_buffers: '1GB'
+  +    effective_cache_size: '3GB'
+  +    maintenance_work_mem: '256MB'
+  +    checkpoint_completion_target: 0.9
+  +    wal_buffers: '16MB'
+  +    default_statistics_target: 100
+  +    random_page_cost: 1.1
+  +    effective_io_concurrency: 200
+  +    work_mem: '2621kB'
+  +    min_wal_size: '1GB'
+  +    max_wal_size: '4GB'
+     pg_hba:
+     - local all all trust
+     - host replication replicator 10.129.0.21/32 trust
+  
+  Apply these changes? [y/N]: y
+  Configuration changed
+  ubuntu@pg-srv2:~$ 
+  ```
+
+
+***
 ###  Полезные команды `Patroni`
   * Посмотреть список нод
     ```bash
