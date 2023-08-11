@@ -36,7 +36,6 @@
 
 ### Установка и настройка `Patroni`
   * ❗️У нас будет использоваться `Consul` в качестве `DCS`.
-  * PostgreSQL 15 мы установили на этапе подготовки стенда.
   * Устанавливаем `Patroni` и необходимые пакеты на всех 3х ВМ
     ```bash
     sudo apt install -y python3 python3-pip python3-psycopg2 && \
