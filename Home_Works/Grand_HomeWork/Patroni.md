@@ -20,6 +20,20 @@
     * [`Slony`](https://www.slony.info/)
    
 *** 
+### Установка и настройка `PostgreSQL 15`
+  * На всех 3 ВМ ставим PostgreSQL 15
+  ```bash
+  sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && \
+  sudo apt -y install postgresql-15
+  ```
+  * На всех 3 ВМ удаляем кластер по умолчанию
+  ```bash
+  sudo -u postgres pg_dropcluster 15 main --stop && \
+  pg_lsclusters
+  ```
+
+*** 
+
 ### Установка и настройка `Patroni`
   * ❗️У нас будет использоваться `Consul` в качестве `DCS`.
   * PostgreSQL 15 мы установили на этапе подготовки стенда.
