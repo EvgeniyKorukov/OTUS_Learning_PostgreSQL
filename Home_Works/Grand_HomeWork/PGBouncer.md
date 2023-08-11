@@ -38,13 +38,24 @@
 
 ***
 
-
 ### Конфигурируем `PgBouncer`
-  * Выполняем на всех 3х ВМ
+  * Создаем файл конфигурации [`/etc/pgbouncer/pgbouncer.ini`](pgbouncer.ini) на всех 3х ВМ
+  * ❗️Сохраняем оригинальный файл перед правкой
     ```bash
-    sudo apt -y install pgbouncer
+    sudo cp /etc/pgbouncer/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini.orig
+    ```
+    ```bash
+    
     ```
     ```console
 
     ```
+  * Создаем файл пользователей [`/etc/pgbouncer/userlist.txt`](userlist.txt) на всех 3х ВМ
+    ```bash
+    
+    ```
+    ```console
+
+    ```
+    
 ***
