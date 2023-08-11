@@ -7,9 +7,16 @@
   * В PostgreSQL это очень важно чтобы не было `Split Brain` чтобы в кластере не появилось больше одного `master`
   * Подобные функции может выполнять следующее ПО:
     * [`Pacemaker and Corosync`](https://clusterlabs.org/)
+      * Не умеет восстанавливать упавший `master/primary` или `replica/slave/standby`-это приходится делать вручную
     * [`Patroni`](https://patroni.readthedocs.io/en/latest/) ❗️Именно его мы и будет использовать
+      * Умеет восстаанвливать упавший `master/primary` или `replica/slave/standby`
     * [`RepMgr`](https://www.repmgr.org/)
+      * Нет защиты от двойного мастера (split brain);
+      * Нет нужды в DCS.
     * [`Stolon`](https://github.com/sorintlab/stolon)
+      * Проксирует все запросы в мастер ноду, нельзя давать нагрузку на реплики;
+      * Мастер выбирается самостоятельно при switchover-e.
+    * [`pg_auto_failover`](https://pg-auto-failover.readthedocs.io/en/main/intro.html)
     * [`Slony`](https://www.slony.info/)
    
 *** 
