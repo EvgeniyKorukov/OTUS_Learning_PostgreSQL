@@ -359,7 +359,7 @@
     Configuration changed
     ubuntu@pg-srv2:~$ 
     ```
-* Видим, что для примеенния определенных переменный нужен рестарт кластера `Pending restart`
+ * Видим, что для примеенния определенных переменный нужен рестарт кластера `Pending restart`
     ```console
     ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
     + Cluster: pg-15-cluster ---------+-----------+----+-----------+-----------------+
