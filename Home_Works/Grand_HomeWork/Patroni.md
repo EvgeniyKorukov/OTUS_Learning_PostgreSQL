@@ -72,7 +72,7 @@
     ```
     ```yml
     name: pg-srv1
-    scope: postgres
+    scope: pg-15-cluster
     
     watchdog:
       mode: off
