@@ -62,7 +62,7 @@
 
 ***
 ###  Создаем конфигурацию для `Patroni`
-  * Создаем конфигурационный файл [`/etc/patroni/patroni.yml`](patroni.yml)
+  * Создаем конфигурационный файл [`/etc/patroni/patroni.yml`](config_files/patroni.yml)
   * ❗️Разница для каждой ВМ в:
     * `name: pg-srvX`
     * `restapi - connect_address: "10.129.0.X:8008"`
@@ -148,7 +148,7 @@
 
 ***    
 ###  Создаем настраиваем службу в ОС для `Patroni`
-  * Создаем службу [`/usr/lib/systemd/system/patroni.service`](patroni.service) в ОС на каждой из 3х ВМ
+  * Создаем службу [`/usr/lib/systemd/system/patroni.service`](config_files/patroni.service) в ОС на каждой из 3х ВМ
   * ❗Обратите внимание, что в официальной документации предлагается не перезапускать автоматически службу (Restart=no). Это дает возможность разобраться в причине падения базы️
     ```bash
     sudo vim /usr/lib/systemd/system/patroni.service
