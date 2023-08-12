@@ -7,6 +7,7 @@
   * В качестве менеджера по управлению VIP могут выступать:
       * [`KeepAlived`](https://keepalived.org/index.html) ❗️Именно его мы и будет использовать
       * [`VIP-Manager`](https://github.com/cybertec-postgresql/vip-manager)
+        * Можно не использовать `HAProxy`
 
 *** 
 ### Список ВМ с которыми идет взаимодействие на данном этапе
