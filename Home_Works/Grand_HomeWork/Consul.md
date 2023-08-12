@@ -78,7 +78,7 @@
     ubuntu@pg-srv1:~$ 
     ```
 
-  * Создаем конфигурационный файл для консула [`/etc/consul.d/config.json`](config.json) на всех 3х ВМ
+  * Создаем конфигурационный файл для консула [`/etc/consul.d/config.json`](config_files/config.json) на всех 3х ВМ
     ```bash
     sudo vim /etc/consul.d/config.json
     ```
@@ -163,7 +163,7 @@
 ***
 
 ###  Создаем настраиваем службу в ОС для `Consul`
-  * Создаем службу [`/usr/lib/systemd/system/consul.service`](consul.service) в ОС на каждой из 3х ВМ
+  * Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/consul.service) в ОС на каждой из 3х ВМ
   * ❗️Разница только в `-node=pg-srv`
     ```bash
     sudo vim /usr/lib/systemd/system/consul.service
