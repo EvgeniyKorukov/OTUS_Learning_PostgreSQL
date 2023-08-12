@@ -236,6 +236,10 @@
 
 ### Настройка `KeepAlived`
   * Выполняем настройку на 2х ВМ
+  * Редактируем конфигурационный файл [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf)
+    ```bash
+    sudo vim /etc/keepalived/keepalived.conf
+    ```
 
   * 
 
