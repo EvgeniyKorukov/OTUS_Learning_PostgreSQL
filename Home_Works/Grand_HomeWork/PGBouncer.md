@@ -31,10 +31,6 @@
     ```bash
     sudo systemctl stop pgbouncer
     ```
-  * ???Отключаем автозагрузку службы/сервиса в ОС на всех 3х ВМ
-    ```bash
-    sudo systemctl disable pgbouncer
-    ```
 
 ***
 ### Конфигурируем `PgBouncer`
