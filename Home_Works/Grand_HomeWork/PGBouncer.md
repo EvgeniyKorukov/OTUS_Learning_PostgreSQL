@@ -31,7 +31,7 @@
     ```bash
     sudo systemctl stop pgbouncer
     ```
-  * Отключаем автозагрузку службы/сервиса в ОС на всех 3х ВМ
+  * ???Отключаем автозагрузку службы/сервиса в ОС на всех 3х ВМ
     ```bash
     sudo systemctl disable pgbouncer
     ```
@@ -56,7 +56,7 @@
     sudo mv /tmp/userlist.txt /etc/pgbouncer/userlist.txt
     ```
 
-  * Запускаем `PgBouncer` для проверки
+  * Запускаем `PgBouncer` на всех 3х ВМ
     ```bash  
     sudo systemctl start pgbouncer
     ```
