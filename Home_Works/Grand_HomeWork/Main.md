@@ -5,7 +5,7 @@
 ### +1. [Подготовка, настройка и описание стенда](Stand_Info.md)
 ### +2. [Установка и настройка Consul](Consul.md)
 ### +3. [Установка и настройка Patroni](Patroni.md)
-### -4. [Установка и настройка PgBouncer](PGBouncer.md)
+### +4. [Установка и настройка PgBouncer](PGBouncer.md)
 ### -5. [Установка и настройка HA Proxy](HAProxy.md)
 ### -6. [Установка и настройка KeepAlived](KeepAlived.md)
 ### -7. ? Загрузка данных)
