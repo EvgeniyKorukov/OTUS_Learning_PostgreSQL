@@ -55,7 +55,12 @@
     sudo -u postgres psql -Atq -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "SELECT concat('\"', usename, '\" \"', passwd, '\"') FROM pg_shadow" >> /tmp/userlist.txt && \
     sudo mv /tmp/userlist.txt /etc/pgbouncer/userlist.txt
     ```
-  
+
+  * Запускаем `PgBouncer` для проверки
+    ```bash  
+    sudo systemctl start pgbouncer
+    ```
+      
   * Проверяем локальное подключение к `postgres` через `PgBouncer`
     ```bash  
     sudo -u postgres psql -p 6432 -h localhost
