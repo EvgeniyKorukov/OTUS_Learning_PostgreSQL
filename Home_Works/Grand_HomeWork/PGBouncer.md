@@ -84,3 +84,6 @@
     ```bash
     sudo -u postgres psql -p 6432 -h localhost
     ``` 
+***
+
+### :+1: `PgBouncer` установлен и настроен
