@@ -16,6 +16,23 @@
   
 ***
 ### Установка `HAProxy`
+  * Выполняем устаноку на всех 2х ВМ
+    ```bash
+    sudo apt -y install haproxyr
+    ```
+  * Останавливаем службу/сервис `HAProxy` в ОС на всех 2х ВМ т.к. сначала ее надо настроить
+    ```bash
+    sudo systemctl stop haproxy
+    ```
+  * Включаем автозагрузку службы/сервиса `HAProxy` в ОС на всех 2х ВМ
+    ```bash
+    sudo systemctl enable haproxy
+    ```
+
+***
+### Конфигурируем `HAProxy`
+
+
 
 ***
 
