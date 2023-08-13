@@ -2,10 +2,10 @@
 
 ***
 
-### +1. [Подготовка, настройка и описание стенда](Stand_Info.md)
-### +2. [Установка и настройка Consul](Consul.md)
-### +3. [Установка и настройка Patroni](Patroni.md)
-### +4. [Установка и настройка PgBouncer](PGBouncer.md)
+### 1. [Подготовка, настройка и описание стенда](Stand_Info.md)
+### 2. [Установка и настройка Consul](Consul.md)
+### 3. [Установка и настройка Patroni](Patroni.md)
+### 4. [Установка и настройка PgBouncer](PGBouncer.md)
 ### -5. [Установка и настройка HA Proxy](HAProxy.md)
 ### -6. [Установка и настройка KeepAlived](KeepAlived.md)
 ### -7. Проверка отказоусточивости при switchover и failsafe в patroni
@@ -26,5 +26,4 @@ https://patroni.readthedocs.io/en/latest/existing_data.html
     * Изменить модержимое в тексте скрипта
     * Где-то указать про VIP 10.129.0.10
   * pgbouncer
-    * указать куда смотрит каждый сервис pgbouncer (на какие сервера)
     * Может надо чтобы каждый сервер с pgbouncer смотрел на все ip серверов с СУБД ?
