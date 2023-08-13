@@ -488,12 +488,16 @@
 ### Какие возможности у нас появились на данном этапе
   | :electric_plug: Появилось на этом этапе | :electric_plug: Компонент | :hammer_and_wrench: Название ВМ | :link: ip-адрес | :magnet: порт | :memo: Описание возможности |
   |:--:|:---|:--------|:----------|------:|:------------------------------------------|
-  |  | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Web GUI |
-  |  | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Web GUI |
-  |  | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Web GUI |
-  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv1`** | `10.129.0.21` | 5432 | Direct connection to PostgreSQL |
-  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv2`** | `10.129.0.22` | 5432 | Direct connection to PostgreSQL |
-  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv3`** | `10.129.0.23` | 5432 | Direct connection to PostgreSQL |
+  |  | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Веб-интерфейс |
+  |  | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Веб-интерфейс |
+  |  | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Веб-интерфейс |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv1`** | `10.129.0.21` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv2`** | `10.129.0.22` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv3`** | `10.129.0.23` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv1`** | `10.129.0.21` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.21:8008) |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv2`** | `10.129.0.22` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.22:8008) |
+  | :heavy_check_mark: | `PostgreSQL` | **`pg-srv3`** | `10.129.0.23` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.23:8008) |
+
 
 ***
 ### :+1: `Patroni` установлен и настроен
