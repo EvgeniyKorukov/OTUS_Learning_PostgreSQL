@@ -1,4 +1,4 @@
-  <div align="center"><h2> 5. Настройка HAProxy </h2></div>
+  <div align="center"><h2> 6. Настройка HAProxy </h2></div>
 
 ***
 ### Немного теории:
