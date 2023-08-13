@@ -331,17 +331,17 @@
     ```bash
     http://<IP-адрес любого сервера консул>:8500  
     ```
+  * [Все порты `Consul`](https://developer.hashicorp.com/consul/docs/agent/config/config-files)
+     
 
 ***
 
 ### Какие возможности у нас появились на данном этапе
   | :electric_plug: Появилось на этом этапе | :electric_plug: Компонент | :hammer_and_wrench: Название ВМ | :link: ip-адрес | :magnet: порт | :memo: Описание возможности |
   |:-------------------------:|:---|:--------|:----------|------:|:----------------------|
-  | :heavy_check_mark: | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Web-GUI Consul |
-  | :heavy_check_mark: | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Web-GUI Consul |
-  | :heavy_check_mark: | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Web-GUI Consul |
-
-  
+  | :heavy_check_mark: | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Web GUI |
+  | :heavy_check_mark: | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Web GUI |
+  | :heavy_check_mark: | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Web GUI |
 
 ***
 ### :+1: `Consul` установлен и настроен
