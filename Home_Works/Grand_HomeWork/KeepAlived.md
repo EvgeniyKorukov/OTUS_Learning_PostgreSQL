@@ -18,7 +18,7 @@
   
 ***
 ### Установка `KeepAlived`
-  * Выполняем установку на 2х ВМ
+  * ❗️Выполняем установку на 2х ВМ
     ```bash
     sudo apt-get install keepalived -y
     ```
@@ -235,7 +235,7 @@
     ```
 
 ### Настройка `KeepAlived`
-  * Выполняем настройку на 2х ВМ
+  * ❗️Выполняем настройку на 2х ВМ
   * Редактируем конфигурационный файл [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf)
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
@@ -244,3 +244,25 @@
   * 
 
 ***
+### Настройка службы `KeepAlived` в ОС
+  * ❗️Выполняем настройку на 2х ВМ
+  * Разрешаем запуск службы `KeepAlived` при загрузке ОС
+    ```bash
+    sudo systemctl enable keepalived
+    ```
+  * Запускаем службу `KeepAlived` в ОС
+    ```bash
+    sudo systemctl start keepalived
+    ```
+  * Проверяем статус службы `KeepAlived`
+    ```bash
+    sudo systemctl status keepalived
+    ```
+    ```console
+  
+    ```
+    ```console
+  
+    ```
+      
+***  
