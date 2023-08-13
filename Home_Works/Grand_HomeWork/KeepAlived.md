@@ -240,7 +240,7 @@
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
     ```
-    ```console
+    ```bash
     global_defs {
         ! Разрешить выполнение скриптов
         enable_script_security
