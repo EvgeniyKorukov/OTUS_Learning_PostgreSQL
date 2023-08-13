@@ -20,6 +20,98 @@
     ```bash
     sudo apt -y install haproxyr
     ```
+    ```console
+    ubuntu@hap1:~$ sudo apt -y install haproxy -y
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following additional packages will be installed:
+      liblua5.3-0
+    Suggested packages:
+      vim-haproxy haproxy-doc
+    The following NEW packages will be installed:
+      haproxy liblua5.3-0
+    0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+    Need to get 1,657 kB of archives.
+    After this operation, 3,811 kB of additional disk space will be used.
+    Get:1 http://mirror.yandex.ru/ubuntu focal/main amd64 liblua5.3-0 amd64 5.3.3-1.1ubuntu2 [116 kB]
+    Get:2 http://mirror.yandex.ru/ubuntu focal-updates/main amd64 haproxy amd64 2.0.31-0ubuntu0.1 [1,541 kB]
+    Fetched 1,657 kB in 0s (15.2 MB/s) 
+    Selecting previously unselected package liblua5.3-0:amd64.
+    (Reading database ... 102602 files and directories currently installed.)
+    Preparing to unpack .../liblua5.3-0_5.3.3-1.1ubuntu2_amd64.deb ...
+    Unpacking liblua5.3-0:amd64 (5.3.3-1.1ubuntu2) ...
+    Selecting previously unselected package haproxy.
+    Preparing to unpack .../haproxy_2.0.31-0ubuntu0.1_amd64.deb ...
+    Unpacking haproxy (2.0.31-0ubuntu0.1) ...
+    Setting up liblua5.3-0:amd64 (5.3.3-1.1ubuntu2) ...
+    Setting up haproxy (2.0.31-0ubuntu0.1) ...
+    Created symlink /etc/systemd/system/multi-user.target.wants/haproxy.service → /lib/systemd/system/haproxy.service.
+    Processing triggers for man-db (2.9.1-1) ...
+    Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
+    Processing triggers for rsyslog (8.2001.0-1ubuntu1.3) ...
+    Processing triggers for systemd (245.4-4ubuntu3.22) ...
+    ubuntu@hap1:~$ sudo systemctl stop haproxy
+    ubuntu@hap1:~$ sudo systemctl enable haproxy
+    Synchronizing state of haproxy.service with SysV service script with /lib/systemd/systemd-sysv-install.
+    Executing: /lib/systemd/systemd-sysv-install enable haproxy
+    ubuntu@hap1:~$ 
+    ```
+    ```console
+    ubuntu@hap2:~$ sudo apt -y install haproxy -y
+    Reading package lists... Done
+    Building dependency tree       
+    Reading state information... Done
+    The following additional packages will be installed:
+      liblua5.3-0
+    Suggested packages:
+      vim-haproxy haproxy-doc
+    The following NEW packages will be installed:
+      haproxy liblua5.3-0
+    0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+    Need to get 1,657 kB of archives.
+    After this operation, 3,811 kB of additional disk space will be used.
+    Get:1 http://mirror.yandex.ru/ubuntu focal/main amd64 liblua5.3-0 amd64 5.3.3-1.1ubuntu2 [116 kB]
+    Get:2 http://mirror.yandex.ru/ubuntu focal-updates/main amd64 haproxy amd64 2.0.31-0ubuntu0.1 [1,541 kB]
+    Fetched 1,657 kB in 0s (14.2 MB/s) 
+    Selecting previously unselected package liblua5.3-0:amd64.
+    (Reading database ... 102602 files and directories currently installed.)
+    Preparing to unpack .../liblua5.3-0_5.3.3-1.1ubuntu2_amd64.deb ...
+    Unpacking liblua5.3-0:amd64 (5.3.3-1.1ubuntu2) ...
+    Selecting previously unselected package haproxy.
+    Preparing to unpack .../haproxy_2.0.31-0ubuntu0.1_amd64.deb ...
+    Unpacking haproxy (2.0.31-0ubuntu0.1) ...
+    Setting up liblua5.3-0:amd64 (5.3.3-1.1ubuntu2) ...
+    Setting up haproxy (2.0.31-0ubuntu0.1) ...
+    Created symlink /etc/systemd/system/multi-user.target.wants/haproxy.service → /lib/systemd/system/haproxy.service.
+    Processing triggers for man-db (2.9.1-1) ...
+    Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
+    Processing triggers for rsyslog (8.2001.0-1ubuntu1.3) ...
+    Processing triggers for systemd (245.4-4ubuntu3.22) ...
+    ubuntu@hap2:~$ sudo systemctl stop haproxy
+    ubuntu@hap2:~$ sudo systemctl enable haproxy
+    Synchronizing state of haproxy.service with SysV service script with /lib/systemd/systemd-sysv-install.
+    Executing: /lib/systemd/systemd-sysv-install enable haproxy
+    ubuntu@hap2:~$ sudo systemctl status haproxy
+    ● haproxy.service - HAProxy Load Balancer
+         Loaded: loaded (/lib/systemd/system/haproxy.service; enabled; vendor preset: enabled)
+         Active: inactive (dead) since Sun 2023-08-13 22:43:07 UTC; 1min 40s ago
+           Docs: man:haproxy(1)
+                 file:/usr/share/doc/haproxy/configuration.txt.gz
+       Main PID: 2454 (code=exited, status=0/SUCCESS)
+    
+    Aug 13 22:42:10 hap2 systemd[1]: Starting HAProxy Load Balancer...
+    Aug 13 22:42:10 hap2 haproxy[2454]: [NOTICE] 224/224210 (2454) : New worker #1 (2469) forked
+    Aug 13 22:42:10 hap2 systemd[1]: Started HAProxy Load Balancer.
+    Aug 13 22:43:07 hap2 systemd[1]: Stopping HAProxy Load Balancer...
+    Aug 13 22:43:07 hap2 haproxy[2454]: [WARNING] 224/224307 (2454) : Exiting Master process...
+    Aug 13 22:43:07 hap2 haproxy[2454]: [ALERT] 224/224307 (2454) : Current worker #1 (2469) exited with c>
+    Aug 13 22:43:07 hap2 haproxy[2454]: [WARNING] 224/224307 (2454) : All workers exited. Exiting... (0)
+    Aug 13 22:43:07 hap2 systemd[1]: haproxy.service: Succeeded.
+    Aug 13 22:43:07 hap2 systemd[1]: Stopped HAProxy Load Balancer.
+    
+    ubuntu@hap2:~$ 
+    ```
   * Останавливаем службу/сервис `HAProxy` в ОС на всех 2х ВМ т.к. сначала ее надо настроить
     ```bash
     sudo systemctl stop haproxy
