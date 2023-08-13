@@ -248,12 +248,21 @@
         script_user root
     }
     
-    vrrp_script chk_hap_service {
-    script "/usr/bin/cat /var/lib/pgpro/std-12/data/postmaster.pid"
-    interval 2
+    vrrp_script chk_haproxy {
+    script "pkill -0 haproxy"
+    interval 1
     timeout 2
-    !weight 5
-    rise 2
+    !weight 6
+    rise 1
+    fall 2
+    }
+    
+    vrrp_script chk_keepalived {
+    script "pkill -0 keepalived"
+    interval 1
+    timeout 2
+    !weight 6
+    rise 1
     fall 2
     }
     
@@ -281,7 +290,8 @@
             10.129.0.10/24 dev eth0 label eth0:1
         }
         track_script {
-            chk_hap_service
+            chk_haproxy
+            chk_keepalived
         }
     }
     ```
