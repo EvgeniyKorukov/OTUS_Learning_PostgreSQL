@@ -384,10 +384,15 @@
 
 ***
 
-### Логи работы `KeepAlived` в ОС
-  * Можно посмотреть так
+### Полезные команды
+  * Логи работы `KeepAlived` в ОС
     ```bash
     sudo tail -20f /var/log/messages|grep -i keepalived
+    ```
+
+  * Посмотреть сетевой интерфейс в ОС, на котором есть наш `VIP=10.129.0.10`
+    ```bash
+    ip address show eth0 | grep "10.129.0.10"
     ```
 
 ***
@@ -423,8 +428,9 @@
   |  | `PgBouncer` | **`pg-srv1`** | `10.129.0.21` | 6432 | Подключение через `PgBouncer` к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.21) |
   |  | `PgBouncer` | **`pg-srv2`** | `10.129.0.22` | 6432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.22) |
   |  | `PgBouncer` | **`pg-srv3`** | `10.129.0.23` | 6432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.23) |
-  | :heavy_check_mark: | `HAProxy` | **`hap1`** | `10.129.0.11` | 0 |  |
-  | :heavy_check_mark: | `HAProxy` | **`hap2`** | `10.129.0.12` | 0 |  |
+  | :heavy_check_mark: | `KeepAlived` | **`hap1`** | `10.129.0.11` |  | Потенциальная ВМ для поднятия VIP-адреса |
+  | :heavy_check_mark: | `KeepAlived` | **`hap2`** | `10.129.0.12` |  | Потенциальная ВМ для поднятия VIP-адреса |
+  | :heavy_check_mark: | `KeepAlived-VIP` | **`hap1/hap2`** | `10.129.0.10` |  | VIP-адрес для подключения к `PostgreSQL`. Он может перемещаться между ВМ в зависимости от выполнения условий |
 
 ***
-### :+1: `KeepAlived` установлен и настроен
+### :+1: `KeepAlived` установлен и настроен. ❗️НО он поднимет VIP, после запуска и настройки `HAProxy` т.к. это является частью условий/проверок
