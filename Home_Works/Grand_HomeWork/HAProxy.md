@@ -182,8 +182,15 @@
         server patroni2 10.129.0.22:6432 maxconn 100 check port 8008
         server patroni3 10.129.0.23:6432 maxconn 100 check port 8008
     ```
+
+  * Запускаем `HAProxy` на 2х ВМ
+    ```bash
+    sudo systemctl start haproxy
+    ```
+
+    
 ***
-### Полезные команды `PgBouncer`
+### Полезные команды `HAProxy`
   * Посмотреть логи `PgBouncer` в ОС
     ```bash
     tail -20f /var/log/postgresql/pgbouncer.log
