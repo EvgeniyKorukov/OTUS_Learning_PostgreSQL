@@ -132,7 +132,7 @@
     ```bash
     sudo vim etc/haproxy/haproxy.cfg
     ```
-    ```console
+    ```haproxy
     global
          log 127.0.0.1   local2
          log /dev/log    local0
