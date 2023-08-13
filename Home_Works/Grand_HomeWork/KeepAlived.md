@@ -20,7 +20,7 @@
 ### Установка `KeepAlived`
   * Выполняем установку на 2х ВМ
     ```bash
-    sudo apt-get install keepalived
+    sudo apt-get install keepalived -y
     ```
     ```console
     ubuntu@hap1:~$ sudo apt-get install keepalived -y
