@@ -334,51 +334,54 @@
     ```console
     ubuntu@hap1:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
-         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
-         Active: active (running) since Sun 2023-08-13 15:49:20 UTC; 2min 48s ago
-       Main PID: 1918 (keepalived)
-          Tasks: 2 (limit: 2293)
-         Memory: 1.9M
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: ena>
+         Active: active (running) since Sun 2023-08-13 22:59:52 UTC; 6s ago
+       Main PID: 3309 (keepalived)
+          Tasks: 3 (limit: 2293)
+         Memory: 2.8M
          CGroup: /system.slice/keepalived.service
-                 ├─1918 /usr/sbin/keepalived --dont-fork
-                 └─1925 /usr/sbin/keepalived --dont-fork
+                 ├─3309 /usr/sbin/keepalived --dont-fork
+                 ├─3321 /usr/sbin/keepalived --dont-fork
+                 ├─3339 /usr/bin/pkill -0 haproxy
+                 └─3340 /usr/sbin/keepalived --dont-fork
     
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Registering Kernel netlink command channel
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Opening file '/etc/keepalived/keepalived.conf'.
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Registering gratuitous ARP shared channel
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Script `chk_hap_service` now returning 1
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: VRRP_Script(chk_hap_service) failed (exited with status 1)
-    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering FAULT STATE
-    Aug 13 15:51:50 hap1 Keepalived_vrrp[1925]: Script `chk_hap_service` now returning 0
-    Aug 13 15:51:52 hap1 Keepalived_vrrp[1925]: VRRP_Script(chk_hap_service) succeeded
-    Aug 13 15:51:52 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering BACKUP STATE
-    Aug 13 15:51:59 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering MASTER STATE
-    ubuntu@hap1:~$   
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering Kernel netlink reflector
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering Kernel netlink command channel
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Opening file '/etc/keepalived/keepalived.con>
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: WARNING - script `pkill` resolved by path se>
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: WARNING - script `pkill` resolved by path se>
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering gratuitous ARP shared channel
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: VRRP_Script(chk_keepalived) succeeded
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Script `chk_haproxy` now returning 1
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: VRRP_Script(chk_haproxy) failed (exited with>
+    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: (hap_srv) Entering FAULT STATE
+    lines 1-22/22 (END)
     ```
     ```console
     ubuntu@hap2:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
          Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
-         Active: active (running) since Sun 2023-08-13 15:49:17 UTC; 2min 37s ago
-       Main PID: 1956 (keepalived)
+         Active: active (running) since Sun 2023-08-13 22:59:51 UTC; 21s ago
+       Main PID: 3769 (keepalived)
           Tasks: 2 (limit: 2293)
-         Memory: 2.0M
+         Memory: 2.6M
          CGroup: /system.slice/keepalived.service
-                 ├─1956 /usr/sbin/keepalived --dont-fork
-                 └─1957 /usr/sbin/keepalived --dont-fork
+                 ├─3769 /usr/sbin/keepalived --dont-fork
+                 └─3780 /usr/sbin/keepalived --dont-fork
     
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering Kernel netlink reflector
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering Kernel netlink command channel
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Opening file '/etc/keepalived/keepalived.conf'.
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering gratuitous ARP shared channel
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Script `chk_hap_service` now returning 1
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: VRRP_Script(chk_hap_service) failed (exited with status 1)
-    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: (hap_srv) Entering FAULT STATE
-    Aug 13 15:51:51 hap2 Keepalived_vrrp[1957]: Script `chk_hap_service` now returning 0
-    Aug 13 15:51:53 hap2 Keepalived_vrrp[1957]: VRRP_Script(chk_hap_service) succeeded
-    Aug 13 15:51:53 hap2 Keepalived_vrrp[1957]: (hap_srv) Entering BACKUP STATE
-    ubuntu@hap2:~$ 
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering Kernel netlink reflector
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering Kernel netlink command channel
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Opening file '/etc/keepalived/keepalived.conf'.
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: WARNING - script `pkill` resolved by path search to `/usr/>
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: WARNING - script `pkill` resolved by path search to `/usr/>
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering gratuitous ARP shared channel
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: VRRP_Script(chk_keepalived) succeeded
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Script `chk_haproxy` now returning 1
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: VRRP_Script(chk_haproxy) failed (exited with status 1)
+    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: (hap_srv) Entering FAULT STATE
+    lines 1-20/20 (END)
     ```
+
 ***
 
 ### Логи работы `KeepAlived` в ОС
