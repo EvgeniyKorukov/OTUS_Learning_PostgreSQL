@@ -240,8 +240,51 @@
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
     ```
-
-  * 
+    ```console
+    global_defs {
+        ! Разрешить выполнение скриптов
+        enable_script_security
+        ! Под каким пользователем будет запускаться скрипт
+        script_user root
+    }
+    
+    vrrp_script chk_hap_service {
+    script "/usr/bin/cat /var/lib/pgpro/std-12/data/postmaster.pid"
+    interval 2
+    timeout 2
+    !weight 5
+    rise 2
+    fall 2
+    }
+    
+    vrrp_instance hap_srv {
+        ! Указывает на то что в каком состоянии стартует нода
+        state BACKUP
+        ! MASTER
+        ! Интерфейс для виртуальных IP
+        interface eth0
+        ! Интерфейс для обмена служебными пакетами между нодами. Есди на сервере несколько сетевых адаптеров и есть выделенный для interconnect
+        !lvs_sync_daemon_inteface eth0
+        ! Уникальное имя виртуального роутера. Если используется несколько VIP, то для каждого VIP он будет свой
+        ! Почему-то в тестовой лабе не работает с 254. Ошибку напишу ниже.
+        virtual_router_id 115
+        ! Приоритет данной ноды относительно других, нода с наибольшим приоритетом переходит в состояние MASTER
+        priority 100
+        ! Как часто происходит обновление состояния кластера в секундах
+        advert_int 2
+        ! Должен запрещать мастеру забирать VIP при возвращении
+        nopreempt
+        ! preempt
+        ! Виртуальные адреса, которые настроит keealived. Надо указывать маску подсети т.к. по умолчанию VIP поднимается с маской сети 32, что соответствует 1 ip в сети.
+        virtual_ipaddress {
+            ! Если так, то вверху не нужен interface
+            10.129.0.10/24 dev eth0 label eth0:1
+        }
+        track_script {
+            chk_hap_service
+        }
+    }
+    ```
 
 ***
 ### Настройка службы `KeepAlived` в ОС
@@ -259,10 +302,54 @@
     sudo systemctl status keepalived
     ```
     ```console
-  
+    ubuntu@hap1:~$ sudo systemctl status keepalived
+    ● keepalived.service - Keepalive Daemon (LVS and VRRP)
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
+         Active: active (running) since Sun 2023-08-13 15:49:20 UTC; 2min 48s ago
+       Main PID: 1918 (keepalived)
+          Tasks: 2 (limit: 2293)
+         Memory: 1.9M
+         CGroup: /system.slice/keepalived.service
+                 ├─1918 /usr/sbin/keepalived --dont-fork
+                 └─1925 /usr/sbin/keepalived --dont-fork
+    
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Registering Kernel netlink command channel
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Opening file '/etc/keepalived/keepalived.conf'.
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Registering gratuitous ARP shared channel
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: Script `chk_hap_service` now returning 1
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: VRRP_Script(chk_hap_service) failed (exited with status 1)
+    Aug 13 15:49:20 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering FAULT STATE
+    Aug 13 15:51:50 hap1 Keepalived_vrrp[1925]: Script `chk_hap_service` now returning 0
+    Aug 13 15:51:52 hap1 Keepalived_vrrp[1925]: VRRP_Script(chk_hap_service) succeeded
+    Aug 13 15:51:52 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering BACKUP STATE
+    Aug 13 15:51:59 hap1 Keepalived_vrrp[1925]: (hap_srv) Entering MASTER STATE
+    ubuntu@hap1:~$   
     ```
     ```console
-  
+    ubuntu@hap2:~$ sudo systemctl status keepalived
+    ● keepalived.service - Keepalive Daemon (LVS and VRRP)
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
+         Active: active (running) since Sun 2023-08-13 15:49:17 UTC; 2min 37s ago
+       Main PID: 1956 (keepalived)
+          Tasks: 2 (limit: 2293)
+         Memory: 2.0M
+         CGroup: /system.slice/keepalived.service
+                 ├─1956 /usr/sbin/keepalived --dont-fork
+                 └─1957 /usr/sbin/keepalived --dont-fork
+    
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering Kernel netlink reflector
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering Kernel netlink command channel
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Opening file '/etc/keepalived/keepalived.conf'.
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Registering gratuitous ARP shared channel
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: Script `chk_hap_service` now returning 1
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: VRRP_Script(chk_hap_service) failed (exited with status 1)
+    Aug 13 15:49:17 hap2 Keepalived_vrrp[1957]: (hap_srv) Entering FAULT STATE
+    Aug 13 15:51:51 hap2 Keepalived_vrrp[1957]: Script `chk_hap_service` now returning 0
+    Aug 13 15:51:53 hap2 Keepalived_vrrp[1957]: VRRP_Script(chk_hap_service) succeeded
+    Aug 13 15:51:53 hap2 Keepalived_vrrp[1957]: (hap_srv) Entering BACKUP STATE
+    ubuntu@hap2:~$ 
     ```
       
 ***  
+
+### :+1: `KeepAlived` установлен и настроен
