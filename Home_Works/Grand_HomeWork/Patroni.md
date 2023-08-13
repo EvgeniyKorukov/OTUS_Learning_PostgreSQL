@@ -448,6 +448,11 @@
     ```
 ***
 ###  Полезные команды `Patroni`
+  * Посмотреть логи `Patroni` в ОС
+    ```bash
+    journalctl -u patroni -e
+    ```
+  
   * Посмотреть список нод
     ```bash
     patronictl -c /etc/patroni/patroni.yml list
