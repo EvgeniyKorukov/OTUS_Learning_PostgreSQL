@@ -236,7 +236,7 @@
 
 ### Настройка `KeepAlived`
   * ❗️Выполняем настройку на 2х ВМ
-  * Редактируем конфигурационный файл [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf)
+  * Редактируем конфигурационный файл [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf). Мы будем настраивать в конфигурации `BACKUP-BACKUP`, где все сервера равнозначны и нет предпочтительных
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
     ```
