@@ -52,6 +52,11 @@
     sudo mv /tmp/userlist.txt /etc/pgbouncer/userlist.txt
     ```
 
+  * Включаем автозагрузку `PgBouncer` в ОС на всех 3х ВМ
+    ```bash  
+    sudo systemctl enable pgbouncer
+    ```
+
   * Запускаем `PgBouncer` на всех 3х ВМ
     ```bash  
     sudo systemctl start pgbouncer
@@ -64,6 +69,10 @@
     
 ***
 ### Полезные команды `PgBouncer`
+  * Посмотреть логи `PgBouncer` в ОС
+    ```bash
+    tail -20f /var/log/postgresql/pgbouncer.log
+    ```
   * Запуск
     ```bash
     pgbouncer -d /etc/pgbouncer/pgbouncer.ini
@@ -88,10 +97,20 @@
 
 ### !!!Какие возможности у нас появились на данном этапе
   | :electric_plug: Появилось на этом этапе | :electric_plug: Компонент | :hammer_and_wrench: Название ВМ | :link: ip-адрес | :magnet: порт | :memo: Описание возможности |
-  |:-------------------------:|:---|:--------|:----------|------:|:----------------------|
-  | :heavy_check_mark: | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Web GUI |
-  | :heavy_check_mark: | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Web GUI |
-  | :heavy_check_mark: | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Web GUI |
+  |:--:|:---|:--------|:----------|------:|:------------------------------------------|
+  |  | `Consul` | **`pg-srv1`** | `10.129.0.21` | 8500 | Веб-интерфейс (http://10.129.0.21:8500) |
+  |  | `Consul` | **`pg-srv2`** | `10.129.0.22` | 8500 | Веб-интерфейс (http://10.129.0.22:8500) |
+  |  | `Consul` | **`pg-srv3`** | `10.129.0.23` | 8500 | Веб-интерфейс (http://10.129.0.23:8500) |
+  |  | `PostgreSQL` | **`pg-srv1`** | `10.129.0.21` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 5432) |
+  |  | `PostgreSQL` | **`pg-srv2`** | `10.129.0.22` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 5432) |
+  |  | `PostgreSQL` | **`pg-srv3`** | `10.129.0.23` | 5432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 5432) |
+  |  | `Patroni` | **`pg-srv1`** | `10.129.0.21` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.21:8008) |
+  |  | `Patroni` | **`pg-srv2`** | `10.129.0.22` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.22:8008) |
+  |  | `Patroni` | **`pg-srv3`** | `10.129.0.23` | 8008 | Ответ Patroni о роли экземпляра PostgreSQL на данной ВМ (curl http://10.129.0.23:8008) |
+  | :heavy_check_mark: | `PgBouncer` | **`pg-srv1`** | `10.129.0.21` | 6432 | Подключение через `PgBouncer` к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.21) |
+  | :heavy_check_mark: | `PgBouncer` | **`pg-srv2`** | `10.129.0.22` | 6432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.22) |
+  | :heavy_check_mark: | `PgBouncer` | **`pg-srv3`** | `10.129.0.23` | 6432 | Прямое подключение к экземпляру PostgreSQL на данной ВМ (sudo -u postgres psql -p 6432 -h 10.129.0.23) |
+
 
 ***
 ### :+1: `PgBouncer` установлен и настроен
