@@ -123,8 +123,45 @@
 
 ***
 ### Конфигурируем `HAProxy`
+!!!
+  * Создаем файл конфигурации [`/etc/haproxy/haproxy.cfg`](config_files/haproxy.cfg) на всех 2х ВМ
+  * ❗️Сохраняем оригинальный файл перед правкой
+    ```bash
+    sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.orig
+    ```
+  * Правим файл конфигурации
+    ```bash
+    sudo vim etc/haproxy/haproxy.cfg
+    ```
+    ```console
 
-
+    ```
+***
+### Полезные команды `PgBouncer`
+  * Посмотреть логи `PgBouncer` в ОС
+    ```bash
+    tail -20f /var/log/postgresql/pgbouncer.log
+    ```
+  * Запуск
+    ```bash
+    pgbouncer -d /etc/pgbouncer/pgbouncer.ini
+    или
+    sudo systemctl start pgbouncer
+    ```
+  * Перезапуск
+    ```bash
+    pgbouncer -R /etc/pgbouncer/pgbouncer.ini
+    или
+    sudo systemctl restart pgbouncer
+    ```
+  * Админка
+    ```bash
+    sudo -u postgres psql -p 6432 -U pgbouncer pgbouncer
+    ```
+  * Подключение через `PgBouncer`
+    ```bash
+    sudo -u postgres psql -p 6432 -h localhost
+    ``` 
 
 ***
 
