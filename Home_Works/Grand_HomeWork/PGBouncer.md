@@ -64,7 +64,52 @@
       
   * Проверяем локальное подключение к `postgres` через `PgBouncer`
     ```bash  
-    sudo -u postgres psql -p 6432 -h localhost
+    sudo -u postgres psql -p 6432 -h localhost -c "\l"
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -p 6432 -h localhost -c "\l"
+    Password for user postgres: 
+                                                     List of databases
+       Name    |  Owner   | Encoding |   Collate   |    Ctype    | ICU Locale | Locale Provider |   Access privileges   
+    -----------+----------+----------+-------------+-------------+------------+-----------------+-----------------------
+     postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | 
+     template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+     template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+    (3 rows)
+    
+    ubuntu@pg-srv1:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -p 6432 -h localhost -c "\l"
+    Password for user postgres: 
+                                                     List of databases
+       Name    |  Owner   | Encoding |   Collate   |    Ctype    | ICU Locale | Locale Provider |   Access privileges   
+    -----------+----------+----------+-------------+-------------+------------+-----------------+-----------------------
+     postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | 
+     template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+     template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+    (3 rows)
+    
+    ubuntu@pg-srv2:~$ 
+    ```
+    ```console
+    ubuntu@pg-srv3:~$ sudo -u postgres psql -p 6432 -h localhost -c "\l"
+    Password for user postgres: 
+                                                     List of databases
+       Name    |  Owner   | Encoding |   Collate   |    Ctype    | ICU Locale | Locale Provider |   Access privileges   
+    -----------+----------+----------+-------------+-------------+------------+-----------------+-----------------------
+     postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | 
+     template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+     template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 |            | libc            | =c/postgres          +
+               |          |          |             |             |            |                 | postgres=CTc/postgres
+    (3 rows)
+    
+    ubuntu@pg-srv3:~$ 
     ```
     
 ***
