@@ -130,7 +130,7 @@
     ```
   * Правим файл конфигурации
     ```bash
-    sudo vim etc/haproxy/haproxy.cfg
+    sudo vim /etc/haproxy/haproxy.cfg
     ```
     ```haproxy
     global
