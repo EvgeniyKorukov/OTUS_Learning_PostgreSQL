@@ -164,7 +164,7 @@
 
 ###  Создаем настраиваем службу в ОС для `Consul`
   * Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/consul.service) в ОС на каждой из 3х ВМ
-  * ❗️Разница только в `-node=pg-srv`
+  * ❗️Разница только в `-node=pg-srv1`
     ```bash
     sudo vim /usr/lib/systemd/system/consul.service
     ```
@@ -180,7 +180,7 @@
     User=consul
     Group=consul
     ExecStart=/usr/bin/consul agent \
-        -node=pg-srv \
+        -node=pg-srv1 \
         -config-dir=/etc/consul.d
     ExecReload=/bin/kill -HUP $MAINPID
     KillSignal=SIGINT
