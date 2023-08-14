@@ -122,10 +122,36 @@
     sudo tail -20f /var/log/syslog
     ```
 
-  * Подключение через `HAProxy`
+  * Подключение к `мастеру` `PostgreSQL` через `HAProxy`
     ```bash
-    sudo -u postgres psql -p 6432 -h localhost
-    ``` 
+    psql -h 10.129.0.10 -p 5002 -U postgres -c "SELECT pg_is_in_recovery()"
+    ```
+    ```console
+    ubuntu@hap1:~$ psql -h 10.129.0.10 -p 5002 -U postgres -c "SELECT pg_is_in_recovery()"
+    Password for user postgres: 
+     pg_is_in_recovery 
+    -------------------
+     f
+    (1 row)
+    
+    ubuntu@hap1:~$ 
+    ```
+
+  * Подключение к `реплике` `PostgreSQL` через `HAProxy`
+    ```bash
+    psql -h 10.129.0.10 -p 5003 -U postgres -c "SELECT pg_is_in_recovery()"
+    ```
+    ```console
+    ubuntu@hap2:~$ psql -h 10.129.0.10 -p 5003 -U postgres -c "SELECT pg_is_in_recovery()"
+    Password for user postgres: 
+     pg_is_in_recovery 
+    -------------------
+     t
+    (1 row)
+    
+    ubuntu@hap2:~$ 
+    ```
+    
 
 ***
 
@@ -149,8 +175,8 @@
   |  | `KeepAlived-VIP` | **`hap1/hap2`** | `10.129.0.10` |  | VIP-адрес для подключения к `PostgreSQL`. Он может перемещаться между ВМ в зависимости от выполнения условий |
   | :heavy_check_mark: | `HAProxy` | **`hap1`** | `10.129.0.11` | 7000 | Веб-интерфейс (http://10.129.0.11:7000) |
   | :heavy_check_mark: | `HAProxy` | **`hap2`** | `10.129.0.12` | 7000 | Веб-интерфейс (http://10.129.0.12:7000) |
-  | :heavy_check_mark: | `HAProxy` | **`hap1/hap2`** | `10.129.0.10` | 5002 | Подключение к `мастеру` `PostgreSQL` через `HAProxy`(http://10.129.0.12:7000) |
-  | :heavy_check_mark: | `HAProxy` | **`hap1/hap2`** | `10.129.0.10` | 5003 | Подключение к `реплике` `PostgreSQL` через `HAProxy`(http://10.129.0.12:7000) |
+  | :heavy_check_mark: | `HAProxy` | **`hap1/hap2`** | `10.129.0.10` | 5002 | Подключение к `мастеру` `PostgreSQL` через `HAProxy` (psql -h 10.129.0.10 -p 5002 -U postgres) |
+  | :heavy_check_mark: | `HAProxy` | **`hap1/hap2`** | `10.129.0.10` | 5003 | Подключение к `реплике` `PostgreSQL` через `HAProxy` (psql -h 10.129.0.10 -p 5003 -U postgres) |
 
 
 ***
