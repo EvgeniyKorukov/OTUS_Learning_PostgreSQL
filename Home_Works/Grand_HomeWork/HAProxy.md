@@ -115,27 +115,14 @@
     
 ***
 ### Полезные команды `HAProxy`
-  * Посмотреть логи `PgBouncer` в ОС
+  * Посмотреть логи `HAProxy` в ОС
     ```bash
-    tail -20f /var/log/postgresql/pgbouncer.log
-    ```
-  * Запуск
-    ```bash
-    pgbouncer -d /etc/pgbouncer/pgbouncer.ini
+    tail -20f /var/log/haproxy.log
     или
-    sudo systemctl start pgbouncer
+    sudo tail -20f /var/log/syslog
     ```
-  * Перезапуск
-    ```bash
-    pgbouncer -R /etc/pgbouncer/pgbouncer.ini
-    или
-    sudo systemctl restart pgbouncer
-    ```
-  * Админка
-    ```bash
-    sudo -u postgres psql -p 6432 -U pgbouncer pgbouncer
-    ```
-  * Подключение через `PgBouncer`
+
+  * Подключение через `HAProxy`
     ```bash
     sudo -u postgres psql -p 6432 -h localhost
     ``` 
