@@ -92,27 +92,10 @@
 ***    
 ###  Создаем настраиваем службу в ОС для `Patroni`
   * Создаем службу [`/usr/lib/systemd/system/patroni.service`](config_files/patroni.service) в ОС на каждой из 3х ВМ
+  * ❗️Файл конфигурации одинаковый для всех 3х ВМ
   * ❗Обратите внимание, что в официальной документации предлагается не перезапускать автоматически службу (Restart=no). Это дает возможность разобраться в причине падения базы️
     ```bash
     sudo vim /usr/lib/systemd/system/patroni.service
-    ```
-    ```service
-    [Unit]
-    Description=Patroni service
-    After=syslog.target network.target
-    
-    [Service]
-    Type=simple
-    User=postgres
-    Group=postgres
-    ExecStart=/usr/local/bin/patroni /etc/patroni/patroni.yml
-    ExecReload=/bin/kill -s HUP $MAINPID
-    KillMode=process
-    TimeoutSec=30
-    Restart=no
-    
-    [Install]
-    WantedBy=multi-user.target
     ```
 
   * Перечитываем конфигурацию systemd
