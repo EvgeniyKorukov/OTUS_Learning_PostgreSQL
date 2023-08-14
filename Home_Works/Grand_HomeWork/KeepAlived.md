@@ -281,52 +281,53 @@ sudo vim /etc/keepalived/keepalived.conf<div align="center"><h2> 5. Настро
     ```console
     ubuntu@hap1:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
-         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: ena>
-         Active: active (running) since Sun 2023-08-13 22:59:52 UTC; 6s ago
-       Main PID: 3309 (keepalived)
-          Tasks: 3 (limit: 2293)
-         Memory: 2.8M
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabl>
+         Active: active (running) since Mon 2023-08-14 21:26:51 UTC; 16s ago
+       Main PID: 3439 (keepalived)
+          Tasks: 2 (limit: 2293)
+         Memory: 1.9M
          CGroup: /system.slice/keepalived.service
-                 ├─3309 /usr/sbin/keepalived --dont-fork
-                 ├─3321 /usr/sbin/keepalived --dont-fork
-                 ├─3339 /usr/bin/pkill -0 haproxy
-                 └─3340 /usr/sbin/keepalived --dont-fork
+                 ├─3439 /usr/sbin/keepalived --dont-fork
+                 └─3440 /usr/sbin/keepalived --dont-fork
     
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering Kernel netlink reflector
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering Kernel netlink command channel
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Opening file '/etc/keepalived/keepalived.con>
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: WARNING - script `pkill` resolved by path se>
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: WARNING - script `pkill` resolved by path se>
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Registering gratuitous ARP shared channel
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: VRRP_Script(chk_keepalived) succeeded
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: Script `chk_haproxy` now returning 1
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: VRRP_Script(chk_haproxy) failed (exited with>
-    Aug 13 22:59:52 hap1 Keepalived_vrrp[3321]: (hap_srv) Entering FAULT STATE
-    lines 1-22/22 (END)
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Opening file '/etc/keepalived/keepalived.conf'.
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path sear>
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path sear>
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Registering gratuitous ARP shared channel
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE (init)
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Script `chk_haproxy` now returning 1
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: VRRP_Script(chk_haproxy) failed (exited with s>
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: VRRP_Script(chk_keepalived) succeeded
+    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: (hap_srv) Changing effective priority from 100>
+    Aug 14 21:26:58 hap1 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE
+    lines 1-20/20 (END)
     ```
     ```console
     ubuntu@hap2:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
          Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
-         Active: active (running) since Sun 2023-08-13 22:59:51 UTC; 21s ago
-       Main PID: 3769 (keepalived)
+         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 7s ago
+       Main PID: 3429 (keepalived)
           Tasks: 2 (limit: 2293)
-         Memory: 2.6M
+         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 15s ago
+         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 15s ago
+       Main PID: 3429 (keepalived)
+          Tasks: 2 (limit: 2293)
+         Memory: 2.1M
          CGroup: /system.slice/keepalived.service
-                 ├─3769 /usr/sbin/keepalived --dont-fork
-                 └─3780 /usr/sbin/keepalived --dont-fork
+                 ├─3429 /usr/sbin/keepalived --dont-fork
+                 └─3440 /usr/sbin/keepalived --dont-fork
     
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering Kernel netlink reflector
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering Kernel netlink command channel
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Opening file '/etc/keepalived/keepalived.conf'.
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: WARNING - script `pkill` resolved by path search to `/usr/>
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: WARNING - script `pkill` resolved by path search to `/usr/>
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Registering gratuitous ARP shared channel
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: VRRP_Script(chk_keepalived) succeeded
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: Script `chk_haproxy` now returning 1
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: VRRP_Script(chk_haproxy) failed (exited with status 1)
-    Aug 13 22:59:51 hap2 Keepalived_vrrp[3780]: (hap_srv) Entering FAULT STATE
-    lines 1-20/20 (END)
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Opening file '/etc/keepalived/keepalived.conf'.
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path search to `/us>
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path search to `/us>
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Registering gratuitous ARP shared channel
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE (init)
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Script `chk_haproxy` now returning 1
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: VRRP_Script(chk_haproxy) failed (exited with status 1)
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: VRRP_Script(chk_keepalived) succeeded
+    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: (hap_srv) Changing effective priority from 200 to 206
+    Aug 14 21:25:31 hap2 Keepalived_vrrp[3440]: (hap_srv) Entering MASTER STATE
     ```
 
 ***
@@ -335,6 +336,8 @@ sudo vim /etc/keepalived/keepalived.conf<div align="center"><h2> 5. Настро
   * Логи работы `KeepAlived` в ОС
     ```bash
     journalctl -u keepalived -e
+    или
+    sudo tail -20f /var/log/syslog
     ```
 
   * Посмотреть сетевой интерфейс в ОС, на котором есть наш `VIP=10.129.0.10`
