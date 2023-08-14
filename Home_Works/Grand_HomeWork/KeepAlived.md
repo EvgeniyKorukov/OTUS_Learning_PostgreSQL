@@ -445,7 +445,7 @@
 ### Полезные команды
   * Логи работы `KeepAlived` в ОС
     ```bash
-    sudo tail -20f /var/log/messages|grep -i keepalived
+    journalctl -u keepalived -e
     ```
 
   * Посмотреть сетевой интерфейс в ОС, на котором есть наш `VIP=10.129.0.10`
