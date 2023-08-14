@@ -64,9 +64,11 @@
 ###  Создаем конфигурацию для `Patroni`
   * Создаем конфигурационный файл `/etc/patroni/patroni.yml` на всех 3х ВМ
   * ❗️Файл конфигурации разный для всех 3х ВМ
-    * :information_source: Разница только в `name: pg-srv1`
-    * :information_source: Разница только в `restapi - connect_address: "10.129.0.11:8008"`
-    * :information_source: Разница только в `postgresql - connect_address: "10.129.0.11:5432"`
+    * :information_source: Разница только в :
+      * `name: pg-srvX`
+      * `restapi - connect_address: "10.129.0.X:8008"`
+      * `postgresql - connect_address: "10.129.0.X:5432"`
+
     ```bash
     sudo vim /etc/patroni/patroni.yml
     ```
