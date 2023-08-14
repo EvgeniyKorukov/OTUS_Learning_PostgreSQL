@@ -16,14 +16,14 @@
 ***
 ### ? Установка и настройка patroni (желательно преобразовать имеющуюся СУБД в patroni, логи выбора мастера)
 https://patroni.readthedocs.io/en/latest/existing_data.html
-### ? Загрузка данных)
 ### ? Резервное копирование с реплики
 ***
 ### Мои замечания:
   * keepalive
-    * изменить скрипт проверки сервиса
-    * Скорректировать и обновить файл
-    * Изменить модержимое в тексте скрипта
-    * Где-то указать про VIP 10.129.0.10
+    * Не работает VRRP в YandexCloud. Другими словами, но vip manager, ни keepalived там не запустить....
+    * https://telq.org/question/62551949b2d5debe9e6d1778
+    * https://github.com/yandex-cloud/yc-architect-solution-library/blob/main/demos/dmz-fw-ha/README.md
+    * В облачной сети Yandex Cloud не поддерживается работа протоколов VRRP/HSRP между FW.
+
   * pgbouncer
     * Может надо чтобы каждый сервер с pgbouncer смотрел на все ip серверов с СУБД ?
