@@ -6,7 +6,7 @@
 ### 2. [Установка и настройка Consul](Consul.md)
 ### 3. [Установка и настройка Patroni](Patroni.md)
 ### 4. [Установка и настройка PgBouncer](PGBouncer.md)
-### -5. [Установка и настройка KeepAlived](KeepAlived.md)
+### 5. [Установка и настройка KeepAlived](KeepAlived.md)
 ### -6. [Установка и настройка HA Proxy](HAProxy.md)
 ### -7. Проверка отказоусточивости при switchover и failsafe в patroni
 ### -8. Проверка отказоусточивости при падении HA Proxy и переносе VIP
