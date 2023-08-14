@@ -102,59 +102,9 @@
     ```bash
     sudo mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.orig
     ```
-  * Правим файл конфигурации
+  * ❗️Файл конфигурации одинаковый для всех 2х ВМ   
     ```bash
     sudo vim /etc/haproxy/haproxy.cfg
-    ```
-    ```haproxy
-    global
-         log 127.0.0.1   local2
-         log /dev/log    local0
-         log /dev/log    local1 notice
-         chroot /var/lib/haproxy
-         stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
-         stats timeout 30s
-         user haproxy
-         group haproxy
-         maxconn 4000
-         daemon
-    
-    defaults
-        mode                    tcp
-        log                     global
-        option                  tcplog
-        retries                 3
-        timeout queue           1m
-        timeout connect         10s
-        timeout client          1m
-        timeout server          1m
-        timeout check           10s
-        maxconn                 3000
-    
-    listen stats
-        mode http
-        bind *:7000
-        stats enable
-        stats uri /
-    
-    listen primary
-        bind 10.129.0.10:5002
-        option httpchk OPTIONS /master
-        http-check expect status 200
-        default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
-        server patroni1 10.129.0.21:6432 maxconn 100 check port 8008
-        server patroni2 10.129.0.22:6432 maxconn 100 check port 8008
-        server patroni3 10.129.0.23:6432 maxconn 100 check port 8008
-    
-    listen standby
-        bind 10.129.0.10:5003
-        balance roundrobin
-        option httpchk OPTIONS /replica
-        http-check expect status 200
-        default-server inter 3s fall 3 rise 2 on-marked-down shutdown-sessions
-        server patroni1 10.129.0.21:6432 maxconn 100 check port 8008
-        server patroni2 10.129.0.22:6432 maxconn 100 check port 8008
-        server patroni3 10.129.0.23:6432 maxconn 100 check port 8008
     ```
 
   * Запускаем `HAProxy` на 2х ВМ
