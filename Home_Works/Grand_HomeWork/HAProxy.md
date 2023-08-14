@@ -151,7 +151,11 @@
     
     ubuntu@hap2:~$ 
     ```
-    
+
+  * Доступен веб-интерфейс для `HAProxy`
+    ```bash
+    http://<ip-server HAProxy>:7000
+    ```    
 
 ***
 
