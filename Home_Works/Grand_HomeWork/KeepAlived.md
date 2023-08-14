@@ -240,8 +240,8 @@ sudo vim /etc/keepalived/keepalived.conf<div align="center"><h2> 5. Настро
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
     ```
-      * :pencil2:Конфигурационный файл для ВМ `hap1` [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_backup)
-      * :pencil2:Конфигурационный файл для ВМ `hap2`  [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_master)
+      * :pencil2: Конфигурационный файл для ВМ `hap1` [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_backup)
+      * :pencil2: Конфигурационный файл для ВМ `hap2`  [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_master)
 
         * Основные параметры раздела vrrp_script  (скрипта проверки) :
           * `vrrp_script` <название> 
