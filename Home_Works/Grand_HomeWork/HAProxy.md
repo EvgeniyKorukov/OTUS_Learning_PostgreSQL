@@ -51,10 +51,6 @@
     Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
     Processing triggers for rsyslog (8.2001.0-1ubuntu1.3) ...
     Processing triggers for systemd (245.4-4ubuntu3.22) ...
-    ubuntu@hap1:~$ sudo systemctl stop haproxy
-    ubuntu@hap1:~$ sudo systemctl enable haproxy
-    Synchronizing state of haproxy.service with SysV service script with /lib/systemd/systemd-sysv-install.
-    Executing: /lib/systemd/systemd-sysv-install enable haproxy
     ubuntu@hap1:~$ 
     ```
     ```console
@@ -88,28 +84,6 @@
     Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
     Processing triggers for rsyslog (8.2001.0-1ubuntu1.3) ...
     Processing triggers for systemd (245.4-4ubuntu3.22) ...
-    ubuntu@hap2:~$ sudo systemctl stop haproxy
-    ubuntu@hap2:~$ sudo systemctl enable haproxy
-    Synchronizing state of haproxy.service with SysV service script with /lib/systemd/systemd-sysv-install.
-    Executing: /lib/systemd/systemd-sysv-install enable haproxy
-    ubuntu@hap2:~$ sudo systemctl status haproxy
-    ● haproxy.service - HAProxy Load Balancer
-         Loaded: loaded (/lib/systemd/system/haproxy.service; enabled; vendor preset: enabled)
-         Active: inactive (dead) since Sun 2023-08-13 22:43:07 UTC; 1min 40s ago
-           Docs: man:haproxy(1)
-                 file:/usr/share/doc/haproxy/configuration.txt.gz
-       Main PID: 2454 (code=exited, status=0/SUCCESS)
-    
-    Aug 13 22:42:10 hap2 systemd[1]: Starting HAProxy Load Balancer...
-    Aug 13 22:42:10 hap2 haproxy[2454]: [NOTICE] 224/224210 (2454) : New worker #1 (2469) forked
-    Aug 13 22:42:10 hap2 systemd[1]: Started HAProxy Load Balancer.
-    Aug 13 22:43:07 hap2 systemd[1]: Stopping HAProxy Load Balancer...
-    Aug 13 22:43:07 hap2 haproxy[2454]: [WARNING] 224/224307 (2454) : Exiting Master process...
-    Aug 13 22:43:07 hap2 haproxy[2454]: [ALERT] 224/224307 (2454) : Current worker #1 (2469) exited with c>
-    Aug 13 22:43:07 hap2 haproxy[2454]: [WARNING] 224/224307 (2454) : All workers exited. Exiting... (0)
-    Aug 13 22:43:07 hap2 systemd[1]: haproxy.service: Succeeded.
-    Aug 13 22:43:07 hap2 systemd[1]: Stopped HAProxy Load Balancer.
-    
     ubuntu@hap2:~$ 
     ```
   * Останавливаем службу/сервис `HAProxy` в ОС на всех 2х ВМ т.к. сначала ее надо настроить
