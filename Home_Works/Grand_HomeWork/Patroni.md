@@ -72,9 +72,9 @@
     ```bash
     sudo vim /etc/patroni/patroni.yml
     ```
-      * :pencil2: Файл конфигурации разный для ВМ №1 [`/etc/patroni/patroni.yml`](vm1_config_files/patroni.yml)
-      * :pencil2: Файл конфигурации разный для ВМ №2 [`/etc/patroni/patroni.yml`](vm2_config_files/patroni.yml)
-      * :pencil2: Файл конфигурации разный для ВМ №3 [`/etc/patroni/patroni.yml`](vm3_config_files/patroni.yml)
+      * :pencil2: Файл конфигурации разный для ВМ №1 [`/etc/patroni/patroni.yml`](config_files/vm1_patroni.yml)
+      * :pencil2: Файл конфигурации разный для ВМ №2 [`/etc/patroni/patroni.yml`](config_files/vm2_patroni.yml)
+      * :pencil2: Файл конфигурации разный для ВМ №3 [`/etc/patroni/patroni.yml`](config_files/vm3_patroni.yml)
 
         * Параметры конфига:
           * `name` — имя узла, на котором настраивается данный конфиг.
