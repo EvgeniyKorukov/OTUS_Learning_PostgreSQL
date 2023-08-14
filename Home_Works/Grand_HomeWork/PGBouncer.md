@@ -39,12 +39,17 @@
     ```bash
     sudo cp /etc/pgbouncer/pgbouncer.ini /etc/pgbouncer/pgbouncer.ini.orig
     ```
-  * Правим файл конфигурации
-    * Меняем параметр с `listen_addr = localhost` на `listen_addr = *`
-    * Добавляем в раздел `[databases]` строку подключения ко всем БД `* = host=10.129.0.21 port=5432 dbname=postgres` на `ip` ❗️текущего сервера т.е. разница в `ip` ВМ 
+  * ❗️Файл конфигурации разный для всех 3х ВМ
+    * :information_source: Меняем параметр с `listen_addr = localhost` на `listen_addr = *`
+    * :information_source: Добавляем в раздел `[databases]` строку подключения ко всем БД на данном сервере `* = host=10.129.0.X port=5432 dbname=postgres`
+    * :information_source: Разница только в:
+      * `* = host=10.129.0.X port=5432 dbname=postgres`
     ```bash
     sudo vim /etc/pgbouncer/pgbouncer.ini
     ```
+      * :pencil2: Файл конфигурации для ВМ №1 [`/etc/pgbouncer/pgbouncer.ini`](config_files/vm1_pgbouncer.ini)
+      * :pencil2: Файл конфигурации для ВМ №2 [`/etc/pgbouncer/pgbouncer.ini`](config_files/vm2_pgbouncer.ini)
+      * :pencil2: Файл конфигурации для ВМ №3 [`/etc/pgbouncer/pgbouncer.ini`](config_files/vm3_pgbouncer.ini)
 
   * Создаем файл пользователей [`/etc/pgbouncer/userlist.txt`](config_files/userlist.txt) на всех 3х ВМ
     ```bash
