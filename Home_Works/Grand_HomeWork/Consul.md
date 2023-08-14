@@ -137,7 +137,7 @@
   * Создаем службу `/usr/lib/systemd/system/consul.service` в ОС на каждой из 3х ВМ
   * ❗️Файл конфигурации разный для всех 3х ВМ
     * :information_source: Разница только в:
-      * `-node=pg-srv`
+      * `-node=pg-srvX`
     ```bash
     sudo vim /usr/lib/systemd/system/consul.service
     ```
