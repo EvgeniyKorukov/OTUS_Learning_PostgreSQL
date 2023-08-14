@@ -134,34 +134,15 @@
 ***
 
 ###  Создаем настраиваем службу в ОС для `Consul`
-  * Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/consul.service) в ОС на каждой из 3х ВМ
-  * ❗️Разница только в `-node=pg-srv1`
+  * Создаем службу `/usr/lib/systemd/system/consul.service` в ОС на каждой из 3х ВМ
+  * ❗️Файл конфигурации разный для всех 3х ВМ
+  * ❗️Разница только в `-node=pg-srv`
     ```bash
     sudo vim /usr/lib/systemd/system/consul.service
     ```
-    ```service
-    [Unit]
-    Description=Consul Service Discovery Agent
-    Documentation=https://www.consul.io/
-    After=network-online.target
-    Wants=network-online.target
-    
-    [Service]
-    Type=simple
-    User=consul
-    Group=consul
-    ExecStart=/usr/bin/consul agent \
-        -node=pg-srv1 \
-        -config-dir=/etc/consul.d
-    ExecReload=/bin/kill -HUP $MAINPID
-    KillSignal=SIGINT
-    TimeoutStopSec=5
-    Restart=on-failure
-    SyslogIdentifier=consul
-    
-    [Install]
-    WantedBy=multi-user.target
-    ```
+      * :pencil2: Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/vm1_consul.service) в ОС для ВМ №1
+      * :pencil2: Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/vm2_consul.service) в ОС для ВМ №2
+      * :pencil2: Создаем службу [`/usr/lib/systemd/system/consul.service`](config_files/vm3_consul.service) в ОС для ВМ №3
 
   * Перечитываем конфигурацию systemd
     ```bash
