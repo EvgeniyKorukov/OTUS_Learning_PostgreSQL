@@ -236,10 +236,11 @@
 
 ### Настройка `KeepAlived`
   * ❗️Выполняем настройку на 2х ВМ
-  * Редактируем конфигурационный файл [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf). Мы будем настраивать в конфигурации `BACKUP-BACKUP`, где все сервера равнозначны и нет предпочтительных
+  * Редактируем конфигурационный файл `/etc/keepalived/keepalived.conf`. Мы будем настраивать в конфигурации `MASTER-BACKUP`, где один сервер более предпочтителен при старте
     ```bash
     sudo vim /etc/keepalived/keepalived.conf
     ```
+  * ❗️Конфиг для ВМ `hap1` [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_backup)
     ```bash
     global_defs {
         ! Разрешить выполнение скриптов
@@ -250,9 +251,9 @@
     
     vrrp_script chk_haproxy {
     script "pkill -0 haproxy"
-    interval 1
-    timeout 2
-    !weight 6
+    interval 5
+    !timeout 2
+    weight -4
     rise 1
     fall 2
     }
@@ -260,8 +261,8 @@
     vrrp_script chk_keepalived {
     script "pkill -0 keepalived"
     interval 1
-    timeout 2
-    !weight 6
+    !timeout 2
+    weight 6
     rise 1
     fall 2
     }
@@ -281,8 +282,8 @@
         priority 100
         ! Как часто происходит обновление состояния кластера в секундах
         advert_int 2
-        ! Должен запрещать мастеру забирать VIP при возвращении
-        nopreempt
+        ! nopreempt Должен запрещать мастеру забирать VIP при возвращении
+        ! nopreempt
         ! preempt
         ! Виртуальные адреса, которые настроит keealived. Надо указывать маску подсети т.к. по умолчанию VIP поднимается с маской сети 32, что соответствует 1 ip в сети.
         virtual_ipaddress {
@@ -293,8 +294,65 @@
             chk_haproxy
             chk_keepalived
         }
-    }
+    }    
     ```
+  * ❗️Конфиг для ВМ `hap2` [`/etc/keepalived/keepalived.conf`](config_files/keepalived.conf_master)
+    ```bash
+    global_defs {
+        ! Разрешить выполнение скриптов
+        enable_script_security
+        ! Под каким пользователем будет запускаться скрипт
+        script_user root
+    }
+    
+    vrrp_script chk_haproxy {
+    script "pkill -0 haproxy"
+    interval 5
+    !timeout 2
+    weight -4
+    rise 1
+    fall 2
+    }
+    
+    vrrp_script chk_keepalived {
+    script "pkill -0 keepalived"
+    interval 1
+    !timeout 2
+    weight 6
+    rise 1
+    fall 2
+    }
+    
+    vrrp_instance hap_srv {
+        ! Указывает на то что в каком состоянии стартует нода
+        state MASTER
+        ! MASTER
+        ! Интерфейс для виртуальных IP
+        interface eth0
+        ! Интерфейс для обмена служебными пакетами между нодами. Есди на сервере несколько сетевых адаптеров и есть выделенный для interconnect
+        !lvs_sync_daemon_inteface eth0
+        ! Уникальное имя виртуального роутера. Если используется несколько VIP, то для каждого VIP он будет свой
+        ! Почему-то в тестовой лабе не работает с 254. Ошибку напишу ниже.
+        virtual_router_id 115
+        ! Приоритет данной ноды относительно других, нода с наибольшим приоритетом переходит в состояние MASTER
+        priority 101
+        ! Как часто происходит обновление состояния кластера в секундах
+        advert_int 2
+        ! nopreempt Должен запрещать мастеру забирать VIP при возвращении
+        ! nopreempt
+        ! preempt
+        ! Виртуальные адреса, которые настроит keealived. Надо указывать маску подсети т.к. по умолчанию VIP поднимается с маской сети 32, что соответствует 1 ip в сети.
+        virtual_ipaddress {
+            ! Если так, то вверху не нужен interface
+            10.129.0.10/24 dev eth0 label eth0:1
+        }
+        track_script {
+            chk_haproxy
+            chk_keepalived
+        }
+    }    
+    ```
+
 
   * Основные параметры раздела vrrp_script  (скрипта проверки) :
     * `vrrp_script` <название> 
