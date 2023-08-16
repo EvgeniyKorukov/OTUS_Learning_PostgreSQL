@@ -281,53 +281,52 @@ sudo vim /etc/keepalived/keepalived.conf<div align="center"><h2> 5. Настро
     ```console
     ubuntu@hap1:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
-         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabl>
-         Active: active (running) since Mon 2023-08-14 21:26:51 UTC; 16s ago
-       Main PID: 3439 (keepalived)
-          Tasks: 2 (limit: 2293)
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
+         Active: active (running) since Wed 2023-08-16 17:46:21 UTC; 6min ago
+       Main PID: 2674 (keepalived)
+          Tasks: 2 (limit: 2219)
          Memory: 1.9M
+            CPU: 3.323s
          CGroup: /system.slice/keepalived.service
-                 ├─3439 /usr/sbin/keepalived --dont-fork
-                 └─3440 /usr/sbin/keepalived --dont-fork
+                 ├─2674 /usr/sbin/keepalived --dont-fork
+                 └─2675 /usr/sbin/keepalived --dont-fork
     
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Opening file '/etc/keepalived/keepalived.conf'.
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path sear>
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path sear>
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Registering gratuitous ARP shared channel
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE (init)
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: Script `chk_haproxy` now returning 1
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: VRRP_Script(chk_haproxy) failed (exited with s>
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: VRRP_Script(chk_keepalived) succeeded
-    Aug 14 21:26:51 hap1 Keepalived_vrrp[3440]: (hap_srv) Changing effective priority from 100>
-    Aug 14 21:26:58 hap1 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE
-    lines 1-20/20 (END)
+    Aug 16 17:46:21 hap1 systemd[1]: keepalived.service: Got notification message from PID 2675, but reception only permitted for main PID 2674
+    Aug 16 17:46:21 hap1 Keepalived[2674]: Startup complete
+    Aug 16 17:46:21 hap1 systemd[1]: Started Keepalive Daemon (LVS and VRRP).
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: (hap_srv) Entering BACKUP STATE (init)
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: Script `chk_haproxy` now returning 1
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: VRRP_Script(chk_haproxy) failed (exited with status 1)
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: VRRP_Script(chk_keepalived) succeeded
+    Aug 16 17:46:21 hap1 Keepalived_vrrp[2675]: (hap_srv) Changing effective priority from 100 to 103
+    ubuntu@hap1:~$ 
     ```
     ```console
     ubuntu@hap2:~$ sudo systemctl status keepalived
     ● keepalived.service - Keepalive Daemon (LVS and VRRP)
          Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
-         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 7s ago
-       Main PID: 3429 (keepalived)
-          Tasks: 2 (limit: 2293)
-         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 15s ago
-         Active: active (running) since Mon 2023-08-14 21:25:25 UTC; 15s ago
-       Main PID: 3429 (keepalived)
-          Tasks: 2 (limit: 2293)
-         Memory: 2.1M
+         Active: active (running) since Wed 2023-08-16 17:46:15 UTC; 7min ago
+       Main PID: 2742 (keepalived)
+          Tasks: 2 (limit: 2219)
+         Memory: 1.9M
+            CPU: 3.844s
          CGroup: /system.slice/keepalived.service
-                 ├─3429 /usr/sbin/keepalived --dont-fork
-                 └─3440 /usr/sbin/keepalived --dont-fork
+                 ├─2742 /usr/sbin/keepalived --dont-fork
+                 └─2743 /usr/sbin/keepalived --dont-fork
     
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Opening file '/etc/keepalived/keepalived.conf'.
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path search to `/us>
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: WARNING - script `pkill` resolved by path search to `/us>
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Registering gratuitous ARP shared channel
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: (hap_srv) Entering BACKUP STATE (init)
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: Script `chk_haproxy` now returning 1
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: VRRP_Script(chk_haproxy) failed (exited with status 1)
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: VRRP_Script(chk_keepalived) succeeded
-    Aug 14 21:25:25 hap2 Keepalived_vrrp[3440]: (hap_srv) Changing effective priority from 200 to 206
-    Aug 14 21:25:31 hap2 Keepalived_vrrp[3440]: (hap_srv) Entering MASTER STATE
+    Aug 16 17:46:15 hap2 Keepalived[2742]: Startup complete
+    Aug 16 17:46:15 hap2 systemd[1]: Started Keepalive Daemon (LVS and VRRP).
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: (hap_srv) Entering BACKUP STATE (init)
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: VRRP_Script(chk_keepalived) succeeded
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: (hap_srv) Changing effective priority from 200 to 206
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: Script `chk_haproxy` now returning 1
+    Aug 16 17:46:15 hap2 Keepalived_vrrp[2743]: VRRP_Script(chk_haproxy) failed (exited with status 1)
+    Aug 16 17:46:22 hap2 Keepalived_vrrp[2743]: (hap_srv) Entering MASTER STATE
+    ubuntu@hap2:~$ 
     ```
 
 ***
