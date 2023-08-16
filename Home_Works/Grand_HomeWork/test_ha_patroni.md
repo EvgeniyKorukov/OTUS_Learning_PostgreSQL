@@ -92,18 +92,6 @@
 
   * :monocle_face: Мы видим, что `Lag in MB=0`
 
-  * Переключим мастер на сервер `pg-srv2`.
-    ```bash
-      patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
-    ```
-    ```console
-    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
-    ubuntu@pg-srv1:~$ 
-    ```
-      <kbd>
-        <img src="config_files/test_ha_patroni2.jpg" />
-      </kbd>
-
 
 ***
 ### Выполняем второй тест, где мы сэмулируем падение/отключение сервера с мастером. При этом мастер должен автоматически переехать на другой сервер. А когда упавший сервер вернется в работу - `Patroni` должен восстановить его в качестве реплики. 
