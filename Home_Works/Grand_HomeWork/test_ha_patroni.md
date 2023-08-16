@@ -1,5 +1,5 @@
 
-  <div align="center"><h2> 7. Проверка отказоусточивости при Switchover и Failsafe в Patroni </h2></div>
+  <div align="center"><h2> 7. Проверка отказоустойчивости при Switchover и Failsafe в Patroni </h2></div>
 
 ***
 ### Описание проверки:
