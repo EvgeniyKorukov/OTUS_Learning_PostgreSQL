@@ -9,5 +9,5 @@
 ### 5. [Установка и настройка KeepAlived](KeepAlived.md)
 ### 6. [Установка и настройка HA Proxy](HAProxy.md)
 ### 7. [Проверка отказоусточивости при Switchover и Failsafe в Patroni](test_ha_patroni.md)
-### 8. [Проверка отказоусточивости при падении HA Proxy и переносе VIP с помощью KeepAlived](test_ha_vip.md)
+### 8. [Проверка отказоустойчивости при падении HA Proxy и переносе VIP с помощью KeepAlived](test_ha_vip.md)
 
