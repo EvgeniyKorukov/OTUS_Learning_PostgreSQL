@@ -116,7 +116,6 @@
     <kbd>
       <img src="config_files/test_ha_vip4.jpg" />
     </kbd>
-
   * Проверяем текущее подключение к реплике
     ```bash
     psql -h 10.129.0.10 -p 5003 -U postgres -c "SELECT pg_is_in_recovery()"  
@@ -134,6 +133,70 @@
     <kbd>
       <img src="config_files/test_ha_vip5.jpg" />
     </kbd>
+  * Выключаем сервер `hap2`, где у нас сейчас находится `VIP`
+    ```bash
+    sudo poweroff
+    ```
+    ```console
+    ubuntu@hap2:~$ sudo poweroff
+    Connection to 84.252.141.210 closed by remote host.
+    Connection to 84.252.141.210 closed.
+    muser@localhost ~ $ 
+    ```
+    <kbd>
+      <img src="config_files/test_ha_vip6.jpg" />
+    </kbd>
+
+
+  * Смотрим информацию по серверу `hap1`. Сюда должен был переехать `VIP` и в KeepAlive измениться `state=MASTER`
+    ```bash
+    sudo systemctl status keepalived
+    ```
+    ```console
+    ubuntu@hap1:~$ sudo systemctl status keepalived
+    [sudo] password for ubuntu: 
+    ● keepalived.service - Keepalive Daemon (LVS and VRRP)
+         Loaded: loaded (/lib/systemd/system/keepalived.service; enabled; vendor preset: enabled)
+         Active: active (running) since Wed 2023-08-16 20:04:00 UTC; 34min ago
+       Main PID: 12566 (keepalived)
+          Tasks: 2 (limit: 2219)
+         Memory: 1.9M
+            CPU: 18.515s
+         CGroup: /system.slice/keepalived.service
+                 ├─12566 /usr/sbin/keepalived --dont-fork
+                 └─12567 /usr/sbin/keepalived --dont-fork
+    
+    Aug 16 20:04:00 hap1 Keepalived[12566]: Startup complete
+    Aug 16 20:04:00 hap1 systemd[1]: Started Keepalive Daemon (LVS and VRRP).
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: WARNING - script `pkill` resolved by path search to `/usr/bin/pkill`. Please specify full path.
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: (hap_srv) Entering BACKUP STATE (init)
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: VRRP_Script(chk_haproxy) succeeded
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: (hap_srv) Changing effective priority from 100 to 105
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: VRRP_Script(chk_keepalived) succeeded
+    Aug 16 20:04:00 hap1 Keepalived_vrrp[12567]: (hap_srv) Changing effective priority from 105 to 108
+    Aug 16 20:35:38 hap1 Keepalived_vrrp[12567]: (hap_srv) Entering MASTER STATE
+    ubuntu@hap1:~$ 
+    ```
+      <kbd>
+        <img src="config_files/test_ha_vip7.jpg" />
+      </kbd>
+
+  * Проверяем, переехали ли `VIP` на сервер `hap1`
+    ```bash
+    ip a |grep "10.129.0.10"
+    ```
+    ```console
+    ubuntu@hap1:~$ ip a |grep "10.129.0.10"
+    ubuntu@hap1:~$ inet 10.129.0.10/24 scope global secondary eth0:1
+    ubuntu@hap1:~$ 
+    ```
+      <kbd>
+        <img src="config_files/test_ha_vip8.jpg" />
+      </kbd>
+  
+  * :monocle_face: Мы видим, что `state=MASTER` находится на сервере `hap1` и там же находится наш `VIP`
     
 ***
+
 ### :+1: Проверка отказоусточивости при падении HA Proxy и переносе VIP с помощью KeepAlived пройдена!
