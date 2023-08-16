@@ -127,7 +127,6 @@
     </kbd>
 
   * :monocle_face: Мы видим, что мастер находится на `pg-srv2` и текущий `TL=3`
-
   * Эмулируем `Failover` черех выключение сервера `pg-srv2`.
     ```bash
       sudo poweroff
@@ -141,7 +140,6 @@
       <kbd>
         <img src="config_files/test_ha_patroni4.jpg" />
       </kbd>
-  
   * Смотрим текущеее положение сервера с мастером.
     ```bash
     patronictl -c /etc/patroni/patroni.yml list
@@ -159,9 +157,30 @@
     <kbd>
       <img src="config_files/test_ha_patroni5.jpg" />
     </kbd>
-
   * :monocle_face: Мы видим, что мастер находится на `pg-srv3` и текущий `TL=4` и нет выключенного сервера `pg-srv2`
+  
+  * Включаем сервер `pg-srv2` и ждем какое-то время.
 
+  * Смотрим текущеее положение сервера с мастером.
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml list
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB |
+    +---------+-------------+---------+-----------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  4 |         0 |
+    | pg-srv2 | 10.129.0.22 | Replica | streaming |  4 |         0 |
+    | pg-srv3 | 10.129.0.23 | Leader  | running   |  4 |           |
+    +---------+-------------+---------+-----------+----+-----------+
+    ubuntu@pg-srv1:~$ 
+    ```
+    <kbd>
+      <img src="config_files/test_ha_patroni6.jpg" />
+    </kbd>
+    
+  * :monocle_face: Мы видим, что `Patroni` вернул сервер `pg-srv2` и все изменения докатились до мастера т.к. `Lag in MB=0`
 
 
 ***
