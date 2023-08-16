@@ -196,7 +196,42 @@
       </kbd>
   
   * :monocle_face: Мы видим, что `state=MASTER` находится на сервере `hap1` и там же находится наш `VIP`
+
+  * Проверяем текущее подключение к мастеру
+    ```bash
+    psql -h 10.129.0.10 -p 5002 -U postgres -c "SELECT pg_is_in_recovery()"
+    ```
+    ```console
+    ubuntu@hap1:~$ psql -h 10.129.0.10 -p 5002 -U postgres -c "SELECT pg_is_in_recovery()"
+    Password for user postgres: 
+     pg_is_in_recovery 
+    -------------------
+     f
+    (1 row)
     
+    ubuntu@hap1:~$ 
+     ```
+    <kbd>
+      <img src="config_files/test_ha_vip9.jpg" />
+    </kbd>
+  * Проверяем текущее подключение к реплике
+    ```bash
+    psql -h 10.129.0.10 -p 5003 -U postgres -c "SELECT pg_is_in_recovery()"  
+    ```
+    ```console
+    ubuntu@hap1:~$ psql -h 10.129.0.10 -p 5003 -U postgres -c "SELECT pg_is_in_recovery()"  
+    Password for user postgres: 
+     pg_is_in_recovery 
+    -------------------
+     t
+    (1 row)
+    
+    ubuntu@hap1:~$ 
+    ```
+    <kbd>
+      <img src="config_files/test_ha_vip10.jpg" />
+    </kbd>    
+
 ***
 
 ### :+1: Проверка отказоусточивости при падении HA Proxy и переносе VIP с помощью KeepAlived пройдена!
