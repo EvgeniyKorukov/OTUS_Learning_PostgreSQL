@@ -38,7 +38,7 @@
     </kbd>
   * :monocle_face: Мы видим, что мастер находится на `pg-srv3` и текущий `TL=2`
 
-  * Выключим сервер `pg-srv2`.
+  * Переключим мастер на сервер `pg-srv2`.
     ```bash
       patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
     ```
