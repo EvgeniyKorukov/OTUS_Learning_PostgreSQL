@@ -36,10 +36,9 @@
     <kbd>
       <img src="config_files/test_ha_patroni1.jpg" />
     </kbd>
-
   * :monocle_face: Мы видим, что мастер находится на `pg-srv3` и текущий `TL=2`
 
-  * Переключим мастер на сервер `pg-srv2`.
+  * Выключим сервер `pg-srv2`.
     ```bash
       patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
     ```
@@ -72,7 +71,6 @@
 
   * :monocle_face: Мы видим, что мастер переехал на `pg-srv2`, сменился `TL=3`, старый мастер `pg-srv3` стал репликой.
 
-
   * Проверим, что старый мастер стал репликой и не отстает. 
     ```bash
       ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
@@ -93,6 +91,18 @@
       </kbd>
 
   * :monocle_face: Мы видим, что `Lag in MB=0`
+
+  * Переключим мастер на сервер `pg-srv2`.
+    ```bash
+      patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml switchover --candidate pg-srv2
+    ubuntu@pg-srv1:~$ 
+    ```
+      <kbd>
+        <img src="config_files/test_ha_patroni2.jpg" />
+      </kbd>
 
 
 ***
@@ -118,6 +128,39 @@
 
   * :monocle_face: Мы видим, что мастер находится на `pg-srv2` и текущий `TL=3`
 
+  * Эмулируем `Failover` черех выключение сервера `pg-srv2`.
+    ```bash
+      sudo poweroff
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ sudo poweroff
+    Connection to 158.160.27.232 closed by remote host.
+    Connection to 158.160.27.232 closed.
+    muser@localhost ~ $ 
+    ```
+      <kbd>
+        <img src="config_files/test_ha_patroni4.jpg" />
+      </kbd>
+  
+  * Смотрим текущеее положение сервера с мастером.
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml list
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB |
+    +---------+-------------+---------+-----------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  4 |         0 |
+    | pg-srv3 | 10.129.0.23 | Leader  | running   |  4 |           |
+    +---------+-------------+---------+-----------+----+-----------+
+    ubuntu@pg-srv1:~$ 
+    ```
+    <kbd>
+      <img src="config_files/test_ha_patroni5.jpg" />
+    </kbd>
+
+  * :monocle_face: Мы видим, что мастер находится на `pg-srv3` и текущий `TL=4` и нет выключенного сервера `pg-srv2`
 
 
 
