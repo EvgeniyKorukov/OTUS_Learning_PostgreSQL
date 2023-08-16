@@ -97,6 +97,29 @@
 
 ***
 ### Выполняем второй тест, где мы сэмулируем падение/отключение сервера с мастером. При этом мастер должен автоматически переехать на другой сервер. А когда упавший сервер вернется в работу - `Patroni` должен восстановить его в качестве реплики. 
+  * Фиксируем начальное положение сервера с мастером.
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml list
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml list
+    + Cluster: pg-15-cluster ---------+-----------+----+-----------+
+    | Member  | Host        | Role    | State     | TL | Lag in MB |
+    +---------+-------------+---------+-----------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Replica | streaming |  3 |         0 |
+    | pg-srv2 | 10.129.0.22 | Leader  | running   |  3 |           |
+    | pg-srv3 | 10.129.0.23 | Replica | streaming |  3 |         0 |
+    +---------+-------------+---------+-----------+----+-----------+
+    ubuntu@pg-srv1:~$ 
+    ```
+    <kbd>
+      <img src="config_files/test_ha_patroni3.jpg" />
+    </kbd>
+
+  * :monocle_face: Мы видим, что мастер находится на `pg-srv2` и текущий `TL=3`
+
+
+
 
 ***
 ### :+1: Проверка отказоусточивости при Switchover и Failsafe в Patroni пройдена!
