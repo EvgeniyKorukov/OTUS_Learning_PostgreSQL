@@ -78,7 +78,7 @@
     
   * Создаем/изменяем пользователей с правами
     ```bash
-    sudo -u postgres psql -c "alter user postgres with password 'password'"
+    sudo -u postgres psql -c "alter user postgres with ENCRYPTED password 'password'"
     sudo -u postgres psql -c "CREATE USER replicator WITH REPLICATION ENCRYPTED PASSWORD 'replicator'"
     ```
     ```console
