@@ -35,7 +35,7 @@
   sudo apt update && sudo apt upgrade -y -q && echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee -a /etc/apt/sources.list.d/pgdg.list && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add - && sudo apt-get update && \
   sudo apt -y install postgresql-15
   ```
-  * На всех 3 ВМ удаляем кластер по умолчанию
+  * ❗️Удаляем кластер по умолчанию на ВМ `pg-srv2` и `pg-srv3`, оставляем только на ВМ `pg-srv1`. т.к. мы будем переводить на `Patroni` существующую СУБД `PostgreSQL 15`
   ```bash
   sudo -u postgres pg_dropcluster 15 main --stop && \
   pg_lsclusters
