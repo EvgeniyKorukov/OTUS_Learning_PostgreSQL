@@ -43,7 +43,38 @@
 
 *** 
 ### [Подготовка и настройка существующего экземпляра `PostgreSQL 15` на `pg-srv1`, чтобы перевести его на `Patroni`](https://patroni.readthedocs.io/en/latest/existing_data.html).
-  * Создаем БД, таблицу и генирируем данные, чтобы можно было потом проверить 
+  * Создаем БД, таблицу и генирируем данные, чтобы можно было потом проверить
+    ```bash
+    sudo -u postgres psql -c "create database otus"
+    sudo -u postgres psql -d otus -c "create table test(c1 text)"
+    sudo -u postgres psql -d otus -c "insert into test values('2022')"
+    sudo -u postgres psql -d otus -c "insert into test values('2023')"
+    sudo -u postgres psql -d otus -c "insert into test values('2024')"
+    sudo -u postgres psql -d otus -c "select * from test"
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -c "create database otus"
+    CREATE DATABASE
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d otus -c "create table test(c1 text)"
+    CREATE TABLE
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d otus -c "insert into test values('2022')"
+    INSERT 0 1
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d otus -c "insert into test values('2023')"
+    INSERT 0 1
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d otus -c "insert into test values('2024')"
+    INSERT 0 1
+    ubuntu@pg-srv1:~$ 
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -d otus -c "select * from test"
+       c1  
+     ------
+      2022
+      2023
+      2024
+     (3 rows)
+     
+     ubuntu@pg-srv1:~$ 
+      ```
+    
   * Создаем пользователей с правами
   * Правим `pg_hba.conf`
   * ?*Правим параметры под `Patroni`
