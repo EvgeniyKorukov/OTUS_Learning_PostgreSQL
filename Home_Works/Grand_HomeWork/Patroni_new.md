@@ -75,10 +75,29 @@
      ubuntu@pg-srv1:~$ 
       ```
     
-  * Создаем пользователей с правами
+  * Создаем/изменяем пользователей с правами
+    ```bash
+    sudo -u postgres psql -c "alter user postgres with password 'password'"
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ sudo -u postgres psql -c "alter user postgres with password 'password'"
+    ALTER ROLE
+    ubuntu@pg-srv1:~$
+  
+    ```
   * Правим `pg_hba.conf`
   * ?*Правим параметры под `Patroni`
   * Отключаем автозапуск службы `PostgreSQL` т.к. он теперь будет работать через `Patroni`
+    ```bash
+    sudo systemctl disable postgresql
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ sudo systemctl disable postgresql
+    Synchronizing state of postgresql.service with SysV service script with /lib/systemd/systemd-sysv-install.
+    Executing: /lib/systemd/systemd-sysv-install disable postgresql
+    Removed /etc/systemd/system/multi-user.target.wants/postgresql.service.
+    ubuntu@pg-srv1:~$ 
+    ```
   * ? pgpass
   * 
 
