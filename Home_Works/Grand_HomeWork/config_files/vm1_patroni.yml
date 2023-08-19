@@ -52,11 +52,11 @@ postgresql:
   bin_dir: /usr/lib/postgresql/15/bin/
   config_dir: /etc/postgresql/15/main/  
   pg_rewind:
-    username: patroni
+    username: postgres
     password: password
   replication:
     username: replicator
     password: replicator
   superuser:
-    username: patroni
-    password: postgres
+    username: postgres
+    password: password
