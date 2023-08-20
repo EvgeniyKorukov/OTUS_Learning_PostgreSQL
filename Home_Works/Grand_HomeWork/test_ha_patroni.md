@@ -128,7 +128,7 @@
       <kbd>
         <img src="config_files/test_ha_patroni4.jpg" />
       </kbd>
-  * Смотрим текущеее положение сервера с мастером.
+  * Смотрим текущее положение сервера с мастером.
     ```bash
     patronictl -c /etc/patroni/patroni.yml list
     ```
