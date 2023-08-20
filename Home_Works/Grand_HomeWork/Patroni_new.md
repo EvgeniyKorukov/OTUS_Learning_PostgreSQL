@@ -459,6 +459,22 @@
     ubuntu@pg-srv1:~$ 
     ```
 ***
+  * Проверяем, что наши данные сохранились, после перехода на `Patroni`
+    ```bash
+    sudo -u postgres psql -d otus -c "select * from test"
+    ```
+    ```console
+    ubuntu@pg-srv2:~$ sudo -u postgres psql -d otus -c "select * from test"
+      c1  
+    ------
+     2022
+     2023
+     2024
+    (3 rows)
+    
+    ubuntu@pg-srv2:~$ 
+    ```
+***
 ###  Полезные команды `Patroni`
   * Посмотреть логи `Patroni` в ОС
     ```bash
