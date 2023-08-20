@@ -1,4 +1,4 @@
-<div align="center"><h2> 4. Настройка PgBouncer </h2></div>
+<div align="center"><h2> 4. Установка и настройка PgBouncer </h2></div>
 
 ***
 ### Немного теории:
