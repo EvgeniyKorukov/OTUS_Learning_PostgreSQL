@@ -1,4 +1,4 @@
-sudo vim /etc/keepalived/keepalived.conf<div align="center"><h2> 5. Настройка KeepAlived </h2></div>
+<div align="center"><h2> 5. Установка и настройка KeepAlived </h2></div>
 
 ***
 
