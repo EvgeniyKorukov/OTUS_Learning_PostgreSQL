@@ -1,9 +1,9 @@
-<div align="center"><h2> 3. Настройка Patroni </h2></div>
+<div align="center"><h2> 3. Установка и настройка Patroni </h2></div>
 
 ***
 
 ### Немного теории:
-  * Для работы в режиме высокой доступности `HA` (High Availability) нужно некоторое ПО, которое контроллирует кто сейчас `master` или `главный сервер`, а кто `secondary` или `реплика`
+  * Для работы в режиме высокой доступности `HA` (High Availability) нужно некоторое ПО, которое контролирует кто сейчас `master` или `главный сервер`, а кто `secondary` или `реплика`
   * В PostgreSQL это очень важно чтобы не было `Split Brain` чтобы в кластере не появилось больше одного `master`
   * Подобные функции может выполнять следующее ПО:
     * [`Pacemaker and Corosync`](https://clusterlabs.org/)
@@ -43,7 +43,7 @@
 
 *** 
 ### [Подготовка и настройка существующего экземпляра `PostgreSQL 15` на `pg-srv1`, чтобы перевести его на `Patroni`](https://patroni.readthedocs.io/en/latest/existing_data.html).
-  * Создаем БД, таблицу и генирируем данные, чтобы можно было потом проверить
+  * Создаем БД, таблицу и генерируем данные, чтобы можно было потом проверить
     ```bash
     sudo -u postgres psql -c "create database otus"
     sudo -u postgres psql -d otus -c "create table test(c1 text)"
@@ -316,7 +316,7 @@
 ***
 
 ### Применим настройка `PostgreSQL 15` в конфигурации `Patroni` на основании [`PGTune`](https://pgtune.leopard.in.ua/)
-  * Для нашеших ВМ получаем следующее:
+  * Для наших ВМ получаем следующее:
     ```console
     # DB Version: 15
     # OS Type: linux
@@ -383,7 +383,7 @@
     +---------+-------------+---------+-----------+----+-----------+-----------------+
     ubuntu@pg-srv1:~$ 
     ```
-  * Для примемения параметров - перезагружаем кластер
+  * Для применения параметров - перезагружаем кластер
     ```bash
     patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
     ```
