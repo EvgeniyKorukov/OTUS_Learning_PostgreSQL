@@ -172,4 +172,4 @@
 
 
 ***
-### :+1: Проверка отказоусточивости при Switchover и Failover в Patroni пройдена!
+### :+1: Проверка отказоустойчивости при Switchover и Failover в Patroni пройдена!
