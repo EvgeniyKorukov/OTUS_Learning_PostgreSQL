@@ -9,7 +9,7 @@
     * [`Pacemaker and Corosync`](https://clusterlabs.org/)
       * Не умеет восстанавливать упавший `master/primary` или `replica/slave/standby`-это приходится делать вручную
     * [`Patroni`](https://patroni.readthedocs.io/en/latest/) ❗️Именно его мы и будет использовать
-      * Умеет восстаанвливать упавший `master/primary` или `replica/slave/standby`
+      * Умеет восстанавливать упавший `master/primary` или `replica/slave/standby`
     * [`RepMgr`](https://www.repmgr.org/)
       * Нет защиты от двойного мастера (split brain);
       * Нет нужды в DCS.
