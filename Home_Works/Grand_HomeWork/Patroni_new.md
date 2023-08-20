@@ -192,6 +192,28 @@
     ubuntu@pg-srv3:~$    
     ```
 
+  * Поскольку мы сконвертировали `Single Instance` в кластер `Patroni`, то нам надо перестартовать весь кластер, чтобы применились все настройки и создались реплики
+    ```bash
+    patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
+    ```
+    ```console
+    ubuntu@pg-srv1:~$ patronictl -c /etc/patroni/patroni.yml restart pg-15-cluster
+    + Cluster: pg-15-cluster ---------+---------+----+-----------+
+    | Member  | Host        | Role    | State   | TL | Lag in MB |
+    +---------+-------------+---------+---------+----+-----------+
+    | pg-srv1 | 10.129.0.21 | Leader  | running |  1 |           |
+    | pg-srv2 | 10.129.0.22 | Replica | stopped |    |   unknown |
+    | pg-srv3 | 10.129.0.23 | Replica | stopped |    |   unknown |
+    +---------+-------------+---------+---------+----+-----------+
+    When should the restart take place (e.g. 2023-08-20T01:27)  [now]: 
+    Are you sure you want to restart members pg-srv1, pg-srv2, pg-srv3? [y/N]: y
+    Restart if the PostgreSQL version is less than provided (e.g. 9.5.2)  []: 
+    Success: restart on member pg-srv1
+    Failed: restart for member pg-srv2, status code=503, (postgres is still starting)
+    Failed: restart for member pg-srv3, status code=503, (postgres is still starting)
+    ```
+
+
   * Смотрим текущее состояние работы сервиса:
     ```bash
     sudo systemctl status patroni
