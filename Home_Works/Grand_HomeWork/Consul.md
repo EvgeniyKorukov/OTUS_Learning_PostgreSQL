@@ -1,4 +1,4 @@
-<div align="center"><h2> 2. Настройка Consul </h2></div>
+<div align="center"><h2> 2. Установка и настройка Consul </h2></div>
 
 ***
 ### Немного теории:
